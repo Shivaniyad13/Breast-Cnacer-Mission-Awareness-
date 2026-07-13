@@ -33,7 +33,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
             <Link href="/register">
               <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/95 text-white font-semibold shadow-lg shadow-primary/25 transition-all hover:scale-[1.02]">
-                Join as Advocate
+                Join Campaign
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -66,6 +66,129 @@ export default function Home() {
               <p className="text-4xl font-extrabold text-primary tracking-tight font-heading">₹50L+</p>
               <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Direct Hospital Payouts</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Partner & Group Entities Cards Section */}
+      <section className="border-t-4 border-[#1b7c3d] bg-[#f4f7fa] py-16 sm:py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            
+            {/* Card 1: GRS INDIA CORPORATION */}
+            <div className="p-8 rounded-[28px] border border-[#d3eed9] bg-[#f5fbf7] shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+              <div>
+                {/* Logo Container */}
+                <div className="bg-white rounded-[20px] h-28 w-full flex flex-col items-center justify-center p-4 border border-[#eef5ef] shadow-xs relative overflow-hidden">
+                  <div className="relative w-full h-[52px] flex items-center justify-center overflow-hidden">
+                    <img 
+                      src="/grs-group-logo.jpg" 
+                      alt="GRS Logo Icon" 
+                      className="h-16 max-w-none object-cover object-top" 
+                      style={{ transform: "scale(1.4) translateY(2px)" }}
+                    />
+                  </div>
+                  <div className="bg-[#5a2e2b] text-white text-[9px] font-bold px-2 py-0.5 tracking-wider uppercase rounded-sm mt-1.5 font-sans leading-none z-10">
+                    INDIA CORPORATION
+                  </div>
+                </div>
+
+                {/* Card Title */}
+                <h3 className="text-sm font-extrabold text-foreground tracking-wide uppercase mt-8 font-sans">
+                  GRS INDIA CORPORATION
+                </h3>
+                
+                {/* Card Description */}
+                <p className="text-xs text-muted-foreground mt-3 font-normal leading-relaxed">
+                  Production and Specialized Services
+                </p>
+              </div>
+
+              {/* Link */}
+              <div className="mt-8">
+                <a 
+                  href="https://grsindiacorporation.com/" 
+                  className="text-[#1b7c3d] font-semibold text-xs flex items-center gap-1.5 hover:underline transition-colors"
+                >
+                  Visit website <span className="text-sm">→</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Card 2: GRS INDIA PRIVATE LIMITED */}
+            <div className="p-8 rounded-[28px] border border-[#d3eed9] bg-[#f5fbf7] shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+              <div>
+                {/* Logo Container */}
+                <div className="bg-white rounded-[20px] h-28 w-full flex flex-col items-center justify-center p-4 border border-[#eef5ef] shadow-xs relative overflow-hidden">
+                  <div className="relative w-full h-[52px] flex items-center justify-center overflow-hidden">
+                    <img 
+                      src="/grs-group-logo.jpg" 
+                      alt="GRS Logo Icon" 
+                      className="h-16 max-w-none object-cover object-top" 
+                      style={{ transform: "scale(1.4) translateY(2px)" }}
+                    />
+                  </div>
+                  <div className="bg-[#5a2e2b] text-white text-[9px] font-bold px-2 py-0.5 tracking-wider uppercase rounded-sm mt-1.5 font-sans leading-none z-10">
+                    INDIA PRIVATE LIMITED
+                  </div>
+                </div>
+
+                {/* Card Title */}
+                <h3 className="text-sm font-extrabold text-foreground tracking-wide uppercase mt-8 font-sans">
+                  GRS INDIA PRIVATE LIMITED
+                </h3>
+                
+                {/* Card Description */}
+                <p className="text-xs text-muted-foreground mt-3 font-normal leading-relaxed">
+                  Manufacturing and Trading Solutions
+                </p>
+              </div>
+
+              {/* Link */}
+              <div className="mt-8">
+                <a 
+                  href="https://grsindiacorporation.com/" 
+                  className="text-[#1b7c3d] font-semibold text-xs flex items-center gap-1.5 hover:underline transition-colors"
+                >
+                  Visit website <span className="text-sm">→</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Card 3: KHUSHI CENTRE FOR REHABILITATION AND RESEARCH */}
+            <div className="p-8 rounded-[28px] border border-[#d3eed9] bg-[#f5fbf7] shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between">
+              <div>
+                {/* Logo Container */}
+                <div className="bg-white rounded-[20px] h-28 w-full flex flex-col items-center justify-center p-4 border border-[#eef5ef] shadow-xs relative overflow-hidden">
+                  <img 
+                    src="/khushi-logo.jpg" 
+                    alt="Khushi Centre Logo" 
+                    className="max-h-[85%] w-auto object-contain" 
+                  />
+                </div>
+
+                {/* Card Title */}
+                <h3 className="text-sm font-extrabold text-foreground tracking-wide uppercase mt-8 font-sans leading-snug">
+                  KHUSHI CENTRE FOR REHABILITATION AND RESEARCH
+                </h3>
+                
+                {/* Card Description */}
+                <p className="text-xs text-muted-foreground mt-3 font-normal leading-relaxed">
+                  Social Responsibility Research and Sustainable Development
+                </p>
+              </div>
+
+              {/* Link */}
+              <div className="mt-8">
+                <a 
+                  href="https://khushicentre.in/" 
+                  className="text-[#1b7c3d] font-semibold text-xs flex items-center gap-1.5 hover:underline transition-colors"
+                >
+                  Visit website <span className="text-sm">→</span>
+                </a>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

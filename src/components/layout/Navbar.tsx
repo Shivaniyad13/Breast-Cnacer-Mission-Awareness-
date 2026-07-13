@@ -28,8 +28,8 @@ export default async function Navbar() {
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
             <Ribbon className="h-6 w-6 text-primary animate-pulse" />
-            <span className="font-heading text-xl font-bold tracking-tight text-foreground">
-              GRS<span className="text-primary">Awareness</span>
+            <span className="font-heading text-lg font-bold tracking-tight text-foreground">
+              Breast Cancer <span className="text-primary">Mission Awareness</span>
             </span>
           </Link>
         </div>
