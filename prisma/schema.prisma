@@ -1,12 +1,255 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id                   String                @id @default(uuid())
+  name                 String?
+  email                String?               @unique
+  emailVerified        DateTime?
+  image                String?
+  passwordHash         String?
+  role                 Role                  @default(VOLUNTEER)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  accounts             Account[]
+  attendance           Attendance[]
+  campaigns            Campaign[]
+  certificates         Certificate[]
+  donations            Donation[]
+  profile              Profile?
+  sessions             Session[]
+  webinarRegistrations WebinarRegistration[]
+}
+
+model Profile {
+  id                    String             @id @default(uuid())
+  userId                String             @unique
+  phoneNumber           String?
+  avatarUrl             String?
+  verificationStatus    VerificationStatus @default(UNVERIFIED)
+  rejectionReason       String?
+  medicalLicenseNumber  String?
+  hospitalAffiliation   String?
+  specialty             String?
+  ngoRegistrationNumber String?
+  taxExemptionStatus80G Boolean            @default(false)
+  websiteUrl            String?
+  nationalIdNumber      String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  documents             Document[]
+  user                  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                String   @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Campaign {
+  id                  String         @id @default(uuid())
+  patientId           String
+  title               String
+  slug                String         @unique
+  description         String
+  medicalSummary      String
+  fundingGoal         Decimal        @db.Decimal(12, 2)
+  amountRaised        Decimal        @default(0) @db.Decimal(12, 2)
+  status              CampaignStatus @default(DRAFT)
+  ngoEndorserId       String?
+  hospitalName        String
+  hospitalBankAccount String
+  hospitalBankIFSC    String
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  patient             User           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  documents           Document[]
+  donations           Donation[]
+  payouts             Payout[]
+}
+
+model Document {
+  id           String       @id @default(uuid())
+  campaignId   String?
+  profileId    String?
+  documentType DocumentType
+  fileUrl      String
+  isSecure     Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  campaign     Campaign?    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  profile      Profile?     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Donation {
+  id               String         @id @default(uuid())
+  campaignId       String
+  donorId          String?
+  amount           Decimal        @db.Decimal(12, 2)
+  currency         String         @default("INR")
+  paymentGatewayId String         @unique
+  status           DonationStatus @default(PENDING)
+  isAnonymous      Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  campaign         Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  donor            User?          @relation(fields: [donorId], references: [id])
+}
+
+model Payout {
+  id                   String       @id @default(uuid())
+  campaignId           String
+  amountRequested      Decimal      @db.Decimal(12, 2)
+  hospitalInvoiceUrl   String
+  status               PayoutStatus @default(PENDING)
+  transactionReference String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  campaign             Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model Certificate {
+  id                  String                    @id @default(uuid())
+  recipientId         String
+  certificateType     CertificateType
+  eventName           String
+  certificateIdString String                    @unique
+  pdfStorageUrl       String
+  verificationHash    String                    @unique
+  createdAt           DateTime                  @default(now())
+  webinarId           String?
+  userName            String?
+  speakerName         String?
+  date                DateTime?
+  digitalSignature    String?
+  verificationUrl     String?
+  recipient           User                      @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  webinar             Webinar?                  @relation(fields: [webinarId], references: [id], onDelete: Cascade)
+  verifications       CertificateVerification[]
+}
+
+model Webinar {
+  id               String                @id @default(uuid())
+  title            String
+  description      String
+  fullContent      String
+  bannerImage      String?
+  speakerName      String
+  speakerImage     String?
+  speakerBio       String?
+  date             DateTime
+  startTime        DateTime
+  endTime          DateTime
+  venue            String?
+  city             String?
+  state            String?
+  country          String?
+  webinarMode      String
+  meetingLink      String
+  maxSeats         Int
+  category         String
+  status           String                @default("DRAFT")
+  recordingUrl     String?
+  materialsUrl     String?
+  objectives       String?
+  agenda           String?
+  faqs             Json?
+  organizerDetails String?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  attendance       Attendance[]
+  certificates     Certificate[]
+  registrations    WebinarRegistration[]
+}
+
+model WebinarRegistration {
+  id               String   @id @default(uuid())
+  userId           String
+  webinarId        String
+  registeredAt     DateTime @default(now())
+  feedback         String?
+  rating           Int?
+  age              Int      @default(0)
+  city             String   @default("")
+  email            String   @default("")
+  emergencyContact String   @default("")
+  gender           String   @default("")
+  name             String   @default("")
+  occupation       String   @default("")
+  phone            String   @default("")
+  reason           String   @default("")
+  state            String   @default("")
+  status           String   @default("Registered")
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  webinar          Webinar  @relation(fields: [webinarId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, webinarId])
+}
+
+model Attendance {
+  id                   String    @id @default(uuid())
+  userId               String
+  webinarId            String
+  joinTime             DateTime?
+  leaveTime            DateTime?
+  durationMinutes      Float     @default(0)
+  attendancePercentage Float     @default(0)
+  status               String    @default("ABSENT")
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  webinar              Webinar   @relation(fields: [webinarId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, webinarId])
+}
+
+model CertificateVerification {
+  id              String      @id @default(uuid())
+  certificateId   String
+  verificationUrl String
+  verifiedAt      DateTime    @default(now())
+  ipAddress       String?
+  userAgent       String?
+  status          String
+  certificate     Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+
+  @@index([certificateId])
 }
 
 enum Role {
@@ -60,159 +303,4 @@ enum CertificateType {
   WEBINAR_ATTENDANCE
   QUIZ_EXCELLENCE
   VOLUNTEER_CAMPAIGN
-}
-
-model User {
-  id            String        @id @default(uuid())
-  name          String?
-  email         String?       @unique
-  emailVerified DateTime?
-  image         String?
-  passwordHash  String?
-  role          Role          @default(VOLUNTEER)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  profile       Profile?
-  campaigns     Campaign[]
-  donations     Donation[]
-  certificates  Certificate[]
-}
-
-model Profile {
-  id                 String             @id @default(uuid())
-  userId             String             @unique
-  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  phoneNumber        String?
-  avatarUrl          String?
-  verificationStatus VerificationStatus @default(UNVERIFIED)
-  rejectionReason    String?
-
-  // Doctor specific fields
-  medicalLicenseNumber String?
-  hospitalAffiliation  String?
-  specialty            String?
-
-  // NGO specific fields
-  ngoRegistrationNumber String?
-  taxExemptionStatus80G Boolean            @default(false)
-  websiteUrl            String?
-
-  // Patient specific fields
-  nationalIdNumber     String?            // Encrypted in production
-
-  documents            Document[]
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
-}
-
-model Account {
-  id                String   @id @default(uuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?  @db.Text
-  access_token      String?  @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?  @db.Text
-  session_state     String?
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(uuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
-
-model Campaign {
-  id                   String         @id @default(uuid())
-  patientId            String
-  patient              User           @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  title                String
-  slug                 String         @unique
-  description          String         @db.Text
-  medicalSummary       String         @db.Text
-  fundingGoal          Decimal        @db.Decimal(12, 2)
-  amountRaised         Decimal        @default(0) @db.Decimal(12, 2)
-  status               CampaignStatus @default(DRAFT)
-  ngoEndorserId        String?
-  hospitalName         String
-  hospitalBankAccount  String         // Encrypted
-  hospitalBankIFSC     String         // Encrypted
-  documents            Document[]
-  donations            Donation[]
-  payouts              Payout[]
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
-}
-
-model Document {
-  id           String       @id @default(uuid())
-  campaignId   String?
-  campaign     Campaign?    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  profileId    String?
-  profile      Profile?     @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  documentType DocumentType
-  fileUrl      String
-  isSecure     Boolean      @default(true)
-  createdAt    DateTime     @default(now())
-}
-
-model Donation {
-  id               String         @id @default(uuid())
-  campaignId       String
-  campaign         Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  donorId          String?
-  donor            User?          @relation(fields: [donorId], references: [id], onDelete: SetNull)
-  amount           Decimal        @db.Decimal(12, 2)
-  currency         String         @default("INR")
-  paymentGatewayId String         @unique // Razorpay Payment ID / Order ID
-  status           DonationStatus @default(PENDING)
-  isAnonymous      Boolean        @default(false)
-  createdAt        DateTime       @default(now())
-}
-
-model Payout {
-  id                  String       @id @default(uuid())
-  campaignId          String
-  campaign            Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  amountRequested     Decimal      @db.Decimal(12, 2)
-  hospitalInvoiceUrl  String
-  status              PayoutStatus @default(PENDING)
-  transactionReference String?
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
-}
-
-model Certificate {
-  id                  String          @id @default(uuid())
-  recipientId         String
-  recipient           User            @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-  certificateType     CertificateType
-  eventName           String
-  certificateIdString String          @unique // e.g. GRS-2026-XXXX
-  pdfStorageUrl       String
-  verificationHash    String          @unique // Cryptographic Hash SHA-256
-  createdAt           DateTime        @default(now())
 }

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import WebinarRegisterButton from "@/components/webinars/WebinarRegisterButton";
 import Link from "next/link";
 import { 
   Ribbon, 
@@ -39,6 +40,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function BreastCancerCampaignPage() {
+  // Session User State
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const res = await fetch("/api/auth/session");
+        if (res.ok) {
+          const session = await res.json();
+          if (session?.user) {
+            setCurrentUser(session.user);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch session", e);
+      }
+    };
+    fetchSession();
+  }, []);
+
   // 1. Navbar Scroll Shrink state
   const [isScrolled, setIsScrolled] = useState(false);
   useEffect(() => {
@@ -683,9 +703,15 @@ export default function BreastCancerCampaignPage() {
                     <p className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary" /> {evt.loc}</p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" className="w-full text-xs font-semibold mt-4">
-                  Register Seat
-                </Button>
+                <WebinarRegisterButton
+                  webinarId="look-up-by-title"
+                  webinarTitle={evt.title}
+                  currentUser={currentUser}
+                  buttonText="Register Seat"
+                  className="w-full text-xs font-semibold mt-4 py-2 h-auto"
+                  variant="outline"
+                  size="sm"
+                />
               </div>
             ))}
           </div>

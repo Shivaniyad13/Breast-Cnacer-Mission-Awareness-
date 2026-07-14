@@ -5,66 +5,103 @@ import { Button } from "@/components/ui/button";
 
 import { 
   Ribbon, 
-  HeartPulse, 
-  GraduationCap, 
-  Sprout, 
-  Flame, 
-  Globe, 
   ChevronRight,
   ArrowRight,
   Sparkles,
-  Beef
+  Wind,
+  Apple,
+  Sun,
+  ShieldAlert,
+  Activity,
+  HeartPulse
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const campaigns = [
+const cancerTypes = [
   {
-    id: "healthcare",
-    title: "Healthcare Programme",
-    description: "Providing clean diagnostic camps, free clinical checkups, and secondary medical consultations to remote rural sectors.",
-    icon: HeartPulse,
-    color: "text-emerald-500",
-    bgColor: "bg-emerald-50",
+    id: "breast-cancer",
+    title: "Breast Cancer",
+    description: "Begins in breast tissues. It is one of the most common cancers diagnosed in women globally.",
+    precautions: [
+      "Perform monthly breast self-exams.",
+      "Get clinical exams & mammograms.",
+      "Maintain active exercise & healthy weight.",
+      "Limit alcohol & avoid tobacco."
+    ],
+    icon: Ribbon,
+    color: "text-pink-500",
+    bgColor: "bg-pink-50",
+    link: "/campaigns/breast-cancer"
   },
   {
-    id: "education",
-    title: "Education & Literacy",
-    description: "Sponsoring school supplies, establishing evening tutorial centers, and providing secondary school scholarships to children.",
-    icon: GraduationCap,
+    id: "lung-cancer",
+    title: "Lung Cancer",
+    description: "Starts in the lungs and is the leading cause of cancer deaths. Strongly linked to tobacco use.",
+    precautions: [
+      "Avoid smoking & secondhand smoke.",
+      "Test home for radon exposure.",
+      "Avoid occupational carcinogens.",
+      "Keep living areas well-ventilated."
+    ],
+    icon: Wind,
     color: "text-blue-500",
     bgColor: "bg-blue-50",
   },
   {
-    id: "agriculture",
-    title: "Agriculture Welfare",
-    description: "Educating local farmers on water-resilient crop cycles, organic inputs, and direct-to-consumer digital channels.",
-    icon: Sprout,
+    id: "colorectal-cancer",
+    title: "Colorectal Cancer",
+    description: "Develops in the colon or rectum. Often begins as benign polyps that grow slowly over years.",
+    precautions: [
+      "Get screened regularly starting at 45.",
+      "Eat fiber-rich fruits & vegetables.",
+      "Limit red & processed meat consumption.",
+      "Stay active & reduce alcohol intake."
+    ],
+    icon: Apple,
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-50",
+  },
+  {
+    id: "prostate-cancer",
+    title: "Prostate Cancer",
+    description: "Occurs in the prostate gland in men. It usually grows slowly and is highly treatable if caught early.",
+    precautions: [
+      "Discuss PSA screening with your doctor.",
+      "Eat a diet rich in lycopene & tomatoes.",
+      "Maintain a healthy body weight.",
+      "Stay physically active regularly."
+    ],
+    icon: Activity,
+    color: "text-indigo-500",
+    bgColor: "bg-indigo-50",
+  },
+  {
+    id: "skin-cancer",
+    title: "Skin Cancer (Melanoma)",
+    description: "Abnormal growth of skin cells, mostly triggered by exposure to ultraviolet (UV) radiation from sunlight.",
+    precautions: [
+      "Apply broad-spectrum SPF 30+ daily.",
+      "Seek shade, especially during midday.",
+      "Wear wide hats & UV-blocking sunglasses.",
+      "Check skin monthly for changing moles."
+    ],
+    icon: Sun,
     color: "text-amber-500",
     bgColor: "bg-amber-50",
   },
   {
-    id: "livestock",
-    title: "Livestock Management",
-    description: "Veterinary consulting clinics, vaccine camp drives, and fodder management strategies for rural cattle owners.",
-    icon: Beef,
-    color: "text-orange-500",
-    bgColor: "bg-orange-50",
-  },
-  {
-    id: "disaster",
-    title: "Disaster Rehabilitation",
-    description: "Active emergency relief teams delivering foods, medicines, and clean rebuilding materials during flooding and drafts.",
-    icon: Flame,
-    color: "text-red-500",
-    bgColor: "bg-red-50",
-  },
-  {
-    id: "sustainability",
-    title: "Sustainability Interventions",
-    description: "Developing local solar grids, micro rainwater harvesting pools, and community-wide solid waste recycling bins.",
-    icon: Globe,
-    color: "text-cyan-500",
-    bgColor: "bg-cyan-50",
+    id: "cervical-cancer",
+    title: "Cervical Cancer",
+    description: "Starts in the cells of the cervix, highly associated with persistent high-risk HPV infections.",
+    precautions: [
+      "Get vaccinated against HPV early.",
+      "Schedule regular Pap & HPV screening.",
+      "Practice safe personal hygiene.",
+      "Avoid smoking to preserve immunity."
+    ],
+    icon: ShieldAlert,
+    color: "text-purple-500",
+    bgColor: "bg-purple-50",
   },
 ];
 
@@ -195,14 +232,14 @@ export default function CampaignsPage() {
         {/* REDESIGNED: Grid of Other Active Campaigns */}
         <div className="space-y-8">
           <div className="border-b border-border pb-4 flex justify-between items-end">
-            <h3 className="font-heading text-2xl font-bold text-foreground">All Campaigns & Interventions</h3>
+            <h3 className="font-heading text-2xl font-bold text-foreground">Common Cancer Types & Prevention</h3>
             <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
-              {campaigns.length} Active Programmes
+              {cancerTypes.length} Major Types
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {campaigns.map((camp, idx) => {
+            {cancerTypes.map((camp, idx) => {
               const Icon = camp.icon;
               return (
                 <motion.div
@@ -224,13 +261,31 @@ export default function CampaignsPage() {
                         {camp.description}
                       </p>
                     </div>
+                    <div className="space-y-2 pt-2 border-t border-border/50">
+                      <span className="text-xs font-semibold text-foreground uppercase tracking-wider block">Precautions:</span>
+                      <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
+                        {camp.precautions.map((prec, pIdx) => (
+                          <li key={pIdx} className="leading-relaxed">
+                            {prec}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                   
                   <div className="pt-6 mt-auto">
-                    <Button variant="ghost" className="p-0 hover:bg-transparent text-primary text-xs font-bold tracking-wide uppercase flex items-center gap-1 group-hover:gap-1.5 transition-all">
-                      Read More
-                      <ChevronRight className="h-4 w-4" />
-                    </Button>
+                    {camp.link ? (
+                      <Link href={camp.link}>
+                        <Button variant="ghost" className="p-0 hover:bg-transparent text-primary text-xs font-bold tracking-wide uppercase flex items-center gap-1 group-hover:gap-1.5 transition-all">
+                          Learn More & Support
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Button variant="ghost" className="p-0 hover:bg-transparent text-muted-foreground text-xs font-bold tracking-wide uppercase flex items-center gap-1 transition-all cursor-default">
+                        Awareness Info Only
+                      </Button>
+                    )}
                   </div>
                 </motion.div>
               );
