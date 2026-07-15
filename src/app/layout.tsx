@@ -49,7 +49,7 @@ export default async function RootLayout({
                 <div className="flex items-center gap-2">
                   <Ribbon className="h-5 w-5 text-primary" />
                   <span className="font-heading text-sm font-semibold tracking-tight">
-                    GRS Breast Cancer Awareness Campaign
+                    GRS Breast Cancer Misson Campaign
                   </span>
                 </div>
                 <p className="text-center text-xs text-muted-foreground">

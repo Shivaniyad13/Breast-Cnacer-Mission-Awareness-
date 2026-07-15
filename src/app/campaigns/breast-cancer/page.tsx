@@ -720,95 +720,146 @@ export default function BreastCancerCampaignPage() {
 
       {/* 10. DONATION SECTION */}
       <section className="py-20 bg-card border-b border-border" id="donate">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl space-y-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl space-y-8">
           <div className="text-center space-y-2">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground">Support Underprivileged Treatments</h2>
             <p className="text-sm text-muted-foreground">Every donation directly clears chemotherapies and surgery expenses to the associated hospital.</p>
           </div>
 
-          <Card className="border-border bg-muted/20 shadow-md p-6 sm:p-8 space-y-6">
-            
-            {/* Target goals progress bar */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-end text-sm">
-                <div>
-                  <p className="text-xs text-muted-foreground">Platform Progress</p>
-                  <p className="text-2xl font-extrabold text-foreground tracking-tight">
-                    ₹{collected.toLocaleString()} <span className="text-xs font-semibold text-muted-foreground">raised of ₹15,00,000 goal</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+            {/* LEFT: Donation form card */}
+            <Card className="border-border bg-muted/20 shadow-md p-6 sm:p-8 space-y-6">
+              
+              {/* Target goals progress bar */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-end text-sm">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Platform Progress</p>
+                    <p className="text-2xl font-extrabold text-foreground tracking-tight">
+                      ₹{collected.toLocaleString()} <span className="text-xs font-semibold text-muted-foreground">raised of ₹15,00,000 goal</span>
+                    </p>
+                  </div>
+                  <span className="font-bold text-primary text-base">
+                    {((collected / goal) * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <div className="h-3 w-full bg-background rounded-full overflow-hidden border border-border">
+                  <div 
+                    className="h-full bg-primary rounded-full transition-all duration-500" 
+                    style={{ width: `${(collected / goal) * 100}%` }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground italic">
+                  * Direct hospital payouts enabled. Audited by GRS compliance groups.
+                </p>
+              </div>
+
+              {/* Donation calculator input forms */}
+              {showDonateSuccess ? (
+                <div className="p-4 rounded-xl bg-emerald-500/10 text-emerald-600 text-sm font-semibold border border-emerald-500/20 text-center flex items-center justify-center gap-1.5 animate-in zoom-in-95">
+                  <CheckCircle className="h-5 w-5" />
+                  Simulation successful! Thank you for supporting GRS &amp; Khushi joint campaign.
+                </div>
+              ) : (
+                <form onSubmit={handleDonateSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Select Donation Amount (₹)</Label>
+                    <div className="grid grid-cols-4 gap-2">
+                      {[1000, 2500, 5000, 10000].map((amt) => (
+                        <Button
+                          key={amt}
+                          type="button"
+                          variant={selectedDonation === amt ? "default" : "outline"}
+                          onClick={() => {
+                            setSelectedDonation(amt);
+                            setCustomDonation("");
+                          }}
+                          className={`text-xs sm:text-sm font-bold ${selectedDonation === amt ? "bg-primary text-white" : ""}`}
+                        >
+                          ₹{amt.toLocaleString()}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label htmlFor="customDonation">Custom Amount (₹)</Label>
+                    <Input
+                      id="customDonation"
+                      placeholder="Enter custom amount"
+                      type="number"
+                      value={customDonation}
+                      onChange={(e) => {
+                        setCustomDonation(e.target.value);
+                        setSelectedDonation(null);
+                      }}
+                      className="bg-background"
+                    />
+                  </div>
+
+                  <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 text-base border-0 flex items-center justify-center gap-2">
+                    <DollarSign className="h-5 w-5" />
+                    Proceed to Donation Gateway
+                  </Button>
+                </form>
+              )}
+
+              {/* Security trust badges */}
+              <div className="pt-4 border-t border-border/80 flex justify-around items-center text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                <span className="flex items-center gap-1"><ShieldCheck className="h-4 w-4 text-emerald-500" /> Direct Hospital Bank Payout</span>
+                <span className="flex items-center gap-1"><CheckCircle className="h-4 w-4 text-emerald-500" /> Tax Exempt 80G Compliant</span>
+              </div>
+
+            </Card>
+
+            {/* RIGHT: QR Code SCAN & PAY card */}
+            <div className="flex flex-col items-center">
+              <Card className="border border-slate-200 shadow-lg rounded-2xl overflow-hidden w-full max-w-xs mx-auto">
+                {/* SBI Header */}
+                <div className="bg-white px-6 pt-6 pb-3 flex flex-col items-center gap-2 border-b border-slate-100">
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png"
+                    alt="State Bank of India"
+                    className="h-10 w-auto object-contain"
+                  />
+                  <p className="text-[11px] font-bold text-slate-600 uppercase tracking-widest text-center">
+                    Khushi Centre for Rehabilitation
                   </p>
                 </div>
-                <span className="font-bold text-primary text-base">
-                  {((collected / goal) * 100).toFixed(1)}%
-                </span>
-              </div>
-              <div className="h-3 w-full bg-background rounded-full overflow-hidden border border-border">
-                <div 
-                  className="h-full bg-primary rounded-full transition-all duration-500" 
-                  style={{ width: `${(collected / goal) * 100}%` }}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground italic">
-                * Direct hospital payouts enabled. Audited by GRS compliance groups.
-              </p>
-            </div>
 
-            {/* Donation calculator input forms */}
-            {showDonateSuccess ? (
-              <div className="p-4 rounded-xl bg-emerald-500/10 text-emerald-600 text-sm font-semibold border border-emerald-500/20 text-center flex items-center justify-center gap-1.5 animate-in zoom-in-95">
-                <CheckCircle className="h-5 w-5" />
-                Simulation successful! Thank you for supporting GRS & Khushi joint campaign.
-              </div>
-            ) : (
-              <form onSubmit={handleDonateSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Select Donation Amount (₹)</Label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[1000, 2500, 5000, 10000].map((amt) => (
-                      <Button
-                        key={amt}
-                        type="button"
-                        variant={selectedDonation === amt ? "default" : "outline"}
-                        onClick={() => {
-                          setSelectedDonation(amt);
-                          setCustomDonation("");
-                        }}
-                        className={`text-xs sm:text-sm font-bold ${selectedDonation === amt ? "bg-primary text-white" : ""}`}
-                      >
-                        ₹{amt.toLocaleString()}
-                      </Button>
-                    ))}
+                {/* SCAN & PAY label */}
+                <div className="bg-white px-6 py-2 text-center">
+                  <p className="text-lg font-extrabold text-slate-800 tracking-widest uppercase">
+                    SCAN &amp; PAY
+                  </p>
+                </div>
+
+                {/* QR Code */}
+                <div className="bg-white px-8 pb-4 flex justify-center">
+                  <div className="border-2 border-slate-200 rounded-xl p-2 bg-white">
+                    <img
+                      src="/khushi-upi-qr.png"
+                      alt="Khushi Centre UPI QR Code - Scan to Pay"
+                      className="w-48 h-48 object-contain"
+                    />
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <Label htmlFor="customDonation">Custom Amount (₹)</Label>
-                  <Input
-                    id="customDonation"
-                    placeholder="Enter custom amount"
-                    type="number"
-                    value={customDonation}
-                    onChange={(e) => {
-                      setCustomDonation(e.target.value);
-                      setSelectedDonation(null);
-                    }}
-                    className="bg-background"
-                  />
+                {/* UPI ID */}
+                <div className="bg-slate-50 px-6 py-4 text-center border-t border-slate-100">
+                  <p className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">UPI ID</p>
+                  <p className="text-sm font-bold text-slate-800 mt-0.5 font-mono">49122452@sbi</p>
                 </div>
+              </Card>
 
-                <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 text-base border-0 flex items-center justify-center gap-2">
-                  <DollarSign className="h-5 w-5" />
-                  Proceed to Donation Gateway
-                </Button>
-              </form>
-            )}
-
-            {/* Security trust badges */}
-            <div className="pt-4 border-t border-border/80 flex justify-around items-center text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
-              <span className="flex items-center gap-1"><ShieldCheck className="h-4 w-4 text-emerald-500" /> Direct Hospital Bank Payout</span>
-              <span className="flex items-center gap-1"><CheckCircle className="h-4 w-4 text-emerald-500" /> Tax Exempt 80G Compliant</span>
+              {/* Helper text below QR */}
+              <p className="text-xs text-muted-foreground text-center mt-4 max-w-xs">
+                Scan with any UPI app (PhonePe, GPay, Paytm, BHIM) to donate directly to Khushi Centre&apos;s SBI account.
+              </p>
             </div>
 
-          </Card>
+          </div>
         </div>
       </section>
 
