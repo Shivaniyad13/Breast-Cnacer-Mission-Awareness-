@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
+import { getApprovedSuccessStories } from "@/app/actions/successStories";
+import { getSponsorBanners, getCelebrityTestimonials } from "@/app/actions/rightSidebarWidgets";
+import { getLiveUpdates } from "@/app/actions/liveUpdates";
+import HeroLeftSidebar, { StoryPlayerWidget, LiveUpdatesWidget } from "@/components/layout/HeroLeftSidebar";
+import HeroRightSidebar from "@/components/layout/HeroRightSidebar";
 import AwarenessCarousel from "@/components/layout/AwarenessCarousel";
 import {
   Ribbon,
@@ -9,16 +13,34 @@ import {
   Heart,
   ArrowRight,
   BookOpen,
-  AlertCircle
+  Calendar,
+  Sparkles,
+  Radio
 } from "lucide-react";
 
-export default function Home() {
+export const revalidate = 0; // Dynamic server component
+
+export default async function Home() {
+  // Fetch approved success stories (will seed database automatically if empty)
+  const storiesResult = await getApprovedSuccessStories();
+  const stories = storiesResult.success && storiesResult.stories ? storiesResult.stories : [];
+
+  // Fetch right sidebar sponsor banners and celebrity testimonials
+  const bannersRes = await getSponsorBanners(true);
+  const testimonialsRes = await getCelebrityTestimonials(true);
+
+  const banners = bannersRes.success && bannersRes.banners ? bannersRes.banners : [];
+  const testimonials = testimonialsRes.success && testimonialsRes.testimonials ? testimonialsRes.testimonials : [];
+
+  // Fetch live updates for left sidebar bottom
+  const liveUpdatesRes = await getLiveUpdates(true);
+  const liveUpdates = liveUpdatesRes.success && liveUpdatesRes.updates ? liveUpdatesRes.updates : [];
+
   return (
     <div className="flex flex-col w-full min-h-screen">
-      {/* Hero Section */}
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 sm:py-32 min-h-[90vh] flex items-center justify-center">
 
+      {/* Hero Section */}
+      <section className="relative overflow-hidden py-16 sm:py-24 md:py-32 min-h-[90vh] flex items-center justify-center">
         {/* Background Video */}
         <video
           autoPlay
@@ -27,7 +49,7 @@ export default function Home() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="/cancer video.webm" type="video/mp4" />
+          {/* <source src="/cancer video.webm" type="video/mp4" /> */}
           Your browser does not support the video tag.
         </video>
 
@@ -37,55 +59,141 @@ export default function Home() {
         {/* Pink Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-pink-900/20 via-pink-800/10 to-background/90"></div>
 
-        {/* Hero Content */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 space-y-6 max-w-4xl pt-32 translate-y-20">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/20 backdrop-blur-md border border-pink-300/20 text-pink-100 text-xs font-semibold tracking-wider uppercase">
-            <Ribbon className="h-4 w-4" />
-            {/* GRS Pvt. Ltd. Awareness Campaign */}
+        {/* Hero Content Grid (Left Sidebar, Centered Content, Right Sidebar) */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full pt-10">
+          <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-8 items-center w-full">
+
+            {/* LEFT FLOATING SIDEBAR (Desktop/Tablet) */}
+            <div className="hidden md:block md:col-span-3">
+              <HeroLeftSidebar stories={stories as any} updates={liveUpdates as any} />
+            </div>
+
+            {/* CENTER HERO CONTENT (Perfectly centered on all views) */}
+            <div className="col-span-12 md:col-span-6 text-center space-y-6 max-w-xl mx-auto flex flex-col justify-center items-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/20 backdrop-blur-md border border-pink-300/20 text-pink-100 text-xs font-semibold tracking-wider uppercase">
+                <Ribbon className="h-4 w-4" />
+                GRS Breast Cancer Mission
+              </div>
+
+              <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Connecting Communities for <br className="hidden sm:inline" />
+                <span className="text-pink-300">
+                  Breast Cancer Mission
+                </span>
+              </h1>
+
+              <p className="text-xs sm:text-sm text-gray-200 leading-relaxed max-w-md">
+                A trusted unified healthcare portal. Spreading early physical diagnosis
+                knowledge, hosting expert webinars, and coordinating verified
+                crowdfunding support for patients.
+              </p>
+
+              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-2 w-full max-w-sm">
+                <Link href="/register" className="w-full sm:w-auto">
+                  <Button
+                    size="lg"
+                    className="w-full bg-pink-600 hover:bg-pink-700 text-white shadow-xl cursor-pointer"
+                  >
+                    Join Campaign
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+
+                <Link href="/campaigns" className="w-full sm:w-auto">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="w-full border-white text-white bg-white/10 backdrop-blur-md hover:bg-white/20 cursor-pointer"
+                  >
+                    Support Patients
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* RIGHT FLOATING SIDEBAR (Desktop/Tablet) */}
+            <div className="hidden md:block md:col-span-3">
+              <HeroRightSidebar banners={banners as any} testimonials={testimonials as any} />
+            </div>
+
           </div>
-
-          <h1 className="mt-20 font-heading text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            Connecting Communities for <br className="hidden sm:inline" />
-            <span className="text-pink-300">
-              Breast Cancer Mission
-            </span>
-          </h1>
-
-          <p className="text-lg sm:text-xl text-gray-200 max-w-2xl mx-auto">
-            A trusted unified healthcare portal. Spreading early physical diagnosis
-            knowledge, hosting expert webinars, and coordinating verified
-            crowdfunding support for patients.
-          </p>
-
-          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-
-            <Link href="/register">
-              <Button
-                size="lg"
-                className="w-full sm:w-auto bg-pink-600 hover:bg-pink-700 text-white shadow-xl"
-              >
-                Join Campaign
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-
-            <Link href="/campaigns">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto border-white text-white bg-white/10 backdrop-blur-md hover:bg-white/20"
-              >
-                Support Patients
-              </Button>
-            </Link>
-
-          </div>
-
         </div>
-
       </section>
 
+      {/* MOBILE-ONLY PANELS SLIDER CONTAINER */}
+      <div className="block md:hidden px-4 py-8 bg-slate-50 dark:bg-slate-950/40 space-y-8 border-b border-slate-100 dark:border-slate-900">
 
+        {/* Mobile Left Sidebar - Stories */}
+        <div className="space-y-3">
+          <h3 className="text-xs font-black text-pink-600 uppercase tracking-widest px-1 flex items-center gap-1">
+            <Heart className="h-3.5 w-3.5 fill-pink-600 text-pink-600" /> Patient Success Stories
+          </h3>
+          <div className="flex overflow-x-auto pb-2 gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
+            <div className="w-[85vw] flex-shrink-0 snap-center">
+              <StoryPlayerWidget stories={stories as any} />
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Left Sidebar - Live Updates */}
+        <div className="space-y-3">
+          <h3 className="text-xs font-black text-pink-600 uppercase tracking-widest px-1 flex items-center gap-1">
+            <Radio className="h-3.5 w-3.5 text-pink-600" /> GRS Live Updates Hub
+          </h3>
+          <div className="flex overflow-x-auto pb-2 gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
+            <div className="w-[85vw] flex-shrink-0 snap-center">
+              <LiveUpdatesWidget updates={liveUpdates as any} />
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Right Sidebar Widgets */}
+        <div className="space-y-3">
+          <h3 className="text-xs font-black text-pink-600 uppercase tracking-widest px-1 flex items-center gap-1">
+            <Sparkles className="h-3.5 w-3.5 text-pink-600" /> Highlights & Testimonials
+          </h3>
+          <div className="flex overflow-x-auto pb-2 gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
+            <div className="w-[85vw] flex-shrink-0 snap-center">
+              <HeroRightSidebar banners={banners as any} testimonials={testimonials as any} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SHARE YOUR SUCCESS STORY CTA SECTION */}
+      <section className="py-12 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden bg-gradient-to-r from-pink-600 to-purple-600 rounded-3xl shadow-xl text-white py-10 px-8 sm:px-12">
+            {/* Glow circles */}
+            <div className="absolute -top-32 -left-32 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-white/15 rounded-full blur-3xl" />
+
+            <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="space-y-4 text-center md:text-left">
+                <span className="inline-block px-3 py-1 bg-white/10 backdrop-blur rounded-full text-xs font-bold uppercase tracking-wider">
+                  Share Your Success Story
+                </span>
+                <h2 className="font-heading text-2xl md:text-3xl font-extrabold tracking-tight">
+                  Has Cancer Awareness Touched Your Life?
+                </h2>
+                <p className="text-pink-100 max-w-xl text-xs md:text-sm leading-relaxed">
+                  Every battle fought is a reminder of hope. Whether you are a survivor or a supportive family member, sharing your journey of recovery can inspire thousands of others to detect early and seek timely medical care.
+                </p>
+              </div>
+
+              <Link href="/success-stories/share" className="flex-shrink-0 w-full md:w-auto">
+                <Button
+                  size="lg"
+                  className="w-full md:w-auto bg-white hover:bg-slate-100 text-pink-700 font-extrabold shadow-lg hover:shadow-xl active:scale-95 transition-all text-sm px-8 h-12 rounded-xl cursor-pointer"
+                >
+                  Share Your Story
+                  <Heart className="ml-2 h-4 w-4 fill-pink-600 text-pink-600 animate-pulse" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Module Overview cards */}
       <section className="py-20 sm:py-28 container mx-auto px-4 sm:px-6 lg:px-8">
@@ -161,7 +269,6 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-
             {/* Card – GRS India Corporation */}
             <div className="group relative bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col overflow-hidden">
               <div className="flex items-center justify-center bg-slate-50 dark:bg-slate-700/50 h-40 px-6 py-5 border-b border-slate-100 dark:border-slate-700">
@@ -173,11 +280,8 @@ export default function Home() {
               </div>
               <div className="flex flex-col flex-1 p-5 space-y-2">
                 <h3 className="text-sm font-extrabold uppercase tracking-wide text-slate-800 dark:text-slate-100">
-                  GRS India Pvt. Ltd.
+                  GRS India Group.
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
-                  Leading solar energy company providing erection, commissioning, installation, maintenance &amp; scientific consultancy services across India.
-                </p>
                 <a
                   href="https://grsindiacorporation.com/"
                   target="_blank"
@@ -203,9 +307,6 @@ export default function Home() {
                 <h3 className="text-sm font-extrabold uppercase tracking-wide text-slate-800 dark:text-slate-100">
                   Khushi Centre for Rehabilitation &amp; Research
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
-                  Dedicated to social responsibility, rehabilitation research, and sustainable community development initiatives.
-                </p>
                 <a
                   href="https://khushicentre.in/"
                   target="_blank"
@@ -217,25 +318,13 @@ export default function Home() {
               </div>
               <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </div>
-
           </div>
         </div>
       </section>
 
+      {/* Slideshow/Carousel Section */}
       <AwarenessCarousel />
 
-      {/* Medical Disclaimer section */}
-      <section className="py-8 bg-destructive/5 border-t border-destructive/10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl flex items-start gap-4 text-destructive">
-          <AlertCircle className="h-6 w-6 mt-0.5 shrink-0" />
-          <div className="space-y-1">
-            <h4 className="font-bold text-sm">Medical Disclaimer & Guidelines</h4>
-            <p className="text-xs leading-relaxed text-destructive/80">
-              The content, interactive guidelines, and self-examination schedules provided on the GRS Breast Cancer Awareness Campaign Platform are intended solely for general education and public awareness. This platform does not provide clinical diagnostic reports or medical treatments. Please consult a registered oncologist or healthcare professional for professional clinical advice.
-            </p>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

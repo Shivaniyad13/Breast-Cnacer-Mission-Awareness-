@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { auth, signOut } from "@/auth";
 import { Button } from "@/components/ui/button";
-import { Ribbon } from "lucide-react";
+import { Ribbon, ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,47 +24,103 @@ export default async function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo */}
-        <div className="flex items-center gap-2">
+      <div className="container mx-auto relative flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Brand Logo - Left aligned */}
+        <div className="flex items-center gap-2 z-10">
           <Link href="/" className="flex items-center gap-2">
             <Ribbon className="h-6 w-6 text-primary animate-pulse" />
             <span className="font-heading text-lg font-bold tracking-tight text-foreground">
-              Breast Cancer <span className="text-primary">Mission Awareness</span>
+              Breast Cancer <span className="text-primary">Mission </span>
             </span>
           </Link>
         </div>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-6">
+        {/* Desktop Nav Links - Centered */}
+        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2 z-0">
+          {/* Home - direct link */}
           <Link
             href="/"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
           >
             Home
           </Link>
-          <Link
-            href="/campaigns"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-          >
-            Campaigns
+
+          {/* Campaign Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary cursor-pointer select-none outline-none">
+              Campaign <ChevronDown className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+              <DropdownMenuItem>
+                <Link href="/campaigns/education" className="w-full block">Education</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/campaigns/awareness" className="w-full block">Awareness</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/campaigns/membership" className="w-full block">Membership</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/campaigns/volunteers" className="w-full block">Volunteers</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Care Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary cursor-pointer select-none outline-none">
+              Care <ChevronDown className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuItem>
+                <Link href="/care/care-providers" className="w-full block">Care Providers</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/care/healthcare-professionals" className="w-full block">Healthcare Professionals</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/care/partner-organizations" className="w-full block">Partner Organizations</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Cure Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary cursor-pointer select-none outline-none">
+              Cure <ChevronDown className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+              <DropdownMenuItem>
+                <Link href="/diagnosis" className="w-full block">Diagnosis</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/treatment" className="w-full block">Treatment</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Donate Link Styled as Button with Green Hover Effect */}
+          <Link href="/donate" className="flex items-center">
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-emerald-600 text-emerald-700 hover:bg-emerald-600 hover:text-white font-semibold transition-all duration-300 active:scale-95 cursor-pointer rounded-lg h-9 px-4"
+            >
+              Donate Now
+            </Button>
           </Link>
+
+          {/* Contact Us Link */}
           <Link
-            href="/learn"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            href="/contact"
+            className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
           >
-            Awareness Hub
-          </Link>
-          <Link
-            href="/webinars"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-          >
-            Webinars
+            Contact Us
           </Link>
         </nav>
 
-        {/* Dynamic Auth State Controls */}
-        <div className="flex items-center gap-4">
+        {/* Dynamic Auth State Controls - Right aligned */}
+        <div className="flex items-center gap-4 z-10">
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger className="relative inline-flex items-center justify-center h-9 rounded-full px-3 text-sm font-semibold hover:bg-accent hover:text-accent-foreground border border-border cursor-pointer transition-colors bg-transparent select-none">

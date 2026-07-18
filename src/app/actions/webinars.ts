@@ -570,12 +570,26 @@ export async function generateCertificateForUser(userId: string, webinarId: stri
     // Dynamic Verification URL
     const verificationUrl = `http://localhost:3000/verify/${certificateNumber}`;
 
+    // Font paths – using local Roboto TTF files to avoid Helvetica.afm ENOENT in Next.js
+    const fontsDir = path.join(process.cwd(), "public", "fonts");
+    const fontRegular    = path.join(fontsDir, "Roboto-Regular.ttf");
+    const fontBold       = path.join(fontsDir, "Roboto-Bold.ttf");
+    const fontItalic     = path.join(fontsDir, "Roboto-Italic.ttf");
+    const fontBoldItalic = path.join(fontsDir, "Roboto-BoldItalic.ttf");
+
     // Create PDF Document using PDFKit (A4 Landscape)
     const doc = new PDFDocument({
       size: "A4",
       layout: "landscape",
       margins: { top: 40, bottom: 40, left: 40, right: 40 },
+      font: fontRegular,
     });
+
+    // Register custom fonts so we can reference them by alias
+    doc.registerFont("Roboto",           fontRegular);
+    doc.registerFont("Roboto-Bold",      fontBold);
+    doc.registerFont("Roboto-Italic",    fontItalic);
+    doc.registerFont("Roboto-BoldItalic",fontBoldItalic);
 
     const stream = fs.createWriteStream(absolutePath);
     doc.pipe(stream);
@@ -586,12 +600,12 @@ export async function generateCertificateForUser(userId: string, webinarId: stri
 
     // Outer border
     doc.lineWidth(15);
-    doc.strokeStyle("#fda4af"); // Soft Pink Ribbon Rose Color
+    doc.strokeColor("#fda4af"); // Soft Pink Ribbon Rose Color
     doc.rect(20, 20, width - 40, height - 40).stroke();
 
     // Inner thin border
     doc.lineWidth(2);
-    doc.strokeStyle("#e11d48"); // Darker Rose
+    doc.strokeColor("#e11d48"); // Darker Rose
     doc.rect(32, 32, width - 64, height - 64).stroke();
 
     // Corner decorative circles
@@ -605,48 +619,48 @@ export async function generateCertificateForUser(userId: string, webinarId: stri
 
     // Title / Header
     doc.fillColor("#1e293b"); // Slate
-    doc.font("Helvetica-Bold").fontSize(34).text("CERTIFICATE OF PARTICIPATION", {
+    doc.font("Roboto-Bold").fontSize(34).text("CERTIFICATE OF PARTICIPATION", {
       align: "center",
       underline: false,
     });
     doc.moveDown(0.2);
 
     doc.fillColor("#e11d48"); // Primary pink accent
-    doc.font("Helvetica-BoldOblique").fontSize(18).text("GRS Breast Cancer Awareness Mission", {
+    doc.font("Roboto-BoldItalic").fontSize(18).text("GRS Breast Cancer Awareness Mission", {
       align: "center",
     });
     doc.moveDown(1.2);
 
     doc.fillColor("#475569"); // Slate text
-    doc.font("Helvetica").fontSize(14).text("This certificate is proudly awarded to", {
+    doc.font("Roboto").fontSize(14).text("This certificate is proudly awarded to", {
       align: "center",
     });
     doc.moveDown(0.5);
 
     // Participant Name (Big and Bold)
     doc.fillColor("#0f172a"); // Charcoal
-    doc.font("Helvetica-Bold").fontSize(28).text(userName, {
+    doc.font("Roboto-Bold").fontSize(28).text(userName, {
       align: "center",
     });
     doc.moveDown(0.6);
 
     // Webinar description
     doc.fillColor("#475569");
-    doc.font("Helvetica").fontSize(13).text("for successfully attending the live awareness webinar", {
+    doc.font("Roboto").fontSize(13).text("for successfully attending the live awareness webinar", {
       align: "center",
     });
     doc.moveDown(0.4);
 
     // Webinar Title (Bold)
     doc.fillColor("#1e293b");
-    doc.font("Helvetica-Bold").fontSize(18).text(`"${webinarName}"`, {
+    doc.font("Roboto-Bold").fontSize(18).text(`"${webinarName}"`, {
       align: "center",
     });
     doc.moveDown(0.6);
 
     // Date and Speaker info
     doc.fillColor("#475569");
-    doc.font("Helvetica").fontSize(12).text(
+    doc.font("Roboto").fontSize(12).text(
       `Conducted on ${formattedDate} | Lead Speaker: ${speakerName}`,
       { align: "center" }
     );
@@ -674,8 +688,8 @@ export async function generateCertificateForUser(userId: string, webinarId: stri
     const sigX = width - 260;
 
     doc.moveTo(sigX, bottomY + 45).lineTo(sigX + 180, bottomY + 45).strokeColor("#cbd5e1").lineWidth(1).stroke();
-    doc.fontSize(12).fillColor("#1e293b").font("Helvetica-BoldOblique").text("Antigravity AI", sigX + 10, bottomY + 15, { width: 160, align: "center" });
-    doc.fontSize(9).fillColor("#64748b").font("Helvetica").text("GRS Authorized Signature", sigX, bottomY + 50, { width: 180, align: "center" });
+    doc.fontSize(12).fillColor("#1e293b").font("Roboto-BoldItalic").text("Antigravity AI", sigX + 10, bottomY + 15, { width: 160, align: "center" });
+    doc.fontSize(9).fillColor("#64748b").font("Roboto").text("GRS Authorized Signature", sigX, bottomY + 50, { width: 180, align: "center" });
 
     const logoX = width / 2 - 80;
     try {
@@ -683,7 +697,7 @@ export async function generateCertificateForUser(userId: string, webinarId: stri
       doc.image(grsLogoPath, logoX, bottomY, { width: 50, height: 45 });
     } catch (e) {
       doc.rect(logoX, bottomY, 50, 45).fillColor("#fce7f3").fill();
-      doc.fillColor("#e11d48").fontSize(10).font("Helvetica-Bold").text("GRS", logoX + 13, bottomY + 18);
+      doc.fillColor("#e11d48").fontSize(10).font("Roboto-Bold").text("GRS", logoX + 13, bottomY + 18);
     }
 
     try {
@@ -691,10 +705,10 @@ export async function generateCertificateForUser(userId: string, webinarId: stri
       doc.image(khushiLogoPath, logoX + 70, bottomY, { width: 50, height: 45 });
     } catch (e) {
       doc.rect(logoX + 70, bottomY, 50, 45).fillColor("#dbeafe").fill();
-      doc.fillColor("#1d4ed8").fontSize(9).font("Helvetica-Bold").text("KHUSHI", logoX + 7, bottomY + 18);
+      doc.fillColor("#1d4ed8").fontSize(9).font("Roboto-Bold").text("KHUSHI", logoX + 7, bottomY + 18);
     }
 
-    doc.fontSize(7).fillColor("#64748b").font("Helvetica").text("Audit Seal & Strategic Partners", logoX, bottomY + 50, { width: 130, align: "center" });
+    doc.fontSize(7).fillColor("#64748b").font("Roboto").text("Audit Seal & Strategic Partners", logoX, bottomY + 50, { width: 130, align: "center" });
 
     doc.end();
 

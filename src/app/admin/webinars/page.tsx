@@ -4,6 +4,7 @@ import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 import AdminWebinarDashboard from "@/components/admin/AdminWebinarDashboard";
 import { Video, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 
 export const revalidate = 0; // Fresh database reads on every admin access
 
@@ -51,6 +52,25 @@ export default async function AdminWebinarsPage() {
             Schedule events, audit registrations list, download CSV logs, upload materials, and publish live meeting coordinates.
           </p>
         </div>
+      </div>
+
+      {/* Admin tabs navigation */}
+      <div className="flex gap-4 border-b border-slate-100 pb-4 text-sm font-semibold overflow-x-auto no-scrollbar whitespace-nowrap">
+        <Link href="/admin/webinars" className="text-primary border-b-2 border-primary pb-4 -mb-[18px] transition-colors">
+          Webinar Management
+        </Link>
+        <Link href="/admin/memberships" className="text-slate-500 hover:text-primary transition-colors">
+          Institution Memberships
+        </Link>
+        <Link href="/admin/success-stories" className="text-slate-500 hover:text-primary transition-colors">
+          Patient Success Stories
+        </Link>
+        <Link href="/admin/homepage-widgets" className="text-slate-500 hover:text-primary transition-colors">
+          Homepage Widgets
+        </Link>
+        <Link href="/admin/live-updates" className="text-slate-500 hover:text-primary transition-colors">
+          Home Page Live Updates
+        </Link>
       </div>
 
       {/* Main Admin Controller */}

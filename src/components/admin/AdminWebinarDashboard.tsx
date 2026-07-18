@@ -2,17 +2,17 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  createWebinarAction, editWebinarAction, deleteWebinarAction, 
+import {
+  createWebinarAction, editWebinarAction, deleteWebinarAction,
   updateWebinarStatusAction, uploadRecordingAction, uploadMaterialsAction,
   sendReminderAction
 } from "@/app/actions/webinars";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Calendar, Clock, MapPin, Users, Award, ShieldCheck, Video, 
-  Trash2, Edit, Plus, FileText, CheckCircle, HelpCircle, Download, ExternalLink, Loader2 
+import {
+  Calendar, Clock, MapPin, Users, Award, ShieldCheck, Video,
+  Trash2, Edit, Plus, FileText, CheckCircle, HelpCircle, Download, ExternalLink, Loader2
 } from "lucide-react";
 
 interface AdminWebinarDashboardProps {
@@ -45,7 +45,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
   const [maxSeats, setMaxSeats] = useState("100");
   const [category, setCategory] = useState("General");
   const [status, setStatus] = useState("DRAFT");
-  
+
   // Modals / Selected Items State
   const [selectedWebinar, setSelectedWebinar] = useState<any | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -92,7 +92,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
     setSpeakerName(webinar.speakerName);
     setSpeakerImage(webinar.speakerImage || "");
     setSpeakerBio(webinar.speakerBio || "");
-    
+
     // Format Date string: yyyy-MM-dd
     const dateObj = new Date(webinar.date);
     const yyyy = dateObj.getFullYear();
@@ -107,7 +107,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
     };
     setStartTime(formatTime(webinar.startTime));
     setEndTime(formatTime(webinar.endTime));
-    
+
     setVenue(webinar.venue || "");
     setCity(webinar.city || "");
     setState(webinar.state || "");
@@ -245,7 +245,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
       `"${r.user.role}"`
     ]);
 
-    const csvContent = "data:text/csv;charset=utf-8," 
+    const csvContent = "data:text/csv;charset=utf-8,"
       + [headers.join(","), ...rows.map((e: any) => e.join(","))].join("\n");
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -258,7 +258,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
 
   return (
     <div className="space-y-6">
-      
+
       {/* Tab Navigation header */}
       <Tabs value={activeTab} onValueChange={(val) => { setActiveTab(val); if (val === "create" && !isEditMode) resetForm(); }} className="space-y-6">
         <TabsList className="bg-pink-50/50 border border-pink-100/50 p-1 rounded-xl">
@@ -266,7 +266,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
             Webinars List
           </TabsTrigger>
           <TabsTrigger value="create" className="font-bold text-xs uppercase py-2 flex items-center gap-1">
-            {isEditMode ? <Edit className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />} 
+            {isEditMode ? <Edit className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
             {isEditMode ? "Edit Webinar" : "Create Webinar"}
           </TabsTrigger>
         </TabsList>
@@ -283,21 +283,20 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                 const isCompleted = webinar.status === "COMPLETED";
                 const totalRegistrations = webinar.registrations?.length || 0;
                 const totalAttendance = webinar.attendance?.filter((a: any) => a.status === "PRESENT").length || 0;
-                
+
                 return (
                   <Card key={webinar.id} className="rounded-3xl border border-pink-50 shadow-sm overflow-hidden bg-white hover:border-pink-200/50 transition-colors">
                     <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-                      
+
                       {/* Left: Metadata */}
                       <div className="md:col-span-2 space-y-3">
                         <div className="flex gap-2 items-center">
-                          <span className={`text-[9px] font-black uppercase px-2.5 py-0.5 rounded tracking-wider border ${
-                            webinar.status === "PUBLISHED" 
-                              ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
+                          <span className={`text-[9px] font-black uppercase px-2.5 py-0.5 rounded tracking-wider border ${webinar.status === "PUBLISHED"
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                               : webinar.status === "COMPLETED"
-                              ? "bg-slate-100 text-slate-500 border-slate-200"
-                              : "bg-amber-50 text-amber-500 border-amber-100"
-                          }`}>
+                                ? "bg-slate-100 text-slate-500 border-slate-200"
+                                : "bg-amber-50 text-amber-500 border-amber-100"
+                            }`}>
                             {webinar.status}
                           </span>
                           <span className="bg-pink-50 border border-pink-100 text-primary text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
@@ -306,10 +305,10 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                         </div>
                         <h3 className="font-heading text-lg font-black text-slate-800">{webinar.title}</h3>
                         <p className="text-xs text-muted-foreground line-clamp-2">{webinar.description}</p>
-                        
+
                         <div className="grid grid-cols-2 gap-4 pt-2 text-[11px] text-slate-500 font-semibold">
-                          <div className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-primary shrink-0" /> {new Date(webinar.date).toLocaleDateString()}</div>
-                          <div className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-primary shrink-0" /> {new Date(webinar.startTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+                          <div className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-primary shrink-0" /> {new Date(webinar.date).toLocaleDateString("en-US")}</div>
+                          <div className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-primary shrink-0" /> {new Date(webinar.startTime).toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' })}</div>
                           <div className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary shrink-0" /> {webinar.city || "Online"}</div>
                           <div className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5 text-primary shrink-0" /> {totalRegistrations} Registered</div>
                         </div>
@@ -332,7 +331,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                             <span className="font-bold text-emerald-600">{totalAttendance} attendees</span>
                           </div>
                         </div>
-                        
+
                         {/* CSV trigger */}
                         <Button
                           onClick={() => handleExportCSV(webinar)}
@@ -483,11 +482,11 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
             </CardHeader>
             <CardContent className="p-6 md:p-8">
               <form onSubmit={isEditMode ? handleUpdate : handleCreate} className="space-y-6 text-sm text-slate-700">
-                
+
                 {/* Section: Main Meta */}
                 <div className="space-y-4">
                   <h4 className="font-bold text-primary uppercase text-xs tracking-wider border-b border-pink-50 pb-1.5">General Parameters</h4>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-600">Webinar Title *</label>
@@ -500,7 +499,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                         className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
                       />
                     </div>
-                    
+
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-600">Category *</label>
                       <input
@@ -548,7 +547,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                         className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
                       />
                     </div>
-                    
+
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-600">Max Seats Available *</label>
                       <input
@@ -565,7 +564,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                 {/* Section: Speaker */}
                 <div className="space-y-4 pt-4 border-t border-slate-100">
                   <h4 className="font-bold text-primary uppercase text-xs tracking-wider border-b border-pink-50 pb-1.5">Speaker Parameters</h4>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-600">Speaker Name *</label>
@@ -605,7 +604,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                 {/* Section: Dates & Timing */}
                 <div className="space-y-4 pt-4 border-t border-slate-100">
                   <h4 className="font-bold text-primary uppercase text-xs tracking-wider border-b border-pink-50 pb-1.5">Timing & Schedule</h4>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-600">Webinar Date *</label>
@@ -617,7 +616,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                         className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
                       />
                     </div>
-                    
+
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-600">Start Time *</label>
                       <input
@@ -645,7 +644,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                 {/* Section: Mode & Location details */}
                 <div className="space-y-4 pt-4 border-t border-slate-100">
                   <h4 className="font-bold text-primary uppercase text-xs tracking-wider border-b border-pink-50 pb-1.5">Venue & Mode Details</h4>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-600">Webinar Mode *</label>
@@ -767,7 +766,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
           <div className="bg-white rounded-3xl border border-pink-100 p-6 max-w-md w-full space-y-4 text-slate-800 shadow-2xl">
             <h3 className="font-heading text-lg font-black text-slate-800">Upload Webinar Recording</h3>
             <p className="text-xs text-muted-foreground">Provide the public recording address (e.g. YouTube/Vimeo link) for attendees.</p>
-            
+
             <input
               type="text"
               value={inputUrl}
@@ -775,7 +774,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
               placeholder="https://youtube.com/watch?v=..."
               className="w-full text-xs bg-slate-50 border border-border/80 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary/50 text-slate-800"
             />
-            
+
             <div className="flex gap-2 justify-end">
               <Button variant="outline" size="sm" onClick={() => { setShowRecordingModal(false); setInputUrl(""); }} className="rounded-xl">Cancel</Button>
               <Button size="sm" onClick={handleRecordingUpload} className="bg-primary hover:bg-primary/95 text-white rounded-xl font-bold px-4">Save Recording</Button>
@@ -790,7 +789,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
           <div className="bg-white rounded-3xl border border-pink-100 p-6 max-w-md w-full space-y-4 text-slate-800 shadow-2xl">
             <h3 className="font-heading text-lg font-black text-slate-800">Upload Webinar Materials</h3>
             <p className="text-xs text-muted-foreground">Provide resource download folder, slides, or PDF worksheet document link.</p>
-            
+
             <input
               type="text"
               value={inputUrl}
@@ -798,7 +797,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
               placeholder="https://drive.google.com/drive/..."
               className="w-full text-xs bg-slate-50 border border-border/80 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary/50 text-slate-800"
             />
-            
+
             <div className="flex gap-2 justify-end">
               <Button variant="outline" size="sm" onClick={() => { setShowMaterialsModal(false); setInputUrl(""); }} className="rounded-xl">Cancel</Button>
               <Button size="sm" onClick={handleMaterialsUpload} className="bg-primary hover:bg-primary/95 text-white rounded-xl font-bold px-4">Save Materials</Button>

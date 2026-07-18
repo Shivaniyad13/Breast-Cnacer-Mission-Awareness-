@@ -9,7 +9,8 @@ import WebinarCountdown from "@/components/webinars/WebinarCountdown";
 import Link from "next/link";
 import { 
   Heart, BookOpen, Award, Users, Video, Calendar, Clock, 
-  MapPin, ShieldCheck, Download, ExternalLink, Activity, Bell, ListTodo
+  MapPin, ShieldCheck, Download, ExternalLink, Activity, Bell, ListTodo,
+  Building2, Briefcase, CheckCircle, Ribbon
 } from "lucide-react";
 
 export const revalidate = 0; // Fresh dashboard information on every visit
@@ -23,6 +24,255 @@ export default async function DashboardPage() {
 
   const user = session.user;
   const now = new Date();
+
+  // Fetch Institution Data if applicable
+  let institutionData: any = null;
+  if (user.role === "ORGANIZATION_MEMBER") {
+    institutionData = await db.organizationMember.findFirst({
+      where: { email: user.email || "" }
+    });
+  } else if (user.role === "CORPORATE_PARTNER") {
+    institutionData = await db.corporatePartner.findFirst({
+      where: { email: user.email || "" }
+    });
+  }
+
+  // If user is approved organization or corporate, return the Institution Dashboard
+  if (user.role === "ORGANIZATION_MEMBER" || user.role === "CORPORATE_PARTNER") {
+    return (
+      <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8 min-h-screen text-slate-800 bg-slate-50 font-sans">
+        
+        {/* Welcome Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-pink-100 pb-6 bg-white p-6 rounded-3xl shadow-xs">
+          <div className="flex items-center gap-4">
+            {institutionData?.organizationLogoUrl || institutionData?.companyLogoUrl ? (
+              <div className="relative h-16 w-16 rounded-2xl overflow-hidden border border-slate-100 shrink-0 shadow-sm bg-slate-50 flex items-center justify-center p-1">
+                <img 
+                  src={user.role === "ORGANIZATION_MEMBER" ? institutionData.organizationLogoUrl : institutionData.companyLogoUrl} 
+                  alt="Logo" 
+                  className="max-h-full max-w-full object-contain rounded-xl"
+                />
+              </div>
+            ) : (
+              <div className="h-16 w-16 bg-pink-100 text-pink-700 flex items-center justify-center rounded-2xl text-xl font-bold font-heading shrink-0 shadow-sm border border-pink-200">
+                {institutionData?.organizationName?.[0] || institutionData?.companyName?.[0] || "I"}
+              </div>
+            )}
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="font-heading text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
+                  {user.role === "ORGANIZATION_MEMBER" ? institutionData?.organizationName : institutionData?.companyName}
+                </h1>
+                <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3" /> GRS Certified Partner
+                </span>
+              </div>
+              <p className="text-muted-foreground text-sm font-medium mt-1">
+                Active Partnership Account • Contact Person: <strong className="text-slate-700">{institutionData?.contactPersonName}</strong> ({institutionData?.designation})
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-2 shrink-0">
+            <Link href="/campaigns/membership">
+              <Button variant="outline" className="border-pink-200 text-slate-700 hover:bg-pink-50 rounded-xl font-bold cursor-pointer">
+                View Membership Info
+              </Button>
+            </Link>
+            <a href="mailto:partnerships@grsawareness.org">
+              <Button className="bg-primary hover:bg-primary/95 text-white font-bold rounded-xl shadow-sm transition-all cursor-pointer">
+                Contact Strategic Desk
+              </Button>
+            </a>
+          </div>
+        </div>
+
+        {/* Grid: Partnership Certificate & Profile Data */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Partnership Certificate Card (Left 2 columns) */}
+          <div className="lg:col-span-2">
+            <Card className="border-pink-100 bg-white shadow-lg rounded-3xl p-6 sm:p-10 relative overflow-hidden flex flex-col justify-between h-full group hover:shadow-xl transition-all duration-300">
+              
+              {/* Certificate Outer Border */}
+              <div className="absolute inset-4 border-2 border-dashed border-pink-200 rounded-2xl pointer-events-none" />
+              
+              {/* Corner graphics decoration */}
+              <div className="absolute top-8 right-8 opacity-5">
+                <Ribbon className="h-32 w-32 text-rose-500" />
+              </div>
+
+              <div className="space-y-6 relative z-10 text-center py-6">
+                <div className="flex justify-center mb-2">
+                  <Ribbon className="h-10 w-10 text-primary animate-pulse" />
+                </div>
+                
+                <h2 className="font-heading text-2xl font-black text-slate-800 tracking-wider">
+                  CERTIFICATE OF STRATEGIC PARTNERSHIP
+                </h2>
+                
+                <p className="text-slate-500 font-semibold italic text-xs uppercase tracking-widest border-y border-pink-100 py-2 max-w-sm mx-auto">
+                  GRS Breast Cancer Awareness Mission
+                </p>
+
+                <p className="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">
+                  This certificate is proudly issued to honor our valued institutional collaborator:
+                </p>
+
+                <h3 className="font-heading text-3xl font-black text-slate-900 tracking-tight my-4">
+                  {user.role === "ORGANIZATION_MEMBER" ? institutionData?.organizationName : institutionData?.companyName}
+                </h3>
+
+                <p className="text-slate-500 text-xs max-w-md mx-auto leading-relaxed">
+                  for their strategic commitment and dedicated efforts in organizing joint breast cancer awareness campaigns, screening drives, employee wellness initiatives, and community advocacy.
+                </p>
+              </div>
+
+              {/* Certificate Bottom sign-offs */}
+              <div className="relative z-10 grid grid-cols-3 items-end pt-8 border-t border-slate-100 text-[10px] text-slate-500 font-semibold max-w-lg mx-auto w-full text-center">
+                <div>
+                  <span className="block border-b border-slate-200 pb-1 mb-1 font-bold text-slate-700">
+                    {institutionData?.ngoRegistrationNumber || institutionData?.gstNumber}
+                  </span>
+                  ID REGISTERED
+                </div>
+                <div className="flex justify-center">
+                  <div className="h-12 w-12 rounded-full border border-pink-100 bg-pink-50/50 flex items-center justify-center text-[10px] font-bold text-primary font-heading shadow-xs">
+                    GRS SEAL
+                  </div>
+                </div>
+                <div>
+                  <span className="block border-b border-slate-200 pb-1 mb-1 font-bold font-heading text-slate-700 italic">
+                    Antigravity AI
+                  </span>
+                  GRS COORDINATOR
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Profile metadata Card (Right 1 column) */}
+          <div className="col-span-1 space-y-6">
+            
+            {/* Institution Profile Info */}
+            <Card className="border-slate-100 rounded-3xl bg-white shadow-sm p-6 space-y-4">
+              <div className="border-b border-slate-100 pb-3">
+                <h3 className="font-heading font-black text-lg text-slate-800 flex items-center gap-1.5">
+                  <Activity className="h-5 w-5 text-primary" /> Institution Data
+                </h3>
+              </div>
+              
+              <div className="space-y-3.5 text-xs">
+                {user.role === "ORGANIZATION_MEMBER" ? (
+                  <>
+                    <div><span className="text-slate-400 font-bold block uppercase text-[9px]">NGO Registration Number</span><strong>{institutionData?.ngoRegistrationNumber}</strong></div>
+                    <div><span className="text-slate-400 font-bold block uppercase text-[9px]">Established Year</span><strong>{institutionData?.yearEstablished}</strong></div>
+                    <div><span className="text-slate-400 font-bold block uppercase text-[9px]">Organization Type</span><strong>{institutionData?.organizationType}</strong></div>
+                    <div><span className="text-slate-400 font-bold block uppercase text-[9px]">Volunteer Strength</span><strong>{institutionData?.numberOfVolunteers} Volunteers</strong></div>
+                    <div><span className="text-slate-400 font-bold block uppercase text-[9px]">Primary Areas of Work</span><strong>{institutionData?.areasOfWork}</strong></div>
+                  </>
+                ) : (
+                  <>
+                    <div><span className="text-slate-400 font-bold block uppercase text-[9px]">GST Number</span><strong>{institutionData?.gstNumber}</strong></div>
+                    {institutionData?.cinNumber && <div><span className="text-slate-400 font-bold block uppercase text-[9px]">CIN Number</span><strong>{institutionData?.cinNumber}</strong></div>}
+                    <div><span className="text-slate-400 font-bold block uppercase text-[9px]">Industry Segment</span><strong>{institutionData?.industry}</strong></div>
+                    <div><span className="text-slate-400 font-bold block uppercase text-[9px]">Employee Strength</span><strong>{institutionData?.employeeStrength} Employees</strong></div>
+                    <div><span className="text-slate-400 font-bold block uppercase text-[9px]">CSR Budget Category</span><strong>{institutionData?.csrBudgetCategory}</strong></div>
+                  </>
+                )}
+
+                <div>
+                  <span className="text-slate-400 font-bold block uppercase text-[9px]">Partner Email</span>
+                  <strong>{institutionData?.email}</strong>
+                </div>
+
+                <div>
+                  <span className="text-slate-400 font-bold block uppercase text-[9px]">HQ Address</span>
+                  <strong>{user.role === "ORGANIZATION_MEMBER" ? institutionData?.completeAddress : institutionData?.companyAddress}</strong>
+                </div>
+
+                {institutionData?.remarks && (
+                  <div className="bg-pink-50/50 border border-pink-100 p-3 rounded-xl">
+                    <span className="text-pink-700 font-bold block uppercase text-[9px]">GRS Coordinator Remarks</span>
+                    <p className="mt-1 italic text-slate-600">{institutionData.remarks}</p>
+                  </div>
+                )}
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        {/* Collaboration Hub / Initiative Center */}
+        <div className="space-y-4 pt-4">
+          <div className="space-y-1">
+            <h3 className="font-heading font-black text-xl text-slate-800">
+              Partnership Initiative Hub
+            </h3>
+            <p className="text-slate-500 text-xs sm:text-sm font-medium">
+              Access utilities and coordinate drives directly with the GRS Breast Cancer awareness committee.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            {/* Card 1 */}
+            <Card className="border-slate-100 hover:border-pink-300 hover:shadow-md transition-all duration-300 rounded-2xl bg-white p-5 flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <h4 className="font-heading font-bold text-slate-800 text-base">Request Awareness Camp</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Request GRS doctors and oncology panels to host localized screening and self-examination camps at your facility.
+                </p>
+              </div>
+              <Button onClick={() => alert("Awareness camp scheduling portal is opening soon. Contact partnerships@grsawareness.org.")} className="bg-slate-100 hover:bg-pink-50 hover:text-primary text-slate-700 font-bold text-xs py-2 w-full rounded-xl cursor-pointer">
+                Request Camp Setup
+              </Button>
+            </Card>
+
+            {/* Card 2 */}
+            <Card className="border-slate-100 hover:border-pink-300 hover:shadow-md transition-all duration-300 rounded-2xl bg-white p-5 flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <h4 className="font-heading font-bold text-slate-800 text-base">Download Kits & Flyers</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Get high-resolution Breast Self-Examination (BSE) graphics, posters, training guides, and regional flyers.
+                </p>
+              </div>
+              <Button onClick={() => alert("Downloading GRS media kit... (Flyers, infographics, checkup guides)")} className="bg-slate-100 hover:bg-pink-50 hover:text-primary text-slate-700 font-bold text-xs py-2 w-full rounded-xl cursor-pointer">
+                Download Media Kit
+              </Button>
+            </Card>
+
+            {/* Card 3 */}
+            <Card className="border-slate-100 hover:border-pink-300 hover:shadow-md transition-all duration-300 rounded-2xl bg-white p-5 flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <h4 className="font-heading font-bold text-slate-800 text-base">Schedule Wellness Webinar</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Setup an online webinar stream exclusively for your volunteers, employees, or local community, featuring clinical specialists.
+                </p>
+              </div>
+              <Button onClick={() => alert("Webinar schedule requests form will be unlocked. Please contact support.")} className="bg-slate-100 hover:bg-pink-50 hover:text-primary text-slate-700 font-bold text-xs py-2 w-full rounded-xl cursor-pointer">
+                Request Webinar
+              </Button>
+            </Card>
+
+            {/* Card 4 */}
+            <Card className="border-slate-100 hover:border-pink-300 hover:shadow-md transition-all duration-300 rounded-2xl bg-white p-5 flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <h4 className="font-heading font-bold text-slate-800 text-base">Fundraising Campaigns</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Co-sponsor local diagnostic checkups and treatments. Set up matching corporate donor channels or direct fundraising drives.
+                </p>
+              </div>
+              <Button onClick={() => alert("Sponsorship allocation and CSR donation channels are active at /donate. Direct fundraisers can be registered through patient profiles.")} className="bg-slate-100 hover:bg-pink-50 hover:text-primary text-slate-700 font-bold text-xs py-2 w-full rounded-xl cursor-pointer">
+                Open Donation Portal
+              </Button>
+            </Card>
+
+          </div>
+        </div>
+
+      </div>
+    );
+  }
 
   // Fetch Webinar Registrations
   const registrations = await db.webinarRegistration.findMany({
@@ -77,7 +327,7 @@ export default async function DashboardPage() {
     // 1. Registration Successful
     notifications.push({
       title: "Registration Successful",
-      message: `You are officially registered for "${r.webinar.title}". Join details will unlock on ${start.toLocaleDateString()}.`,
+      message: `You are officially registered for "${r.webinar.title}". Join details will unlock on ${start.toLocaleDateString("en-US")}.`,
       date: r.registeredAt,
       type: "SUCCESS"
     });
@@ -88,7 +338,7 @@ export default async function DashboardPage() {
     if (timeDiffMs > 0 && timeDiffMs < oneDayMs) {
       notifications.push({
         title: "Reminder: 24 Hours Left",
-        message: `"${r.webinar.title}" will start in less than 24 hours at ${start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}.`,
+        message: `"${r.webinar.title}" will start in less than 24 hours at ${start.toLocaleTimeString("en-US", {hour: '2-digit', minute:'2-digit'})}.`,
         date: new Date(start.getTime() - oneDayMs),
         type: "WARNING"
       });
@@ -314,8 +564,8 @@ export default async function DashboardPage() {
                             <p className="text-xs text-slate-500 font-semibold">Speaker: {webinar.speakerName}</p>
 
                             <div className="text-[11px] text-slate-500 space-y-1.5 pt-2 border-t border-pink-50/50">
-                              <div className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-primary shrink-0" /> {start.toLocaleDateString()}</div>
-                              <div className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-primary shrink-0" /> {start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                              <div className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-primary shrink-0" /> {start.toLocaleDateString("en-US")}</div>
+                              <div className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-primary shrink-0" /> {start.toLocaleTimeString("en-US", {hour: '2-digit', minute:'2-digit'})} - {end.toLocaleTimeString("en-US", {hour: '2-digit', minute:'2-digit'})}</div>
                               <div className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary shrink-0" /> {webinar.venue || "Online"}</div>
                             </div>
                           </div>
@@ -514,7 +764,7 @@ export default async function DashboardPage() {
                         </div>
                         <p className="text-slate-500 pl-4">{notif.message}</p>
                       </div>
-                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">{new Date(notif.date).toLocaleDateString()}</span>
+                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">{new Date(notif.date).toLocaleDateString("en-US")}</span>
                     </div>
                   ))}
                 </div>

@@ -259,6 +259,8 @@ enum Role {
   PATIENT
   VOLUNTEER
   DONOR
+  ORGANIZATION_MEMBER
+  CORPORATE_PARTNER
 }
 
 enum VerificationStatus {
@@ -304,3 +306,152 @@ enum CertificateType {
   QUIZ_EXCELLENCE
   VOLUNTEER_CAMPAIGN
 }
+
+model OrganizationMember {
+  id                     String             @id @default(uuid())
+  organizationName       String
+  organizationType       String
+  ngoRegistrationNumber  String
+  yearEstablished        Int
+  contactPersonName      String
+  designation            String
+  email                  String
+  mobileNumber           String
+  website                String?
+  completeAddress        String
+  state                  String
+  district               String
+  city                   String
+  pincode                String
+  numberOfVolunteers     Int
+  areasOfWork            String
+  previousExperience     String
+  expectedCollaboration  String
+  ngoCertificateUrl      String
+  organizationLogoUrl    String
+  supportingDocumentsUrl String
+  isDeclared             Boolean            @default(false)
+  status                 VerificationStatus @default(PENDING)
+  remarks                String?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+}
+
+model CorporatePartner {
+  id                     String             @id @default(uuid())
+  companyName            String
+  industry               String
+  gstNumber              String
+  cinNumber              String?
+  contactPersonName      String
+  designation            String
+  email                  String
+  mobileNumber           String
+  website                String?
+  companyAddress         String
+  state                  String
+  city                   String
+  pincode                String
+  employeeStrength       Int
+  csrBudgetCategory      String
+  collaborationInterest  String
+  companyLogoUrl         String
+  csrPolicyUrl           String?
+  supportingDocumentsUrl String
+  isDeclared             Boolean            @default(false)
+  status                 VerificationStatus @default(PENDING)
+  remarks                String?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+}
+
+model SuccessStory {
+  id                String             @id @default(uuid())
+  fullName          String
+  email             String
+  mobileNumber      String
+  city              String
+  state             String
+  age               Int?
+  roleType          String             // "Patient" or "Family Member"
+  storyTitle        String
+  completeStory     String
+  videoUrl          String?
+  imageUrls         String[]
+  treatmentHospital String?
+  consent           Boolean            @default(false)
+  status            VerificationStatus @default(PENDING)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model HomePageUpdate {
+  id               String    @id @default(uuid())
+  category         String    // "Webinar", "Campaign", "News", "Event", "Announcement", "Tip", "Research"
+  imageUrl         String?
+  title            String
+  shortDescription String
+  detailedContent  String?
+  eventDate        DateTime?
+  destinationLink  String?
+  orderIndex       Int       @default(0)
+  isActive         Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model SponsorBanner {
+  id              String    @id @default(uuid())
+  logoUrl         String?
+  imageUrl        String?
+  title           String
+  description     String
+  destinationLink String?
+  orderIndex      Int       @default(0)
+  isActive        Boolean   @default(true)
+  startDate       DateTime?
+  endDate         DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model CelebrityTestimonial {
+  id           String   @id @default(uuid())
+  videoUrl     String
+  thumbnailUrl String?
+  name         String
+  profession   String
+  duration     String?
+  quote        String
+  description  String?
+  orderIndex   Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model LiveUpdate {
+  id               String    @id @default(uuid())
+  category         String    // "Webinar", "Campaign", "News", "Event", "Research"
+  imageUrl         String?
+  title            String
+  shortDescription String
+  fullDescription  String?
+  eventDate        DateTime?
+  eventTime        String?
+  venue            String?
+  speakerName      String?
+  registrationLink String?
+  externalLink     String?
+  isFeatured       Boolean   @default(false)
+  isActive         Boolean   @default(true)
+  publishDate      DateTime?
+  expiryDate       DateTime?
+  orderIndex       Int       @default(0)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+
+
+
