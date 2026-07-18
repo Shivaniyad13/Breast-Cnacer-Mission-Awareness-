@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { getApprovedSuccessStories } from "@/app/actions/successStories";
 import { getSponsorBanners, getCelebrityTestimonials } from "@/app/actions/rightSidebarWidgets";
 import { getLiveUpdates } from "@/app/actions/liveUpdates";
-import HeroLeftSidebar, { StoryPlayerWidget, LiveUpdatesWidget } from "@/components/layout/HeroLeftSidebar";
+import HeroLeftSidebar, { LiveUpdatesWidget, StoryPlayerWidget } from "@/components/layout/HeroLeftSidebar";
 import HeroRightSidebar from "@/components/layout/HeroRightSidebar";
 import AwarenessCarousel from "@/components/layout/AwarenessCarousel";
 import {

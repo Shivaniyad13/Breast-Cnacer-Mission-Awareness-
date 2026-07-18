@@ -3,13 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Play, 
-  Pause, 
-  Volume2, 
-  VolumeX, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
   Sparkles,
   ArrowRight,
   Video,
@@ -101,10 +101,10 @@ export function StoryPlayerWidget({ stories }: { stories: SuccessStory[] }) {
 
   return (
     <div className="relative overflow-hidden bg-white/10 dark:bg-slate-900/30 backdrop-blur-lg border border-white/20 dark:border-slate-800/40 rounded-3xl p-4 shadow-xl flex flex-col justify-between min-h-[260px] group">
-      
+
       {/* Pink Accent Line */}
       <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-500" />
-      
+
       <div className="space-y-3">
         {/* Header Title */}
         <div className="flex items-center justify-between pb-1.5 border-b border-white/10">
@@ -183,7 +183,7 @@ function LiveCountdownTimer({ targetDate }: { targetDate: Date }) {
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      
+
       if (days > 0) {
         setTimeLeft(`Starts in: ${days}d ${hours}h`);
       } else if (hours > 0) {
@@ -301,7 +301,7 @@ export function LiveUpdatesWidget({ updates }: { updates: LiveUpdate[] }) {
 
   return (
     <div className="relative overflow-hidden bg-white/10 dark:bg-slate-900/30 backdrop-blur-lg border border-white/20 dark:border-slate-800/40 rounded-3xl p-4 shadow-xl flex flex-col justify-between min-h-[290px] group">
-      
+
       {/* Purple Accent Line */}
       <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-purple-500 to-indigo-500" />
 
@@ -344,7 +344,7 @@ export function LiveUpdatesWidget({ updates }: { updates: LiveUpdate[] }) {
               <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase border tracking-wide ${getCategoryTagStyle(activeUpdate.category)}`}>
                 {activeUpdate.category}
               </span>
-              
+
               {/* LIVE indicator */}
               {isEventLive(activeUpdate.eventDate) && (
                 <span className="bg-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-0.5 animate-pulse">
@@ -415,16 +415,14 @@ export function LiveUpdatesWidget({ updates }: { updates: LiveUpdate[] }) {
               <button
                 key={idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`h-1 rounded-full transition-all cursor-pointer ${
-                  idx === activeIndex ? 'w-3 bg-pink-500' : 'w-1 bg-white/20'
-                }`}
+                className={`h-1 rounded-full transition-all cursor-pointer ${idx === activeIndex ? 'w-3 bg-pink-500' : 'w-1 bg-white/20'
+                  }`}
               />
             ))}
           </div>
 
-          <span className={`text-[8.5px] font-black uppercase px-2 py-0.5 rounded ${
-            statusText === "Completed" ? "bg-slate-800 text-white/50" : "bg-pink-500/10 text-pink-300"
-          }`}>
+          <span className={`text-[8.5px] font-black uppercase px-2 py-0.5 rounded ${statusText === "Completed" ? "bg-slate-800 text-white/50" : "bg-pink-500/10 text-pink-300"
+            }`}>
             Status: {statusText}
           </span>
         </div>
@@ -432,11 +430,10 @@ export function LiveUpdatesWidget({ updates }: { updates: LiveUpdate[] }) {
         <Button
           onClick={handleAction}
           disabled={isClosed}
-          className={`w-full text-[10px] h-7.5 rounded-xl cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-1 font-bold ${
-            isClosed
+          className={`w-full text-[10px] h-7.5 rounded-xl cursor-pointer transition-all active:scale-95 flex items-center justify-center gap-1 font-bold ${isClosed
               ? "bg-slate-800 text-white/40 cursor-not-allowed border border-white/5"
               : "bg-white/15 hover:bg-white/25 text-white border border-white/10"
-          }`}
+            }`}
         >
           {isClosed ? "Registration Closed" : activeUpdate.category.toLowerCase() === "webinar" ? "Register Now" : "Explore More"}
           {!isClosed && <ArrowRight className="h-3 w-3" />}
