@@ -85,8 +85,7 @@ export async function registerUserAction(data: RegisterInput) {
 
     return { success: true };
   } catch (error: unknown) {
-    console.error("Registration error:", error);
-    const message = error instanceof Error ? error.message : "An unexpected database error occurred.";
-    return { error: message };
+    console.error("Registration error details:", error);
+    return { error: "An unexpected error occurred during registration. Please try again later." };
   }
 }

@@ -18,26 +18,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const email = credentials.email as string;
         const password = credentials.password as string;
 
-        const user = await db.user.findUnique({
-          where: { email },
-        });
+        try {
+          const user = await db.user.findUnique({
+            where: { email },
+          });
 
-        if (!user || !user.passwordHash) {
+          if (!user || !user.passwordHash) {
+            return null;
+          }
+
+          const passwordsMatch = await bcrypt.compare(password, user.passwordHash);
+
+          if (!passwordsMatch) {
+            return null;
+          }
+
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          };
+        } catch (error) {
+          console.error("Database error during authorize check:", error);
           return null;
         }
-
-        const passwordsMatch = await bcrypt.compare(password, user.passwordHash);
-
-        if (!passwordsMatch) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        };
       },
     }),
   ],
