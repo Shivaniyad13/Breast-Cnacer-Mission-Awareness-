@@ -51,15 +51,15 @@ export default function MobileMenu({ user, handleSignOut }: MobileMenuProps) {
       {/* Drawer Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
           onClick={closeMenu}
         />
       )}
 
       {/* Drawer Panel */}
       <div
-        className={`fixed top-0 right-0 bottom-0 z-55 w-80 max-w-[85vw] bg-background/98 backdrop-blur-md border-l border-border p-6 shadow-2xl transition-transform duration-300 flex flex-col justify-between ${
-          isOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed top-0 right-0 bottom-0 z-50 w-80 max-w-[85vw] bg-white dark:bg-slate-900 border-l border-border p-6 shadow-2xl transition-all duration-300 flex flex-col justify-between ${
+          isOpen ? "translate-x-0 opacity-100 visible" : "translate-x-full opacity-0 invisible"
         }`}
       >
         <div>

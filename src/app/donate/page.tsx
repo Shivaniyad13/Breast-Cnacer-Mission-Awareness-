@@ -89,7 +89,7 @@ export default function DonatePage() {
   const successStories = [
     {
       name: "Meera Krishnan",
-      role: "Mastectomy Survivor & GRS Advocate",
+      role: "Mastectomy Survivor & Campaign Advocate",
       story: "When I was diagnosed with Stage II breast cancer, chemotherapy costs seemed impossible. Through this campaign, my surgical expenses were directly cleared to the hospital. Today, I am cancer-free and volunteer my time to guide other rural patients.",
       badge: "Stage II Survivor",
       impact: "Mastectomy & 6 Chemo Cycles Funded"
@@ -97,7 +97,7 @@ export default function DonatePage() {
     {
       name: "Kusum Lata",
       role: "Stage III Survivor & Mother of Two",
-      story: "I had lost hope of seeing my children grow up. GRS donors funded my targeted radiation therapy and post-op care. Saving a mother is saving the whole family, and the donors did exactly that for me. I am forever grateful.",
+      story: "I had lost hope of seeing my children grow up. Generous donors funded my targeted radiation therapy and post-op care. Saving a mother is saving the whole family, and the donors did exactly that for me. I am forever grateful.",
       badge: "Stage III Survivor",
       impact: "Radiation Therapy & Post-Op Care Funded"
     }
@@ -451,7 +451,7 @@ export default function DonatePage() {
           <div className="space-y-1">
             <p className="font-bold text-slate-700">Financial Transparency & Security Audit Note:</p>
             <p>
-              All contributions raised on this campaign are audited directly by GRS compliance teams. Disbursements are released directly to the registered medical facility bank accounts to ensure complete fraud protection. 80G tax certificate copies are issued within 24 hours of successful bank confirmation.
+              All contributions raised on this campaign are audited directly by compliance teams. Disbursements are released directly to the registered medical facility bank accounts to ensure complete fraud protection. 80G tax certificate copies are issued within 24 hours of successful bank confirmation.
             </p>
           </div>
         </div>

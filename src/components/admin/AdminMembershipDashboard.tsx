@@ -265,7 +265,7 @@ export default function AdminMembershipDashboard({
                     <p className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 mt-1 italic leading-relaxed text-xs">{selectedApp.previousExperience}</p>
                   </div>
                   <div>
-                    <span className="text-slate-400 block font-bold uppercase text-[9px] tracking-wider">Expected Collaboration with GRS</span>
+                    <span className="text-slate-400 block font-bold uppercase text-[9px] tracking-wider">Expected Collaboration</span>
                     <p className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 mt-1 italic leading-relaxed text-xs">{selectedApp.expectedCollaboration}</p>
                   </div>
                 </div>

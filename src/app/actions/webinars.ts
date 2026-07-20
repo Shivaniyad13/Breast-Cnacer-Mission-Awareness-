@@ -162,7 +162,7 @@ export async function createWebinarAction(data: any) {
       objectives: data.objectives || "",
       agenda: data.agenda || "",
       faqs: data.faqs || [],
-      organizerDetails: data.organizerDetails || "GRS Breast Cancer Mission Awareness Platform",
+      organizerDetails: data.organizerDetails || "Breast Cancer Mission Awareness Platform",
     },
   });
 
@@ -200,7 +200,7 @@ export async function editWebinarAction(id: string, data: any) {
       objectives: data.objectives || "",
       agenda: data.agenda || "",
       faqs: data.faqs || [],
-      organizerDetails: data.organizerDetails || "GRS Breast Cancer Mission Awareness Platform",
+      organizerDetails: data.organizerDetails || "Breast Cancer Mission Awareness Platform",
       recordingUrl: data.recordingUrl || null,
       materialsUrl: data.materialsUrl || null,
     },

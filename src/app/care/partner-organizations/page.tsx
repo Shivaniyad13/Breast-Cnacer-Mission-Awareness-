@@ -2,7 +2,7 @@ import { Ribbon, Building2 } from "lucide-react";
 
 export const metadata = {
   title: "Partner Organizations | Breast Cancer Mission",
-  description: "Explore NGOs and partner organizations collaborating with the GRS Breast Cancer Mission to support patients and spread awareness.",
+  description: "Explore NGOs and partner organizations collaborating with the Breast Cancer Awareness Mission to support patients and spread awareness.",
 };
 
 export default function PartnerOrganizationsPage() {
@@ -35,7 +35,7 @@ export default function PartnerOrganizationsPage() {
         <p className="text-slate-500 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
           This section will showcase registered NGOs, charitable trusts, and
           institutional partners who endorse campaigns, organize screening camps,
-          and collaborate with GRS to advance breast cancer care across communities.
+          and collaborate with us to advance breast cancer care across communities.
         </p>
 
         {/* Coming Soon pill */}

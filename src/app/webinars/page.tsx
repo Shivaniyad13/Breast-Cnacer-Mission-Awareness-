@@ -106,7 +106,7 @@ export default async function WebinarsPage({ searchParams }: WebinarsPageProps) 
                   ) : (
                     <div className="text-center text-primary/30 flex flex-col items-center">
                       <Award className="h-16 w-16 stroke-[1.2] mb-1 animate-pulse" />
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-primary/50">GRS Live Event</span>
+                      <span className="text-[10px] uppercase font-bold tracking-widest text-primary/50">Live Event</span>
                     </div>
                   )}
 

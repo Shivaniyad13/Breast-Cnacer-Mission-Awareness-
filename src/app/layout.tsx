@@ -15,7 +15,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "GRS Breast Cancer Awareness Platform",
+  title: "Breast Cancer Awareness Platform",
   description: "A centralized campaign ecosystem connecting patients, doctors, NGOs, and donors. Supporting early diagnosis guides and verified crowdfunding.",
 };
 

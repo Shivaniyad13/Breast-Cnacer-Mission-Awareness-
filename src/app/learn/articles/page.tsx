@@ -72,7 +72,7 @@ export default async function ArticlesPage() {
             Awareness <span className="text-primary">Articles & Blogs</span>
           </h1>
           <p className="text-slate-600 text-xs sm:text-sm max-w-2xl mx-auto">
-            Browse peer-reviewed articles written by registered medical practitioners and GRS contributors, or publish guidelines to raise campaign awareness.
+            Browse peer-reviewed articles written by registered medical practitioners and campaign contributors, or publish guidelines to raise campaign awareness.
           </p>
         </div>
 
@@ -139,7 +139,7 @@ export default async function ArticlesPage() {
                 </div>
                 <div className="flex flex-col gap-2 pt-2">
                   {user ? (
-                    <p className="text-xs text-slate-500">Your current role: <strong className="text-primary uppercase">{user.role}</strong>. Please contact GRS support to update your medical credentials.</p>
+                    <p className="text-xs text-slate-500">Your current role: <strong className="text-primary uppercase">{user.role}</strong>. Please contact support to update your medical credentials.</p>
                   ) : (
                     <Link href={`/login?callbackUrl=${encodeURIComponent("/learn/articles")}`} className="w-full">
                       <Button className="w-full bg-primary hover:bg-primary/95 text-white font-bold rounded-xl shadow-md py-2.5 h-auto text-sm">

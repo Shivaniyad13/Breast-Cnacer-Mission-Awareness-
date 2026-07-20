@@ -94,7 +94,7 @@ export default function AwarenessHubPage() {
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               <p className="text-xs text-slate-600 leading-relaxed">
-                Participate in live digital webinars organized by GRS strategic partners and NGOs. Learn from oncology experts and ask questions in real-time.
+                Participate in live digital webinars organized by strategic partners and NGOs. Learn from oncology experts and ask questions in real-time.
               </p>
               <Link href="/webinars" className="block w-full">
                 <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs py-2 h-auto flex items-center justify-center gap-1.5 shadow-sm group-hover:-translate-y-0.5 transition-all">

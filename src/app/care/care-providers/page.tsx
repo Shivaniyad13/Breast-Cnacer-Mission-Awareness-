@@ -2,7 +2,7 @@ import { Ribbon, HeartHandshake } from "lucide-react";
 
 export const metadata = {
   title: "Care Providers | Breast Cancer Mission",
-  description: "Find dedicated care providers supporting breast cancer patients through the GRS Breast Cancer Mission platform.",
+  description: "Find dedicated care providers supporting breast cancer patients through the Breast Cancer Awareness Mission platform.",
 };
 
 export default function CareProvidersPage() {
@@ -34,7 +34,7 @@ export default function CareProvidersPage() {
         {/* Description */}
         <p className="text-slate-500 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
           This section will list verified care providers, hospitals, and clinics
-          partnered with the GRS Breast Cancer Mission to support patients
+          partnered with the Breast Cancer Awareness Mission to support patients
           through treatment and recovery.
         </p>
 

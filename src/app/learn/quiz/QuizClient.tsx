@@ -218,14 +218,14 @@ export default function QuizClient({ user }: QuizClientProps) {
                   Breast Cancer Awareness Quiz
                 </CardTitle>
                 <CardDescription className="text-xs text-muted-foreground uppercase font-black tracking-widest text-primary/80 pt-1">
-                  GRS Certified Knowledge Check
+                  Certified Knowledge Check
                 </CardDescription>
               </div>
             </CardHeader>
             <CardContent className="px-8 pb-8 space-y-6">
               <div className="text-sm text-slate-600 space-y-4 leading-relaxed">
                 <p>
-                  Welcome to the GRS Breast Cancer Awareness Quiz. This knowledge check is designed to test your understanding of risk reduction, early screening clinical guidelines, staging, and common breast cancer myths.
+                  Welcome to the Breast Cancer Awareness Quiz. This knowledge check is designed to test your understanding of risk reduction, early screening clinical guidelines, staging, and common breast cancer myths.
                 </p>
                 
                 <h5 className="font-bold text-slate-800 text-xs uppercase tracking-wider">Quiz Rules & Guidelines:</h5>

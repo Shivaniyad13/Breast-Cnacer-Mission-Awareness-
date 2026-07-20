@@ -24,7 +24,7 @@ export default function ContactPage() {
   return (
     <>
       {/* ── SEO Meta ── */}
-      <title>Contact Us · GRS Breast Cancer Mission</title>
+      <title>Contact Us · Breast Cancer Awareness Mission</title>
 
       <div className="min-h-screen bg-gradient-to-b from-[#0d1b2a] via-slate-900 to-slate-950 text-white">
 
@@ -34,7 +34,7 @@ export default function ContactPage() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/20 border border-pink-400/30 text-pink-300 text-xs font-semibold tracking-wider uppercase mb-6">
               <Ribbon className="h-3.5 w-3.5" />
-              GRS Breast Cancer Mission
+              Breast Cancer Awareness Mission
             </div>
             <h1 className="font-heading text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
               Get In <span className="text-pink-400">Touch</span>

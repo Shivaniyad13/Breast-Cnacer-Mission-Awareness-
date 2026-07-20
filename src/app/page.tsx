@@ -72,7 +72,7 @@ export default async function Home() {
             <div className="col-span-12 md:col-span-6 text-center space-y-6 max-w-xl mx-auto flex flex-col justify-center items-center">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/20 backdrop-blur-md border border-pink-300/20 text-pink-100 text-xs font-semibold tracking-wider uppercase">
                 <Ribbon className="h-4 w-4" />
-                GRS Breast Cancer Mission
+                Breast Cancer Awareness Mission
               </div>
 
               <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
@@ -138,7 +138,7 @@ export default async function Home() {
         {/* Mobile Left Sidebar - Live Updates */}
         <div className="space-y-3">
           <h3 className="text-xs font-black text-pink-600 uppercase tracking-widest px-1 flex items-center gap-1">
-            <Radio className="h-3.5 w-3.5 text-pink-600" /> GRS Live Updates Hub
+            <Radio className="h-3.5 w-3.5 text-pink-600" /> Live Updates Hub
           </h3>
           <div className="flex overflow-x-auto pb-2 gap-4 snap-x snap-mandatory scroll-smooth no-scrollbar">
             <div className="w-[85vw] flex-shrink-0 snap-center">

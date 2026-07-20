@@ -33,7 +33,7 @@ const SEED_UPDATES = [
     category: "Campaign",
     title: "Aasha Initiative: Mobile Screening Vans",
     shortDescription: "Funding specialized oncology vans to deliver free physical checks and mammography to rural women.",
-    fullDescription: "In coordination with Khushi NGO, GRS plans to launch mobile mammography vans visiting underserved villages. Donate to buy equipment.",
+    fullDescription: "In coordination with Khushi NGO, we plan to launch mobile mammography vans visiting underserved villages. Donate to buy equipment.",
     eventDate: new Date("2026-08-15T09:00:00Z"),
     venue: "Rural Communities in Maharashtra",
     registrationLink: "/campaigns",

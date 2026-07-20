@@ -2,7 +2,7 @@ import { Ribbon, UserRoundCheck } from "lucide-react";
 
 export const metadata = {
   title: "Healthcare Professionals | Breast Cancer Mission",
-  description: "Connect with verified oncologists, radiologists, and surgeons supporting the GRS Breast Cancer Mission.",
+  description: "Connect with verified oncologists, radiologists, and surgeons supporting the Breast Cancer Awareness Mission.",
 };
 
 export default function HealthcareProfessionalsPage() {
@@ -35,7 +35,7 @@ export default function HealthcareProfessionalsPage() {
         <p className="text-slate-500 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
           This section will feature licensed oncologists, radiologists, surgeons,
           and other verified medical professionals who collaborate with the
-          GRS platform to provide expert guidance and patient care.
+          campaign platform to provide expert guidance and patient care.
         </p>
 
         {/* Coming Soon pill */}

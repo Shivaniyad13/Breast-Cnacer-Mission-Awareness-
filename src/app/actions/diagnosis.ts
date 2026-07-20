@@ -475,7 +475,7 @@ export async function submitCollaborationRequest(data: {
 
     // Simulate sending email to administration and to submitter
     console.log(`[Email Simulation] Collaboration request saved. Status: PENDING.`);
-    console.log(`To: ${data.email} | Subject: GRS Collaboration Request Confirmation`);
+    console.log(`To: ${data.email} | Subject: Collaboration Request Confirmation`);
     console.log(`To: grsindiacorp@gmail.com | Subject: New Collaboration Request from ${data.organizationName}`);
 
     revalidatePath("/admin/diagnosis");
@@ -511,7 +511,7 @@ export async function updateCollaborationRequestStatus(id: string, status: "PEND
     
     // Simulate status update email notification
     console.log(`[Email Simulation] Collaboration request status updated to ${status}.`);
-    console.log(`To: ${updated.email} | Subject: GRS Collaboration Request Status Update`);
+    console.log(`To: ${updated.email} | Subject: Collaboration Request Status Update`);
 
     revalidatePath("/admin/diagnosis");
     return { success: true, request: updated };

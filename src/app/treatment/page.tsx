@@ -80,7 +80,7 @@ const diagnosisVideos = [
   {
     title: "Early Screening Guidance by Clinical Experts",
     duration: "8:30",
-    description: "GRS oncologists explain standard diagnostic pathways, clinical screening protocols, mammography frequencies, and answer general early consultation inquiries.",
+    description: "Oncologists explain standard diagnostic pathways, clinical screening protocols, mammography frequencies, and answer general early consultation inquiries.",
     src: "/VID-20260715-WA0006.mp4"
   },
   {
@@ -180,7 +180,7 @@ export default function TreatmentPage() {
             className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-pink-500/20 backdrop-blur-md border border-pink-400/30 text-pink-100 text-xs font-bold uppercase tracking-wider"
           >
             <Ribbon className="h-3.5 w-3.5 text-pink-400 animate-pulse" />
-            GRS Integrative Healthcare
+            Integrative Healthcare
           </motion.div>
 
           <motion.h1
@@ -198,7 +198,7 @@ export default function TreatmentPage() {
             transition={{ delay: 0.4, duration: 1 }}
             className="text-base sm:text-xl text-slate-200 max-w-2xl mx-auto leading-relaxed font-medium"
           >
-            At GRS, we believe every patient deserves compassionate care, advanced research, and continuous support throughout the treatment journey.
+            We believe every patient deserves compassionate care, advanced research, and continuous support throughout the treatment journey.
           </motion.p>
 
           {/* Action Buttons */}
@@ -269,7 +269,7 @@ export default function TreatmentPage() {
                 You Are Not Fighting <span className="text-pink-600">Alone.</span>
               </h2>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                Facing a breast cancer diagnosis is a profound and emotional journey that impacts the entire family structure. At GRS, we walk by your side at every step. We integrate advanced clinical research with deeply supportive, patient-first care pathways to maximize healing capacity.
+                Facing a breast cancer diagnosis is a profound and emotional journey that impacts the entire family structure. We walk by your side at every step. We integrate advanced clinical research with deeply supportive, patient-first care pathways to maximize healing capacity.
               </p>
               <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
                 By nurturing emotional health, providing evidence-based wellness guidelines, and introducing holistic support mechanisms, we aim to build resilience, restore vitality, and keep the flame of hope burning brightly.
@@ -285,7 +285,7 @@ export default function TreatmentPage() {
                   &ldquo;Cancer may change your life, but it doesn&apos;t define your future.&rdquo;
                 </p>
                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mt-2">
-                  GRS Supportive Care Core
+                  Supportive Care Core
                 </span>
               </motion.div>
             </div>
@@ -545,7 +545,7 @@ export default function TreatmentPage() {
                 Natural Support Inspired by Ayurvedic Principles
               </p>
               <p className="text-slate-600 text-sm leading-relaxed">
-                GRS Apocan is developed as a holistic botanical support kit designed to complement the body&apos;s natural strength and recovery cycle during healing phases. Drawing upon classical Ayurvedic knowledge, this product focuses on systemic restoration and tissue support.
+                Apocan is developed as a holistic botanical support kit designed to complement the body&apos;s natural strength and recovery cycle during healing phases. Drawing upon classical Ayurvedic knowledge, this product focuses on systemic restoration and tissue support.
               </p>
               <p className="text-slate-600 text-sm leading-relaxed">
                 Our approach emphasizes cellular health, metabolic cleansing, and immunity protection without relying on harsh synthetic chemicals. It serves as supportive wellness care, and detailed dosage and timing should always be aligned with professional oncologist instructions.
@@ -590,7 +590,7 @@ export default function TreatmentPage() {
 
 
       {/* ================================================
-          SECTION 6 - WHY PATIENTS TRUST GRS
+          SECTION 6 - WHY PATIENTS TRUST US
          ================================================ */}
       <section className="py-24 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -599,7 +599,7 @@ export default function TreatmentPage() {
               Our Core Pillars
             </span>
             <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-slate-900">
-              Why Patients Trust GRS
+              Why Patients Trust Us
             </h2>
             <p className="text-slate-500 text-sm max-w-lg mx-auto">
               We stand for certified clinical rigor, safe manufacturing standards, and compassionate counselor availability.
@@ -696,11 +696,11 @@ export default function TreatmentPage() {
           {[
             {
               q: "Who should consult before taking this product?",
-              a: "Any patient diagnosed with breast cancer or undergoing active clinical medical treatments (chemotherapy, radiation therapy, immunotherapy) must consult their primary oncology practitioner before integrating GRS Apocan or GRS Apocan Advance."
+              a: "Any patient diagnosed with breast cancer or undergoing active clinical medical treatments (chemotherapy, radiation therapy, immunotherapy) must consult their primary oncology practitioner before integrating Apocan or Apocan Advance."
             },
             {
               q: "Can it be taken alongside conventional medical treatment?",
-              a: "GRS Apocan is designed as a supportive wellness formulation. However, we advise patients to share our ingredient sheet with their licensed physician to structure appropriate dosage timing and avoid potential metabolic cross-reactions."
+              a: "Apocan is designed as a supportive wellness formulation. However, we advise patients to share our ingredient sheet with their licensed physician to structure appropriate dosage timing and avoid potential metabolic cross-reactions."
             },
             {
               q: "How should it be used?",
@@ -901,7 +901,7 @@ export default function TreatmentPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
             <Ribbon className="h-5 w-5 text-pink-500" />
-            <span className="font-heading font-bold text-sm text-slate-800">GRS Healthcare Core Values:</span>
+            <span className="font-heading font-bold text-sm text-slate-800">Healthcare Core Values:</span>
           </div>
           <div className="flex flex-wrap justify-center gap-6 text-xs font-semibold text-slate-500">
             <span className="hover:text-pink-600 transition-colors">Hope</span>

@@ -38,7 +38,7 @@ const SEED_UPDATES = [
   {
     category: "News",
     title: "50 Free Mammography Screenings in Pune",
-    shortDescription: "GRS launches collaborative clinical test drives in association with NGO Khushi Centre. Apply for free checkups.",
+    shortDescription: "Collaborative clinical test drives are launched in association with NGO Khushi Centre. Apply for free checkups.",
     imageUrl: "/images/mammography_screening.png",
     destinationLink: "/campaigns/awareness",
     eventDate: new Date("2026-08-01T09:00:00Z"),

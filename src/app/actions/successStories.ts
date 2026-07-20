@@ -47,7 +47,7 @@ Her journey is one of incredible resilience. Today, Ananya is completely cancer-
     storyTitle: "From Diagnosis to Complete Recovery",
     completeStory: `Meera Deshmukh, a high school teacher and mother of two, was diagnosed with breast cancer during a regular health screening campaign. The news was sudden, but Meera's determination was unwavering.
 
-She underwent surgery followed by targeted radiation therapy. Throughout her treatment, her family, colleagues, and the GRS volunteer network stood by her as a pillar of strength.
+She underwent surgery followed by targeted radiation therapy. Throughout her treatment, her family, colleagues, and the volunteer network stood by her as a pillar of strength.
 
 Having achieved complete recovery, Meera believes that early screening is the single most critical factor in survival. She regularly hosts awareness talks at schools and community centers.`,
     videoUrl: "/vidssave.com From Diagnosis to Recovery _ Breast Cancer Patient Story 720P.mp4",

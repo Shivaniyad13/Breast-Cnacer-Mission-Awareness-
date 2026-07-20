@@ -21,7 +21,7 @@ export default async function QuizPage() {
               Quiz Authentication Required
             </h1>
             <p className="text-sm text-slate-500 leading-relaxed">
-              To earn a verifiably signed, QR-coded certificate of excellence, you must be logged in as a volunteer or supporter on the GRS network.
+              To earn a verifiably signed, QR-coded certificate of excellence, you must be logged in as a volunteer or supporter on the campaign network.
             </p>
           </div>
           

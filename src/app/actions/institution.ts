@@ -272,7 +272,7 @@ export async function updateOrganizationApplicationStatusAction(
       const emailBody = `
 Dear ${app.contactPersonName},
 
-We are pleased to inform you that your application for Organization Membership with GRS Breast Cancer Awareness Mission has been APPROVED!
+We are pleased to inform you that your application for Organization Membership with Breast Cancer Awareness Mission has been APPROVED!
 
 Details:
 Organization Name: ${app.organizationName}
@@ -288,15 +288,15 @@ ${generatedPassword ? `Password: ${generatedPassword}\n(Note: Please change your
 Thank you for partnering with us to spread breast cancer awareness.
 
 Warm regards,
-GRS Command Center Team
+Command Center Team
       `.trim();
-      await sendMockEmail(app.email, `GRS Partnership Approved: ${app.organizationName}`, emailBody);
+      await sendMockEmail(app.email, `Partnership Approved: ${app.organizationName}`, emailBody);
     } else {
       // Send rejected email
       const emailBody = `
 Dear ${app.contactPersonName},
 
-Thank you for your interest in collaborating with the GRS Breast Cancer Awareness Mission. 
+Thank you for your interest in collaborating with the Breast Cancer Awareness Mission. 
 
 After reviewing your application for ${app.organizationName}, we regret to inform you that we cannot approve your Organization Membership at this time.
 
@@ -306,9 +306,9 @@ ${remarks || "Verification requirements not met."}
 If you believe this was an error or would like to submit additional information, please contact us at support@grsawareness.org.
 
 Warm regards,
-GRS Command Center Team
+Command Center Team
       `.trim();
-      await sendMockEmail(app.email, `GRS Partnership Application Status Updates`, emailBody);
+      await sendMockEmail(app.email, `Partnership Application Status Updates`, emailBody);
     }
 
     revalidatePath("/admin/memberships");
@@ -369,7 +369,7 @@ export async function updateCorporateApplicationStatusAction(
       const emailBody = `
 Dear ${app.contactPersonName},
 
-We are pleased to inform you that your application for Corporate Partnership with GRS Breast Cancer Awareness Mission has been APPROVED!
+We are pleased to inform you that your application for Corporate Partnership with Breast Cancer Awareness Mission has been APPROVED!
 
 Details:
 Company Name: ${app.companyName}
@@ -385,15 +385,15 @@ ${generatedPassword ? `Password: ${generatedPassword}\n(Note: Please change your
 Thank you for partnering with us to spread breast cancer awareness through corporate initiatives.
 
 Warm regards,
-GRS Command Center Team
+Command Center Team
       `.trim();
-      await sendMockEmail(app.email, `GRS Partnership Approved: ${app.companyName}`, emailBody);
+      await sendMockEmail(app.email, `Partnership Approved: ${app.companyName}`, emailBody);
     } else {
       // Send rejected email
       const emailBody = `
 Dear ${app.contactPersonName},
 
-Thank you for your interest in collaborating with the GRS Breast Cancer Awareness Mission. 
+Thank you for your interest in collaborating with the Breast Cancer Awareness Mission. 
 
 After reviewing your application for ${app.companyName}, we regret to inform you that we cannot approve your Corporate Partnership at this time.
 
@@ -403,9 +403,9 @@ ${remarks || "Verification requirements not met."}
 If you believe this was an error or would like to submit additional information, please contact us at support@grsawareness.org.
 
 Warm regards,
-GRS Command Center Team
+Command Center Team
       `.trim();
-      await sendMockEmail(app.email, `GRS Partnership Application Status Updates`, emailBody);
+      await sendMockEmail(app.email, `Partnership Application Status Updates`, emailBody);
     }
 
     revalidatePath("/admin/memberships");

@@ -137,7 +137,7 @@ export default function BreastCancerCampaignPage() {
     {
       title: "Together We Can Fight Breast Cancer",
       subtitle: "Early Detection Saves Lives. Empower yourself with guidelines, diagnostics, and support networks.",
-      tag: "GRS & Khushi Collaboration",
+      tag: "Campaign & Khushi Collaboration",
       imageText: "Pink Ribbon Hope",
       primaryBtn: "Join Campaign",
       primaryLink: "#volunteer",
@@ -210,7 +210,7 @@ export default function BreastCancerCampaignPage() {
     doctor: {
       name: "Dr. Ananya Roy",
       role: "Lead Surgical Oncologist",
-      story: "Clinical stigma is the biggest enemy of oncology. By joining GRS & Khushi, we bypass intermediate barriers. Our clinical webinars educate thousands of women, and the platform audits diagnostic slips in hours.",
+      story: "Clinical stigma is the biggest enemy of oncology. By joining our campaign & Khushi, we bypass intermediate barriers. Our clinical webinars educate thousands of women, and the platform audits diagnostic slips in hours.",
       badge: "Medical Advisor",
       color: "from-emerald-500 to-teal-600"
     }
@@ -222,8 +222,8 @@ export default function BreastCancerCampaignPage() {
       a: "Women over 20 should perform a BSE monthly, ideally 3 to 5 days after their menstruation ends when breasts are least tender. Consistent self-inspection helps detect anomalies, skin dimpling, or micro-lumps early."
     },
     {
-      q: "How does GRS ensure crowdfunding donation safety?",
-      a: "We route payouts directly to registered hospital bank accounts instead of personal wallets. GRS compliance teams audit the medical bill estimates, treatment charts, and hospital receipts before clearing any donation disbursement."
+      q: "How do we ensure crowdfunding donation safety?",
+      a: "We route payouts directly to registered hospital bank accounts instead of personal wallets. Compliance teams audit the medical bill estimates, treatment charts, and hospital receipts before clearing any donation disbursement."
     },
     {
       q: "How can I obtain the verified digital certificate?",
@@ -255,11 +255,11 @@ export default function BreastCancerCampaignPage() {
                   Khushi <span className="text-primary">Centre</span>
                 </span>
                 <span className="text-muted-foreground text-xs font-semibold px-1 border-l border-border">
-                  GRS
+                  Campaign
                 </span>
               </div>
               <span className="hidden xl:inline-block text-[10px] text-muted-foreground font-bold tracking-wider uppercase bg-muted/60 px-2 py-1 rounded-md">
-                An Initiative by Khushi & GRS Pvt. Ltd.
+                An Initiative by Khushi Centre
               </span>
             </Link>
 
@@ -441,7 +441,7 @@ export default function BreastCancerCampaignPage() {
               <div className="relative w-full max-w-sm aspect-square rounded-2xl bg-gradient-to-br from-primary/10 via-purple-500/10 to-transparent border border-border flex flex-col items-center justify-center p-8 text-center space-y-4 shadow-inner">
                 <Users className="h-16 w-16 text-primary" />
                 <div className="space-y-1">
-                  <p className="font-heading font-bold text-foreground text-lg">Khushi & GRS Synergy</p>
+                  <p className="font-heading font-bold text-foreground text-lg">Khushi & Partners Synergy</p>
                   <p className="text-xs text-muted-foreground">Certified Staging & Financial Clearing</p>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
@@ -461,7 +461,7 @@ export default function BreastCancerCampaignPage() {
               
               <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
                 Breast cancer is the leading cancer diagnosis among Indian women, often diagnosed too late due to visual stigma and financial gaps. 
-                Our mission is to combine the medical-research network of **GRS Pvt. Ltd.** with the community rehabilitation outreach of **Khushi Centre** to create a secure, educational, and fundraising pipeline.
+                Our mission is to combine the medical-research network of our partners with the community rehabilitation outreach of **Khushi Centre** to create a secure, educational, and fundraising pipeline.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
@@ -655,7 +655,7 @@ export default function BreastCancerCampaignPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center space-y-2 max-w-2xl mx-auto">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground">Latest Clinical Publications</h2>
-            <p className="text-sm text-muted-foreground">Read peer-reviewed oncology studies and medical materials co-published by GRS researchers.</p>
+            <p className="text-sm text-muted-foreground">Read peer-reviewed oncology studies and medical materials co-published by campaign researchers.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -836,7 +836,7 @@ export default function BreastCancerCampaignPage() {
                 Verified Digital Certificate Preview
               </h2>
               <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-                Users who complete GRS awareness webinars, wellness screening programs, educational quizzes, or active volunteer camps will receive a verified digital participation certificate.
+                Users who complete campaign awareness webinars, wellness screening programs, educational quizzes, or active volunteer camps will receive a verified digital participation certificate.
               </p>
               
               <div className="space-y-3 text-xs sm:text-sm text-muted-foreground font-semibold">
@@ -941,7 +941,7 @@ export default function BreastCancerCampaignPage() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             
             <div className="md:col-span-5 space-y-6">
-              <h3 className="font-heading text-2xl font-bold text-foreground">Contact GRS Campaign</h3>
+              <h3 className="font-heading text-2xl font-bold text-foreground">Contact Campaign</h3>
               <p className="text-xs sm:text-sm text-muted-foreground">
                 Get in touch for diagnostic registrations, physical check guides, or sponsorship coordinates.
               </p>
@@ -1008,15 +1008,15 @@ export default function BreastCancerCampaignPage() {
               <div className="flex items-center gap-2">
                 <Ribbon className="h-6 w-6 text-primary animate-pulse" />
                 <span className="font-heading text-lg font-extrabold tracking-tight">
-                  Khushi Centre & GRS
+                  Khushi Centre
                 </span>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-                A collaborative diagnostic screening initiative designed by Khushi Centre for Rehabilitation & Research and GRS Pvt. Ltd. supporting direct hospital payouts and certified webinars.
+                A collaborative diagnostic screening initiative designed by Khushi Centre for Rehabilitation & Research supporting direct hospital payouts and certified webinars.
               </p>
               <div className="text-slate-400 space-y-1.5 text-xs font-semibold">
                 <p>Khushi Reg: Noida Trust Sector-62</p>
-                <p>GRS Corp: GRS Healthcare Systems India</p>
+                <p>Partner Corp: Healthcare Systems India</p>
               </div>
             </div>
 
@@ -1042,7 +1042,7 @@ export default function BreastCancerCampaignPage() {
           </div>
           
           <div className="mt-12 pt-8 border-t border-slate-900 text-center text-xs text-slate-500">
-            © {new Date().getFullYear()} Khushi Centre & GRS Pvt. Ltd. All rights reserved. Peer-reviewed medical disclaimers apply.
+            © {new Date().getFullYear()} Khushi Centre. All rights reserved. Peer-reviewed medical disclaimers apply.
           </div>
         </div>
       </footer>

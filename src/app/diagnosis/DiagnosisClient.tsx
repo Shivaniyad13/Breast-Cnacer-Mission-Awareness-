@@ -487,7 +487,7 @@ export default function DiagnosisClient({ initialTechnologies }: DiagnosisClient
                         variant="outline"
                         onClick={() => openCollabDialog(tech.name)}
                         className="border-pink-100 text-pink-600 hover:bg-pink-50 hover:border-pink-200 rounded-xl text-[10px] font-bold px-3 cursor-pointer h-10 shrink-0"
-                        title="Interested in collaborating with GRS?"
+                        title="Interested in collaborating?"
                       >
                         Partner
                       </Button>
@@ -753,10 +753,10 @@ export default function DiagnosisClient({ initialTechnologies }: DiagnosisClient
           <DialogHeader>
             <DialogTitle className="text-xl font-heading font-extrabold text-slate-800 flex items-center gap-2">
               <Building className="h-6 w-6 text-pink-600" />
-              GRS Collaboration Proposal
+              Collaboration Proposal
             </DialogTitle>
             <DialogDescription className="text-xs">
-              Establish a diagnostic partnership with GRS Breast Cancer Mission. Submit company profiles, brochures, and contact details to request administrative review.
+              Establish a diagnostic partnership with Breast Cancer Awareness Mission. Submit company profiles, brochures, and contact details to request administrative review.
             </DialogDescription>
           </DialogHeader>
 
@@ -964,7 +964,7 @@ export default function DiagnosisClient({ initialTechnologies }: DiagnosisClient
                 required
               />
               <Label htmlFor="collab-consent" className="cursor-pointer font-medium text-slate-500 leading-tight">
-                I represent that the information, logo, and brochures uploaded are authorized by our organization and comply with GRS privacy standards. *
+                I represent that the information, logo, and brochures uploaded are authorized by our organization and comply with campaign privacy standards. *
               </Label>
             </div>
 

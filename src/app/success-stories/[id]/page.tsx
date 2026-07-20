@@ -54,7 +54,7 @@ export default async function SuccessStoryDetailPage({ params }: SuccessStoryPag
     },
     {
       title: "Full Recovery & Advocacy Launch",
-      description: "Declared in remission. Commenced health lecturing, mentoring other cancer patients, and volunteering for GRS campaigns.",
+      description: "Declared in remission. Commenced health lecturing, mentoring other cancer patients, and volunteering for awareness campaigns.",
       icon: <Award className="h-5 w-5 text-emerald-600" />,
       color: "bg-emerald-100 border-emerald-300 text-emerald-600"
     }

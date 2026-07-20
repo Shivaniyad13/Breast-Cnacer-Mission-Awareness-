@@ -52,7 +52,7 @@ const whyVolunteerList = [
   },
   {
     title: "Make a Positive Impact",
-    description: "Directly contribute to lowering cancer mortality rates by helping GRS make diagnostics accessible to underprivileged areas.",
+    description: "Directly contribute to lowering cancer mortality rates by helping make diagnostics accessible to underprivileged areas.",
     icon: <Sparkles className="h-6 w-6 text-primary" />
   }
 ];
@@ -82,7 +82,7 @@ const opportunitiesList = [
   },
   {
     title: "Social Media Awareness Advocate",
-    description: "Create infographics, write patient recovery articles, and amplify GRS webinar registrations online.",
+    description: "Create infographics, write patient recovery articles, and amplify webinar registrations online.",
     location: "Remote / Online",
     commitment: "Part Time",
     interestKey: "media"
@@ -132,7 +132,7 @@ const testimonialsList = [
   {
     name: "Sanya Roy",
     role: "Campus Ambassador",
-    review: "Volunteering with GRS enabled us to train 200+ college students on Breast Self-Examination. The cert validation is highly appreciated by students.",
+    review: "Volunteering with the campaign enabled us to train 200+ college students on Breast Self-Examination. The cert validation is highly appreciated by students.",
     initials: "SR"
   },
   {
@@ -144,7 +144,7 @@ const testimonialsList = [
   {
     name: "Dr. Anjali Sen",
     role: "Oncology Counsellor",
-    review: "As a professional counsellor, contributing time to host GRS support meetups is a wonderful path to give back to patients and families.",
+    review: "As a professional counsellor, contributing time to host support meetups is a wonderful path to give back to patients and families.",
     initials: "AS"
   }
 ];
@@ -157,7 +157,7 @@ const faqsList = [
   },
   {
     q: "Is there any registration fee?",
-    a: "No, volunteering with GRS is completely free of charge. We welcome your support, energy, and advocacy."
+    a: "No, volunteering is completely free of charge. We welcome your support, energy, and advocacy."
   },
   {
     q: "Do volunteers receive certificates?",
@@ -165,7 +165,7 @@ const faqsList = [
   },
   {
     q: "Can students volunteer?",
-    a: "Absolutely. Many GRS volunteers are college students who run awareness drives on their campuses or support remote social media campaigns."
+    a: "Absolutely. Many volunteers are college students who run awareness drives on their campuses or support remote social media campaigns."
   },
   {
     q: "How much time do I need to contribute?",
@@ -259,7 +259,7 @@ export default function VolunteersClient() {
     e.preventDefault();
     if (validateForm()) {
       // Prepared for future PostgreSQL and Prisma integration:
-      console.log("Submitting GRS Volunteer Application:", formData);
+      console.log("Submitting Volunteer Application:", formData);
       setFormSubmitted(true);
     }
   };
@@ -313,7 +313,7 @@ export default function VolunteersClient() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/community_walk.png"
-            alt="GRS Volunteers Community Walkathon"
+            alt="Volunteers Community Walkathon"
             fill
             priority
             className="object-cover object-center select-none"
@@ -384,7 +384,7 @@ export default function VolunteersClient() {
               <Info className="h-3.5 w-3.5" /> Our Mission
             </span>
             <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight leading-tight">
-              Why Volunteer With GRS?
+              Why Volunteer With Us?
             </h2>
             <p className="text-slate-500 text-sm sm:text-base font-medium">
               Volunteers are the backbone of our outreach. Your commitment supports clinical access and diagnostics guidance.
@@ -604,7 +604,7 @@ export default function VolunteersClient() {
                 <span className="text-[10px] font-bold text-primary uppercase tracking-widest block">Step 03</span>
                 <h4 className="font-heading text-base font-bold text-slate-800">Mission Orientation</h4>
                 <p className="text-slate-500 text-xs sm:text-sm max-w-md font-medium leading-relaxed">
-                  Attend a short, interactive welcome webinar introducing GRS history, NGO guidelines, and core objectives.
+                  Attend a short, interactive welcome webinar introducing campaign history, NGO guidelines, and core objectives.
                 </p>
               </div>
             </div>
@@ -1012,7 +1012,7 @@ export default function VolunteersClient() {
                   <div className="flex gap-2 p-4 rounded-xl bg-slate-50 text-slate-500 border border-slate-100">
                     <Info className="h-4 w-4 shrink-0 text-primary mt-0.5" />
                     <p className="text-[10px] leading-relaxed font-semibold">
-                      Your inputs will be synced with GRS databases for audit verification. Coordinators will notify you about orientation webinar slots shortly.
+                      Your inputs will be synced with our databases for audit verification. Coordinators will notify you about orientation webinar slots shortly.
                     </p>
                   </div>
 

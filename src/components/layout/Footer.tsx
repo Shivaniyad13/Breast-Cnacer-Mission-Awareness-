@@ -235,7 +235,7 @@ export default function Footer() {
         <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-500 text-center sm:text-left">
             © {new Date().getFullYear()}{" "}
-            <span className="text-slate-400 font-medium">GRS Breast Cancer Mission.</span>{" "}
+            <span className="text-slate-400 font-medium">Breast Cancer Awareness Mission.</span>{" "}
             All rights reserved.
           </p>
 

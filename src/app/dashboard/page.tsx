@@ -64,7 +64,7 @@ export default async function DashboardPage() {
                   {user.role === "ORGANIZATION_MEMBER" ? institutionData?.organizationName : institutionData?.companyName}
                 </h1>
                 <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1">
-                  <CheckCircle className="h-3 w-3" /> GRS Certified Partner
+                  <CheckCircle className="h-3 w-3" /> Certified Partner
                 </span>
               </div>
               <p className="text-muted-foreground text-sm font-medium mt-1">
@@ -193,7 +193,7 @@ export default async function DashboardPage() {
 
                 {institutionData?.remarks && (
                   <div className="bg-pink-50/50 border border-pink-100 p-3 rounded-xl">
-                    <span className="text-pink-700 font-bold block uppercase text-[9px]">GRS Coordinator Remarks</span>
+                    <span className="text-pink-700 font-bold block uppercase text-[9px]">Coordinator Remarks</span>
                     <p className="mt-1 italic text-slate-600">{institutionData.remarks}</p>
                   </div>
                 )}
@@ -209,7 +209,7 @@ export default async function DashboardPage() {
               Partnership Initiative Hub
             </h3>
             <p className="text-slate-500 text-xs sm:text-sm font-medium">
-              Access utilities and coordinate drives directly with the GRS Breast Cancer awareness committee.
+              Access utilities and coordinate drives directly with the Breast Cancer awareness committee.
             </p>
           </div>
 
@@ -220,7 +220,7 @@ export default async function DashboardPage() {
               <div className="space-y-2">
                 <h4 className="font-heading font-bold text-slate-800 text-base">Request Awareness Camp</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Request GRS doctors and oncology panels to host localized screening and self-examination camps at your facility.
+                  Request doctors and oncology panels to host localized screening and self-examination camps at your facility.
                 </p>
               </div>
               <Button onClick={() => alert("Awareness camp scheduling portal is opening soon. Contact partnerships@grsawareness.org.")} className="bg-slate-100 hover:bg-pink-50 hover:text-primary text-slate-700 font-bold text-xs py-2 w-full rounded-xl cursor-pointer">
@@ -236,7 +236,7 @@ export default async function DashboardPage() {
                   Get high-resolution Breast Self-Examination (BSE) graphics, posters, training guides, and regional flyers.
                 </p>
               </div>
-              <Button onClick={() => alert("Downloading GRS media kit... (Flyers, infographics, checkup guides)")} className="bg-slate-100 hover:bg-pink-50 hover:text-primary text-slate-700 font-bold text-xs py-2 w-full rounded-xl cursor-pointer">
+              <Button onClick={() => alert("Downloading media kit... (Flyers, infographics, checkup guides)")} className="bg-slate-100 hover:bg-pink-50 hover:text-primary text-slate-700 font-bold text-xs py-2 w-full rounded-xl cursor-pointer">
                 Download Media Kit
               </Button>
             </Card>
@@ -484,12 +484,12 @@ export default async function DashboardPage() {
 
           <Card className="rounded-3xl border border-pink-50 shadow-sm">
             <CardHeader>
-              <CardTitle>GRS Assistance</CardTitle>
+              <CardTitle>Support & Assistance</CardTitle>
               <CardDescription>Support center & guidelines.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-xs text-muted-foreground leading-relaxed">
               <p>
-                If you have issues verifying your doctor credentials, registering NGO registration certificates, or setting up Razorpay donations, please contact the GRS Support Desk.
+                If you have issues verifying your doctor credentials, registering NGO registration certificates, or setting up Razorpay donations, please contact the Support Desk.
               </p>
               <p className="font-bold text-slate-800">
                 Support email: support@grsawareness.org
@@ -669,7 +669,7 @@ export default async function DashboardPage() {
                           QR Verified
                         </span>
                         <h4 className="font-bold text-slate-800 text-sm mt-2 line-clamp-1">{cert.eventName}</h4>
-                        <p className="text-[10px] text-slate-500 mt-1">Speaker: {cert.speakerName || "GRS Expert"}</p>
+                        <p className="text-[10px] text-slate-500 mt-1">Speaker: {cert.speakerName || "Medical Expert"}</p>
                         <p className="text-[10px] text-muted-foreground mt-0.5">ID: {cert.certificateIdString}</p>
                       </div>
 

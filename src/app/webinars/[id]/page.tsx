@@ -59,7 +59,7 @@ export default async function WebinarDetailsPage({ params }: WebinarDetailsPageP
     },
     {
       q: "Is registration free?",
-      a: "Yes, all breast cancer awareness seminars conducted by GRS and Khushi Centre are completely free of charge to promote public health education.",
+      a: "Yes, all breast cancer awareness seminars conducted by Breast Cancer Awareness Mission and Khushi Centre are completely free of charge to promote public health education.",
     },
   ];
 
@@ -105,7 +105,7 @@ export default async function WebinarDetailsPage({ params }: WebinarDetailsPageP
           ) : (
             <div className="text-center text-primary/30 flex flex-col items-center">
               <Award className="h-24 w-24 stroke-[1.1] mb-2 animate-pulse" />
-              <span className="text-xs uppercase font-extrabold tracking-widest text-primary/50">GRS Educational Platform</span>
+              <span className="text-xs uppercase font-extrabold tracking-widest text-primary/50">Educational Platform</span>
             </div>
           )}
 
@@ -301,7 +301,7 @@ export default async function WebinarDetailsPage({ params }: WebinarDetailsPageP
             <div className="bg-white rounded-3xl border border-pink-50 p-6 shadow-sm space-y-2.5 text-[10px] text-muted-foreground leading-relaxed">
               <h4 className="font-bold uppercase tracking-wider text-slate-700">Organizer Details</h4>
               <p>
-                {webinar.organizerDetails || "This session is conducted by GRS Breast Cancer Campaign System and the Khushi Centre for Rehabilitation & Research."}
+                {webinar.organizerDetails || "This session is conducted by Breast Cancer Campaign System and the Khushi Centre for Rehabilitation & Research."}
               </p>
               <p className="font-semibold text-slate-500">Support Desk: webinars@grsawareness.org</p>
             </div>

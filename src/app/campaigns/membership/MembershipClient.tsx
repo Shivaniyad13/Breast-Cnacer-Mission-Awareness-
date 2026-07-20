@@ -100,7 +100,7 @@ const faqsList = [
   },
   {
     q: "Is membership free?",
-    a: "Yes, GRS community membership for individuals is completely free. Our goal is to educate the public and lower diagnostic friction, so we encourage open participation."
+    a: "Yes, community membership for individuals is completely free. Our goal is to educate the public and lower diagnostic friction, so we encourage open participation."
   },
   {
     q: "How do I participate in campaigns?",
@@ -108,7 +108,7 @@ const faqsList = [
   },
   {
     q: "Can I attend webinars after becoming a member?",
-    a: "Absolutely. Members receive automatic priority registration options and direct calendar links to all upcoming GRS oncology live streams."
+    a: "Absolutely. Members receive automatic priority registration options and direct calendar links to all upcoming oncology live streams."
   },
   {
     q: "Will I receive a certificate?",
@@ -121,7 +121,7 @@ const testimonialsList = [
   {
     name: "Dr. Shalini Sharma",
     role: "Oncology Specialist",
-    review: "GRS community connects medical practitioners directly to patients who need early diagnostic counselling. It is a brilliant initiative that bridges crucial gaps in public awareness.",
+    review: "Our community connects medical practitioners directly to patients who need early diagnostic counselling. It is a brilliant initiative that bridges crucial gaps in public awareness.",
     initials: "SS"
   },
   {
@@ -334,7 +334,7 @@ export default function MembershipClient() {
   const handleIndividualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateIndividualForm()) {
-      console.log("Submitting GRS Membership Application:", individualFormData);
+      console.log("Submitting Membership Application:", individualFormData);
       setIndividualSubmitted(true);
     }
   };
@@ -384,11 +384,11 @@ export default function MembershipClient() {
       }
       if (!ngoData.areasOfWork.trim()) errs.areasOfWork = "Please outline areas of work";
       if (!ngoData.previousExperience.trim()) errs.previousExperience = "Please outline previous campaign experience";
-      if (!ngoData.expectedCollaboration.trim()) errs.expectedCollaboration = "Please describe GRS collaboration expectation";
+      if (!ngoData.expectedCollaboration.trim()) errs.expectedCollaboration = "Please describe collaboration expectation";
       if (ngoCertificateUpload.state !== "success") errs.ngoCertificate = "Please upload NGO Registration Certificate";
       if (ngoLogoUpload.state !== "success") errs.ngoLogo = "Please upload Organization Logo";
       if (ngoDocsUpload.state !== "success") errs.supportingDocs = "Please upload Supporting Documents";
-      if (!ngoData.isDeclared) errs.isDeclared = "Please agree to the GRS partnership declaration";
+      if (!ngoData.isDeclared) errs.isDeclared = "Please agree to the partnership declaration";
     }
 
     setFormErrors(errs);
@@ -422,7 +422,7 @@ export default function MembershipClient() {
       }
       if (corpLogoUpload.state !== "success") errs.companyLogo = "Please upload Company Logo";
       if (corpDocsUpload.state !== "success") errs.supportingDocs = "Please upload Supporting Documents";
-      if (!corpData.isDeclared) errs.isDeclared = "Please agree to the GRS partnership declaration";
+      if (!corpData.isDeclared) errs.isDeclared = "Please agree to the partnership declaration";
     }
 
     setFormErrors(errs);
@@ -495,7 +495,7 @@ export default function MembershipClient() {
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-100/75 border border-pink-200/50 text-pink-700 text-xs font-bold uppercase tracking-wider"
               >
                 <Users className="h-4 w-4 text-primary animate-pulse" />
-                GRS Community & Institutions
+                Community & Institutions
               </motion.div>
 
               <motion.h1
@@ -577,7 +577,7 @@ export default function MembershipClient() {
               <Info className="h-3.5 w-3.5" /> Core Value
             </span>
             <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight leading-tight">
-              Why Join GRS?
+              Why Join Us?
             </h2>
             <p className="text-slate-500 text-sm sm:text-base font-medium">
               We coordinate resource distributions, direct oncology briefings, and early detection camps to support positive health outcomes.
@@ -745,7 +745,7 @@ export default function MembershipClient() {
               What Our Members Say
             </h2>
             <p className="text-sm text-slate-500 font-medium">
-              Read feedback from individuals and doctors actively using the GRS campaign network.
+              Read feedback from individuals and doctors actively using the campaign network.
             </p>
           </div>
 
@@ -944,7 +944,7 @@ export default function MembershipClient() {
                         <div className="flex gap-2 p-4 rounded-xl bg-slate-50 text-slate-500 border border-slate-100">
                           <Info className="h-4 w-4 shrink-0 text-primary mt-0.5" />
                           <p className="text-[10px] leading-relaxed font-semibold">
-                            Your details are kept confidential under GRS platform privacy terms. System processes verify inputs before approval alerts are emailed.
+                            Your details are kept confidential under platform privacy terms. System processes verify inputs before approval alerts are emailed.
                           </p>
                         </div>
 
@@ -1016,7 +1016,7 @@ export default function MembershipClient() {
                     Become an Institution Partner
                   </h2>
                   <p className="text-slate-500 text-sm font-medium max-w-lg mx-auto">
-                    GRS welcomes NGOs, hospitals, educational institutions, trusts, foundations, companies, and CSR teams to spread awareness and coordinate health advocacy camps.
+                    We welcome NGOs, hospitals, educational institutions, trusts, foundations, companies, and CSR teams to spread awareness and coordinate health advocacy camps.
                   </p>
                 </div>
 
@@ -1354,7 +1354,7 @@ export default function MembershipClient() {
                                   </div>
 
                                   <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-slate-500 tracking-wider">Expected GRS Collaboration</label>
+                                    <label className="text-xs font-bold uppercase text-slate-500 tracking-wider">Expected Collaboration</label>
                                     <textarea
                                       name="expectedCollaboration" rows={2} value={ngoData.expectedCollaboration} onChange={handleNgoInputChange}
                                       className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none resize-none ${formErrors.expectedCollaboration ? "border-rose-500" : "border-slate-200"}`}

@@ -18,7 +18,7 @@ const SEED_BANNERS = [
   {
     logoUrl: "/grs-group-logo.jpg",
     imageUrl: "/images/mammography_screening.png",
-    title: "GRS Cancer Diagnostics",
+    title: "Cancer Diagnostics",
     description: "Providing high-tech mammography screenings and patient care guidance in coordination with regional medical centers.",
     destinationLink: "/care/partner-organizations",
     orderIndex: 0,

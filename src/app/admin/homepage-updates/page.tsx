@@ -25,7 +25,7 @@ export default async function AdminHomePageUpdatesPage() {
       <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4 border-b border-pink-100 pb-6">
         <div className="space-y-1">
           <span className="bg-primary/10 text-primary border border-primary/20 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider inline-flex items-center gap-1">
-            <ShieldCheck className="h-2.5 w-2.5" /> GRS Command Center
+            <ShieldCheck className="h-2.5 w-2.5" /> Command Center
           </span>
           <h1 className="font-heading text-3xl font-extrabold tracking-tight text-slate-800 flex items-center gap-2">
             <Megaphone className="h-8 w-8 text-primary" /> Home Page Updates Hub

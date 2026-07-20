@@ -52,7 +52,7 @@ export default function RegisterPage() {
           </div>
           <CardTitle className="font-heading text-3xl font-bold tracking-tight">Create an Account</CardTitle>
           <CardDescription>
-            Join the GRS Breast Cancer Awareness Campaign Network
+            Join the Breast Cancer Awareness Campaign Network
           </CardDescription>
         </CardHeader>
         <CardContent>

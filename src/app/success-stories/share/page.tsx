@@ -179,7 +179,7 @@ export default function ShareSuccessStoryPage() {
               Story Submitted Successfully!
             </h1>
             <p className="text-muted-foreground max-w-lg mx-auto text-base">
-              Thank you for sharing your journey of hope and courage. Your submission has been saved as <strong className="text-pink-600">Pending Review</strong>. GRS administrators will verify details and approve it before it appears on the Home Page.
+              Thank you for sharing your journey of hope and courage. Your submission has been saved as <strong className="text-pink-600">Pending Review</strong>. Campaign administrators will verify details and approve it before it appears on the Home Page.
             </p>
             <div className="pt-6">
               <Button
@@ -419,7 +419,7 @@ export default function ShareSuccessStoryPage() {
                   required
                 />
                 <Label htmlFor="consent" className="text-xs font-medium leading-relaxed text-slate-700 dark:text-slate-300 cursor-pointer select-none">
-                  I hereby authorize GRS Breast Cancer Mission to review, edit, and publish my success story, including my name, location, recovery journey details, and uploaded media files, on their public portal to spread medical awareness. <span className="text-pink-500 font-bold">*</span>
+                  I hereby authorize Breast Cancer Awareness Mission to review, edit, and publish my success story, including my name, location, recovery journey details, and uploaded media files, on their public portal to spread medical awareness. <span className="text-pink-500 font-bold">*</span>
                 </Label>
               </div>
 

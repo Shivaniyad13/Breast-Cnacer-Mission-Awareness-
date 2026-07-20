@@ -27,7 +27,7 @@ export default function WebinarMeetingPlayer({
   const [videoActive, setVideoActive] = useState(true);
   const [showChat, setShowChat] = useState(true);
   const [chatMessages, setChatMessages] = useState<{ sender: string; text: string; role?: string }[]>([
-    { sender: "System", text: "Welcome to the GRS Live Stream room.", role: "SYSTEM" },
+    { sender: "System", text: "Welcome to the Live Stream room.", role: "SYSTEM" },
     { sender: speakerName, text: "Welcome everyone, we will begin the staging guidelines shortly.", role: "SPEAKER" },
   ]);
   const [chatInput, setChatInput] = useState("");
@@ -217,7 +217,7 @@ export default function WebinarMeetingPlayer({
 
                 {/* Simulated Presentation Slide Content */}
                 <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-[10px] space-y-1.5 max-w-sm text-slate-300 font-mono">
-                  <p className="text-primary font-bold">&gt; GRS AWARENESS PROTOCOL v2.0</p>
+                  <p className="text-primary font-bold">&gt; AWARENESS PROTOCOL v2.0</p>
                   <p>&gt; Step 1: Visual Inspection (Stigma check)</p>
                   <p>&gt; Step 2: Physical Palpation (Lymph node check)</p>
                   <p>&gt; Status: 80% Stay triggers automatic QR Certificate</p>
