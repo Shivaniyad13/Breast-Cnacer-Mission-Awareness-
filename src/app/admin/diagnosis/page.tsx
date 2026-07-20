@@ -1,23 +1,26 @@
 import { auth } from "@/auth";
 import { Role } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { getAdminSuccessStories } from "@/app/actions/successStories";
-import AdminSuccessStoriesDashboard from "@/components/admin/AdminSuccessStoriesDashboard";
-import { Heart, ShieldCheck } from "lucide-react";
+import { getDiagnosisTechnologies, getCollaborationRequests } from "@/app/actions/diagnosis";
+import AdminDiagnosisDashboard from "@/components/admin/AdminDiagnosisDashboard";
+import { Stethoscope, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
-export const revalidate = 0; // Fresh database reads on every admin access
+export const revalidate = 0; // Fresh database reads on every access
 
-export default async function AdminSuccessStoriesPage() {
+export default async function AdminDiagnosisPage() {
   const session = await auth();
 
   if (!session?.user || session.user.role !== Role.ADMIN) {
     redirect("/");
   }
 
-  // Fetch all success stories from database
-  const result = await getAdminSuccessStories();
-  const stories = result.success && result.stories ? result.stories : [];
+  // Fetch technologies and collaboration requests
+  const techRes = await getDiagnosisTechnologies(false);
+  const requestsRes = await getCollaborationRequests();
+
+  const technologies = techRes.success && techRes.technologies ? techRes.technologies : [];
+  const requests = requestsRes.success && requestsRes.requests ? requestsRes.requests : [];
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8 min-h-screen">
@@ -28,10 +31,10 @@ export default async function AdminSuccessStoriesPage() {
             <ShieldCheck className="h-2.5 w-2.5" /> GRS Command Center
           </span>
           <h1 className="font-heading text-3xl font-extrabold tracking-tight text-slate-800 flex items-center gap-2">
-            <Heart className="h-8 w-8 text-primary fill-primary" /> Success Story Moderation
+            <Stethoscope className="h-8 w-8 text-primary" /> Diagnosis & Collaboration Management
           </h1>
           <p className="text-muted-foreground text-sm">
-            Verify submitted patient and family member journeys, edit details, approve for Home Page feature, or reject/delete.
+            Add diagnostic technologies, configure manufacturer partnerships, and review or moderate collaboration requests from external healthcare organizations.
           </p>
         </div>
       </div>
@@ -44,7 +47,7 @@ export default async function AdminSuccessStoriesPage() {
         <Link href="/admin/memberships" className="text-slate-500 hover:text-primary transition-colors">
           Institution Memberships
         </Link>
-        <Link href="/admin/success-stories" className="text-primary border-b-2 border-primary pb-4 -mb-[18px] transition-colors">
+        <Link href="/admin/success-stories" className="text-slate-500 hover:text-primary transition-colors">
           Patient Success Stories
         </Link>
         <Link href="/admin/homepage-widgets" className="text-slate-500 hover:text-primary transition-colors">
@@ -53,13 +56,13 @@ export default async function AdminSuccessStoriesPage() {
         <Link href="/admin/live-updates" className="text-slate-500 hover:text-primary transition-colors">
           Home Page Live Updates
         </Link>
-        <Link href="/admin/diagnosis" className="text-slate-500 hover:text-primary transition-colors">
+        <Link href="/admin/diagnosis" className="text-primary border-b-2 border-primary pb-4 -mb-[18px] transition-colors">
           Diagnosis & Collaboration
         </Link>
       </div>
 
-      {/* Main Admin Dashboard */}
-      <AdminSuccessStoriesDashboard stories={stories as any} />
+      {/* Main Admin Controller */}
+      <AdminDiagnosisDashboard initialTechnologies={technologies as any} initialRequests={requests as any} />
     </div>
   );
 }

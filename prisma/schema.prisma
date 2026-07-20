@@ -452,6 +452,60 @@ model LiveUpdate {
   updatedAt        DateTime  @updatedAt
 }
 
+model DiagnosisTechnology {
+  id                         String   @id @default(uuid())
+  name                       String
+  category                   String
+  shortOverview              String
+  accuracy                   String?
+  purpose                    String
+  advantages                 String   // Stores newline-separated or comma-separated benefits
+  limitations                String   // Stores newline-separated or comma-separated limitations
+  recommendedGroup           String
+  imageUrl                   String?
+  introVideoUrl              String?
+  animationVideoUrl          String?
+  explainerVideoUrl          String?
+  workflow                   String?
+  stepByStep                 String?
+  preparation                String?
+  duration                   String?
+  benefits                   String?
+  risks                      String?
+  whoShouldTake              String?
+  faqs                       Json?    // [{ q: string, a: string }]
+  relatedArticles            Json?    // [{ title: string, link: string }]
+  brochureUrl                String?
+  manufacturerName           String
+  manufacturerLogoUrl        String?
+  manufacturerOverview       String?
+  manufacturerWebsite        String?
+  manufacturerCountry        String?
+  manufacturerSpecialization String?
+  collaborationStatus        String?  // e.g. "Active", "In Discussion", "None"
+  isActive                   Boolean  @default(true)
+  orderIndex                 Int      @default(0)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+}
 
-
-
+model CollaborationRequest {
+  id                String   @id @default(uuid())
+  organizationName  String
+  companyName       String
+  contactPerson     String
+  designation       String
+  email             String
+  phone             String
+  country           String
+  website           String?
+  technologyName    String
+  collaborationType String
+  description       String
+  brochureUrl       String?
+  companyProfileUrl String?
+  consent           Boolean  @default(false)
+  status            String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

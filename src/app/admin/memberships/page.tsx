@@ -58,6 +58,9 @@ export default async function AdminMembershipsPage() {
         <Link href="/admin/live-updates" className="text-slate-500 hover:text-primary transition-colors">
           Home Page Live Updates
         </Link>
+        <Link href="/admin/diagnosis" className="text-slate-500 hover:text-primary transition-colors">
+          Diagnosis & Collaboration
+        </Link>
       </div>
 
       {/* Main Admin Controller */}
