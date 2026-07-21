@@ -1,462 +1,1293 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Ribbon, 
   IndianRupee, 
   ShieldCheck, 
-  CheckCircle, 
+  CheckCircle2, 
   Heart,
   Info,
   Users,
   TrendingUp,
   HeartHandshake,
-  ArrowRight
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Shield,
+  Award,
+  Lock,
+  Globe,
+  Plus,
+  Minus,
+  Sparkles,
+  HelpCircle,
+  QrCode,
+  Check,
+  CheckCircle,
+  FileText
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Types
+interface SurvivorStory {
+  name: string;
+  age: number;
+  city: string;
+  badge: string;
+  story: string;
+  quote: string;
+  impact: string;
+  image: string;
+}
+
+interface Testimonial {
+  name: string;
+  role: string;
+  message: string;
+  rating: number;
+  image: string;
+}
+
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface ImpactTier {
+  amount: number;
+  description: string;
+  details: string;
+  icon: React.ReactNode;
+}
 
 export default function DonatePage() {
-  // Donation states
-  const [goal] = useState(1500000);
-  const [collected, setCollected] = useState(725000);
-  const [selectedDonation, setSelectedDonation] = useState<number | null>(2500);
-  const [customDonation, setCustomDonation] = useState("");
-  const [showDonateSuccess, setShowDonateSuccess] = useState(false);
-  const [donating, setDonating] = useState(false);
-  const [donorsCount, setDonorsCount] = useState(318);
+  // ----------------------------------------------------
+  // States
+  // ----------------------------------------------------
+  const [giveOnce, setGiveOnce] = useState<boolean>(true);
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(2500);
+  const [customAmount, setCustomAmount] = useState<string>("");
+  const [donorName, setDonorName] = useState<string>("");
+  const [donorEmail, setDonorEmail] = useState<string>("");
+  const [donorPhone, setDonorPhone] = useState<string>("");
+  const [organization, setOrganization] = useState<string>("");
+  const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("upi");
+  
+  // App states
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [showQRModal, setShowQRModal] = useState<boolean>(false);
+  const [animatedTotalRaised, setAnimatedTotalRaised] = useState<number>(7800000);
+  const [donorCount, setDonorCount] = useState<number>(3829);
 
-  const handleDonateSubmit = (e: React.FormEvent) => {
+  // Active Story Index
+  const [activeStoryIdx, setActiveStoryIdx] = useState<number>(0);
+  const [activeTestimonialIdx, setActiveTestimonialIdx] = useState<number>(0);
+  const [activeFaqIdx, setActiveFaqIdx] = useState<number | null>(null);
+
+  // Form reference for scrolling
+  const formRef = useRef<HTMLDivElement>(null);
+
+  // ----------------------------------------------------
+  // Mock Data
+  // ----------------------------------------------------
+  const impactTiers: ImpactTier[] = [
+    {
+      amount: 500,
+      description: "Awareness Material",
+      details: "Provides comprehensive printed and digital breast cancer awareness booklets and guidance for one underprivileged rural family.",
+      icon: <FileText className="h-6 w-6 text-pink-600" />
+    },
+    {
+      amount: 1000,
+      description: "One Screening",
+      details: "Funds one clinical breast examination and mammogram referral for a woman at a local community outreach health camp.",
+      icon: <Heart className="h-6 w-6 text-pink-600" />
+    },
+    {
+      amount: 2500,
+      description: "Diagnostic Support",
+      details: "Covers crucial pathology tests, biopsies, and initial oncologist consultation charges for high-risk symptomatic women.",
+      icon: <Sparkles className="h-6 w-6 text-pink-600" />
+    },
+    {
+      amount: 5000,
+      description: "Treatment Assistance",
+      details: "Contributes directly to chemotherapy drugs, target hormones, and post-surgery rehabilitation for patients under active care.",
+      icon: <HeartHandshake className="h-6 w-6 text-pink-600" />
+    },
+    {
+      amount: 10000,
+      description: "Community Screening Camp",
+      details: "Sponsors a local clinical screening event with professional oncology nurses and primary diagnosis equipment for 15+ women.",
+      icon: <Users className="h-6 w-6 text-pink-600" />
+    }
+  ];
+
+  const survivorStories: SurvivorStory[] = [
+    {
+      name: "Priya Sharma",
+      age: 36,
+      city: "New Delhi",
+      badge: "Stage II Breast Cancer Survivor",
+      story: "Diagnosed at 35, Priya was terrified she wouldn't see her two young daughters grow up. Her husband's modest salary couldn't cover the intensive chemotherapy cycles. Through the Breast Cancer Mission Platform, her treatment cost was funded, giving her a second chance.",
+      quote: "The Breast Cancer Mission Platform didn't just fund my medicines; they stood by me like a family when I had lost all hope of survival.",
+      impact: "Mastectomy surgery & 6 chemo cycles fully funded.",
+      image: "/images/survivor_strength.png"
+    },
+    {
+      name: "Lakshmi Devi",
+      age: 49,
+      city: "Gurugram",
+      badge: "Stage III Survivor & Advocate",
+      story: "Lakshmi felt a lump but delayed consulting due to financial constraints and stigma. The Breast Cancer Mission Platform's local awareness camp screened her, detected the tumor in Stage III, and immediately enrolled her in emergency radiation therapy.",
+      quote: "If not for that free screening camp in our village, I wouldn't have been alive today. It saved my family.",
+      impact: "Free mammography screening, biopsy, and emergency radiation therapy.",
+      image: "/images/support_group.png"
+    },
+    {
+      name: "Ritu Goel",
+      age: 42,
+      city: "Noida",
+      badge: "Early-stage Survivor",
+      story: "An active school teacher, Ritu was diagnosed early. The diagnostic expenses were cleared by donor contributions, allowing her to get immediate treatment before the cancer could spread.",
+      quote: "Early detection is truly the biggest cure. Because donors funded my diagnostic tests, my recovery was quick and successful.",
+      impact: "Fully funded advanced 3D mammogram and oncology consulting.",
+      image: "/images/preventive_wellness.png"
+    }
+  ];
+
+  const trustCards = [
+    {
+      title: "100% Dedicated",
+      description: "Every campaign and resource is strictly focused on breast cancer prevention, treatment, and survivor support.",
+      icon: <Ribbon className="h-8 w-8 text-pink-600" />
+    },
+    {
+      title: "Transparent Fund Usage",
+      description: "We publish annual financial audits. Every rupee directly clears medical bills at partner hospitals.",
+      icon: <TrendingUp className="h-8 w-8 text-pink-600" />
+    },
+    {
+      title: "Verified NGO Partner",
+      description: "Registered non-profit. All transactions comply with legal compliance, providing valid tax exemption.",
+      icon: <ShieldCheck className="h-8 w-8 text-pink-600" />
+    },
+    {
+      title: "Secure Payments",
+      description: "Industry-standard SSL encryption and secure UPI/Card gateways protect your personal and payment details.",
+      icon: <Lock className="h-8 w-8 text-pink-600" />
+    },
+    {
+      title: "Medical Expert Support",
+      description: "Our advisory board consists of certified senior oncologists guiding our screening and treatment protocols.",
+      icon: <Award className="h-8 w-8 text-pink-600" />
+    },
+    {
+      title: "Community Outreach",
+      description: "Active mobile testing vans and rural camps bringing diagnosis to the doorstep of underprivileged women.",
+      icon: <Globe className="h-8 w-8 text-pink-600" />
+    }
+  ];
+
+  const testimonials: Testimonial[] = [
+    {
+      name: "Dr. Jyoti Bajpai",
+      role: "Senior Oncologist, Associated Hospital",
+      message: "The biggest barrier to cancer recovery in India is financial dropout. The Breast Cancer Mission Platform fills this critical gap by ensuring patients never stop chemotherapy midway due to lack of funds. Their impact is real and scientifically critical.",
+      rating: 5,
+      image: "/images/cancer_research.png"
+    },
+    {
+      name: "Meera Krishnan",
+      role: "Volunteer & Breast Cancer Survivor",
+      message: "After surviving Stage II cancer through Breast Cancer Mission Platform support, I committed my life to guiding others. Today, I volunteer in screening camps. It's beautiful to see donors saving families every single day.",
+      rating: 5,
+      image: "/images/volunteers.png"
+    },
+    {
+      name: "Anand Verma",
+      role: "Monthly Sustaining Donor",
+      message: "I chose to support the Breast Cancer Mission Platform because of their transparency. I receive regular patient recovery updates, letting me know exactly how my monthly contribution is directly keeping someone's mother or sister alive.",
+      rating: 5,
+      image: "/images/volunteers1.jpg"
+    }
+  ];
+
+  const faqs: FAQItem[] = [
+    {
+      question: "Where does my donation go?",
+      answer: "Your donation is directly transferred to our partner oncological centers to cover chemotherapy drugs, surgical mastectomy fees, reconstructive therapy, and primary screening camps. We maintain zero-profit patient-directed disbursements."
+    },
+    {
+      question: "Is my payment secure?",
+      answer: "Yes, absolutely. We use Razorpay and SBI secure payment gateways with 256-bit SSL encryption. We do not store your credit card details or UPI PINs on our servers."
+    },
+    {
+      question: "Will I receive a donation tax certificate?",
+      answer: "Yes. The Breast Cancer Mission Platform is a registered NGO under Section 80G of the Income Tax Act. You will receive an automated 80G receipt and donation certificate on your registered email address within 24 hours of transaction completion."
+    },
+    {
+      question: "Can I donate anonymously?",
+      answer: "Yes. If you check the 'Donate anonymously' option on the donation card, your name and email will be hidden from public logs and patient-facing records. It will remain strictly confidential for internal audit purposes only."
+    },
+    {
+      question: "Can organizations/corporates donate?",
+      answer: "Yes, we accept corporate donations, CSR grants, and employee-giving partnerships. You can fill in your organization's name during donation, and we will issue a corporate tax certificate and detailed CSR impact report."
+    }
+  ];
+
+  const galleryItems = [
+    { image: "/images/community_walk.png", title: "Awareness Walk 2025", desc: "500+ participants raising awareness." },
+    { image: "/images/volunteers.png", title: "Volunteer Training", desc: "Preparing survivors to counsel new patients." },
+    { image: "/images/support_group.png", title: "Survivor Support Group", desc: "Weekly group therapy and counseling." },
+    { image: "/images/awareness1.png", title: "Rural Screening Camp", desc: "Free clinical screening in Alwar, Rajasthan." },
+    { image: "/images/awareness2.png", title: "Hospital Visit", desc: "Distributing prosthetic kits to postoperative patients." },
+    { image: "/images/awareness3.png", title: "Early Detection Seminar", desc: "Educating college students on self-examination." }
+  ];
+
+  // ----------------------------------------------------
+  // Auto-scroll Carousels
+  // ----------------------------------------------------
+  useEffect(() => {
+    const storyInterval = setInterval(() => {
+      setActiveStoryIdx((prev) => (prev + 1) % survivorStories.length);
+    }, 8000);
+
+    const testimonialInterval = setInterval(() => {
+      setActiveTestimonialIdx((prev) => (prev + 1) % testimonials.length);
+    }, 6000);
+
+    return () => {
+      clearInterval(storyInterval);
+      clearInterval(testimonialInterval);
+    };
+  }, []);
+
+  // ----------------------------------------------------
+  // Scroll to Form helper
+  // ----------------------------------------------------
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleImpactSelect = (amt: number) => {
+    setSelectedAmount(amt);
+    setCustomAmount("");
+    scrollToForm();
+  };
+
+  // ----------------------------------------------------
+  // Handlers
+  // ----------------------------------------------------
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const amount = selectedDonation || parseFloat(customDonation);
-    if (!amount || amount <= 0) return;
+    const finalAmount = selectedAmount || parseFloat(customAmount);
+    if (!finalAmount || finalAmount <= 0) {
+      alert("Please select or enter a valid donation amount.");
+      return;
+    }
+    if (!donorName || !donorEmail || !donorPhone) {
+      alert("Please fill in your name, email, and phone number.");
+      return;
+    }
 
-    setDonating(true);
+    if (paymentMethod === "upi") {
+      setShowQRModal(true);
+    } else {
+      setIsSubmitting(true);
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setShowSuccessModal(true);
+        // Add to statistics
+        setAnimatedTotalRaised((prev) => prev + finalAmount);
+        setDonorCount((prev) => prev + 1);
+      }, 2000);
+    }
+  };
+
+  const handleConfirmUPIPayment = () => {
+    setShowQRModal(false);
+    setIsSubmitting(true);
     setTimeout(() => {
-      setCollected((prev) => prev + amount);
-      setDonorsCount((prev) => prev + 1);
-      setDonating(false);
-      setShowDonateSuccess(true);
-      setTimeout(() => setShowDonateSuccess(false), 4500);
+      setIsSubmitting(false);
+      setShowSuccessModal(true);
+      const finalAmount = selectedAmount || parseFloat(customAmount) || 2500;
+      setAnimatedTotalRaised((prev) => prev + finalAmount);
+      setDonorCount((prev) => prev + 1);
     }, 1500);
   };
 
-  // Active verified patient cases in need of immediate funding
-  const activePatients = [
-    {
-      name: "Savitri Devi",
-      age: 42,
-      location: "Noida, UP",
-      diagnosis: "Stage III Invasive Ductal Carcinoma",
-      required: 180000,
-      raised: 135000,
-      hospital: "Khushi Rehab & Oncology Centre",
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200"
-    },
-    {
-      name: "Renu Bala",
-      age: 38,
-      location: "Ghaziabad, UP",
-      diagnosis: "Stage II HER2-Positive Breast Cancer",
-      required: 250000,
-      raised: 190000,
-      hospital: "Khushi Rehab & Oncology Centre",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200"
-    },
-    {
-      name: "Kiran Sharma",
-      age: 49,
-      location: "Faridabad, HR",
-      diagnosis: "Early-stage Lobular Carcinoma",
-      required: 120000,
-      raised: 95000,
-      hospital: "Khushi Rehab & Oncology Centre",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200"
-    }
-  ];
-
-  // Fund utilization breakdown
-  const utilization = [
-    { percentage: "50%", category: "Direct Chemotherapy & Medicines", details: "Acquiring clinical oncology drugs directly from verified pharmaceutical manufacturers to cut treatment costs by up to 40%." },
-    { percentage: "30%", category: "Oncological Surgery & Biopsy Support", details: "Funding mastectomies, lumpectomies, sentinel node biopsies, and post-surgical reconstructive support for rural mothers." },
-    { percentage: "20%", category: "Post-Operative Rehabilitation", details: "Providing custom external silicone prosthetics, professional lymphatic drainage therapy, and mental health counseling." }
-  ];
-
-  // Past success stories showing real impact
-  const successStories = [
-    {
-      name: "Meera Krishnan",
-      role: "Mastectomy Survivor & Campaign Advocate",
-      story: "When I was diagnosed with Stage II breast cancer, chemotherapy costs seemed impossible. Through this campaign, my surgical expenses were directly cleared to the hospital. Today, I am cancer-free and volunteer my time to guide other rural patients.",
-      badge: "Stage II Survivor",
-      impact: "Mastectomy & 6 Chemo Cycles Funded"
-    },
-    {
-      name: "Kusum Lata",
-      role: "Stage III Survivor & Mother of Two",
-      story: "I had lost hope of seeing my children grow up. Generous donors funded my targeted radiation therapy and post-op care. Saving a mother is saving the whole family, and the donors did exactly that for me. I am forever grateful.",
-      badge: "Stage III Survivor",
-      impact: "Radiation Therapy & Post-Op Care Funded"
-    }
-  ];
-
   return (
-    <div className="flex-1 w-full bg-gradient-to-b from-rose-50/20 via-white to-slate-50/50 py-12 selection:bg-pink-100 selection:text-pink-700">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl space-y-16">
-        
-        {/* Page Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
-            <Heart className="h-3.5 w-3.5 fill-emerald-600 text-emerald-600 animate-pulse" />
-            Verified Medical Aid Campaign
-          </div>
-          <h1 className="font-heading text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-            Support Underprivileged Breast Cancer Patients
-          </h1>
-          <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-            Every donation directly clears chemotherapy, surgery, and clinical rehabilitation expenses for underprivileged women at our associated oncology center.
-          </p>
-          
-          {/* Action Button that scrolls down with green color & hover effect */}
-          <div className="pt-2">
-            <a href="#donate-now">
-              <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-5 px-8 rounded-2xl transition-all duration-300 shadow-lg shadow-emerald-600/25 hover:scale-105 active:scale-95 cursor-pointer">
-                Donate Now
-              </Button>
-            </a>
-          </div>
+    <div className="flex-1 w-full bg-slate-50 selection:bg-pink-100 selection:text-pink-700 overflow-x-hidden">
+      
+      {/* ----------------------------------------------------
+          1. HERO SECTION
+          ---------------------------------------------------- */}
+      <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Background Video/Image Overlay */}
+        <div className="absolute inset-0 z-0">
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline
+            className="w-full h-full object-cover pointer-events-none"
+            poster="/images/community_walk.png"
+          >
+            <source src="/videoplayback.mp4" type="video/mp4" />
+            <source src="/cancer3.webm" type="video/webm" />
+          </video>
+          {/* Deep premium overlay with pink/purple/dark shades */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-900/70 to-pink-950/50 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90" />
         </div>
 
-        {/* Emotional Quote Panel */}
-        <div className="bg-rose-50/50 border border-rose-100/70 rounded-3xl p-6 md:p-8 text-center max-w-3xl mx-auto shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 transform translate-x-4 -translate-y-4 opacity-5 pointer-events-none">
-            <Ribbon className="h-48 w-48 text-pink-500" />
-          </div>
-          <p className="font-serif italic text-lg sm:text-xl md:text-2xl text-slate-800 leading-relaxed font-semibold font-serif">
-            &ldquo;Contribute to save the heartbeat of a family—the mother. Save her life, her dignity, and her future. Behind every breast cancer patient is a family waiting for their mother to return home whole.&rdquo;
-          </p>
-          <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-black tracking-widest text-pink-600 uppercase">
-            <span className="h-px w-6 bg-pink-300"></span>
-            Every Contribution Preserves a Family
-            <span className="h-px w-6 bg-pink-300"></span>
-          </div>
-        </div>
-
-        {/* Main Donation Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-4">
-
-          {/* LEFT: Donation form card */}
-          <Card id="donate-now" className="lg:col-span-7 border-rose-100/60 bg-white shadow-lg p-6 sm:p-8 space-y-6 rounded-3xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl relative z-10 py-20 text-center sm:text-left">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
-            {/* Target goals progress bar */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-end text-sm">
-                <div>
-                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Campaign Target</p>
-                  <p className="text-2xl font-black text-slate-800 tracking-tight mt-0.5">
-                    ₹{collected.toLocaleString()} <span className="text-xs font-semibold text-slate-500">raised of ₹15,00,000 goal</span>
-                  </p>
-                </div>
-                <span className="font-bold text-emerald-600 text-base">
-                  {((collected / goal) * 100).toFixed(1)}%
+            {/* Left Content */}
+            <div className="lg:col-span-7 space-y-6">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-500/20 backdrop-blur-xs border border-pink-500/30 text-pink-300 text-xs font-semibold uppercase tracking-wider"
+              >
+                <Heart className="h-4 w-4 text-pink-400 fill-pink-400 animate-pulse" />
+                Breast Cancer Mission Platform
+              </motion.div>
+
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight"
+              >
+                Your Kindness <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-rose-300 to-purple-400">
+                  Can Save a Life.
                 </span>
+              </motion.h1>
+
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-slate-300 text-base sm:text-lg max-w-xl leading-relaxed"
+              >
+                Every single donation supports mobile screening camps, free mammograms, medical expert support, patient surgery assistance, and hope for underprivileged families.
+              </motion.p>
+
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="flex flex-col sm:flex-row gap-4 justify-center sm:justify-start"
+              >
+                <Button 
+                  onClick={scrollToForm}
+                  className="bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold px-8 py-6 rounded-2xl shadow-lg shadow-pink-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
+                >
+                  Donate Now
+                  <ArrowRight className="h-5 w-5 ml-1" />
+                </Button>
+                <a href="#survivor-stories" className="w-full sm:w-auto">
+                  <Button 
+                    variant="outline" 
+                    className="border-slate-400 text-white hover:bg-white/10 font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base w-full"
+                  >
+                    Read Survivor Stories
+                  </Button>
+                </a>
+              </motion.div>
+            </div>
+
+            {/* Right Counter Panels (Animated Stats) */}
+            <div className="lg:col-span-5 grid grid-cols-2 gap-4">
+              {[
+                { label: "Women Screened", value: "18,450+", desc: "Early checkups completed", delay: 0.2 },
+                { label: "Awareness Camps", value: "154+", desc: "Rural & school drives", delay: 0.3 },
+                { label: "Donations Raised", value: "₹85 L+", desc: "100% verified care", delay: 0.4 },
+                { label: "Lives Saved", value: "3,820+", desc: "Patients cancer-free", delay: 0.5 }
+              ].map((stat, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: stat.delay }}
+                  className="p-5 rounded-3xl bg-white/10 backdrop-blur-md border border-white/15 shadow-xl hover:bg-white/15 transition-all flex flex-col justify-between text-left"
+                >
+                  <p className="text-xs text-pink-300 font-bold tracking-widest uppercase">{stat.label}</p>
+                  <div className="my-2">
+                    <p className="text-3xl font-black text-white tracking-tight">{stat.value}</p>
+                    <p className="text-[11px] text-slate-300 mt-1 font-medium leading-tight">{stat.desc}</p>
+                  </div>
+                  <div className="h-1.5 w-10 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full" />
+                </motion.div>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------
+          2. SURVIVOR STORIES CAROUSEL
+          ---------------------------------------------------- */}
+      <section id="survivor-stories" className="py-20 bg-gradient-to-b from-slate-900 to-purple-950 text-white relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none opacity-5">
+          <Ribbon className="h-[500px] w-[500px] text-pink-500 absolute -top-20 -right-20" />
+          <Heart className="h-[400px] w-[400px] text-purple-500 absolute bottom-10 -left-20" />
+        </div>
+
+        <div className="container mx-auto px-4 max-w-5xl relative z-10">
+          <div className="text-center space-y-3 mb-16">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500/10 text-pink-400 text-xs font-bold uppercase tracking-wider border border-pink-500/20">
+              <Users className="h-4 w-4" />
+              Survivor Stories
+            </div>
+            <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+              Real Struggles. <span className="text-pink-400">Real Victories.</span>
+            </h2>
+            <p className="text-slate-300 text-sm sm:text-base max-w-xl mx-auto">
+              Your donation gives mothers, wives, and daughters a chance to win their battle and share their testimony.
+            </p>
+          </div>
+
+          {/* Carousel Body */}
+          <div className="relative bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 md:p-12 backdrop-blur-lg shadow-2xl overflow-hidden min-h-[480px] flex items-center">
+            
+            {/* Story Elements */}
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={activeStoryIdx}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.5 }}
+                className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center w-full"
+              >
+                
+                {/* Photo */}
+                <div className="md:col-span-5 flex justify-center">
+                  <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden border-3 border-pink-500/30 shadow-2xl group">
+                    <img 
+                      src={survivorStories[activeStoryIdx].image} 
+                      alt={survivorStories[activeStoryIdx].name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                    <span className="absolute bottom-4 left-4 bg-pink-600 text-white font-bold text-xs uppercase px-3 py-1 rounded-md tracking-wider shadow-md">
+                      {survivorStories[activeStoryIdx].badge}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Narrative & Quote */}
+                <div className="md:col-span-7 space-y-6">
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-pink-400 uppercase tracking-widest">Featured Story</p>
+                    <h3 className="font-heading text-2xl md:text-3xl font-extrabold text-white">
+                      {survivorStories[activeStoryIdx].name}, <span className="text-slate-300 font-normal">{survivorStories[activeStoryIdx].age} yrs</span>
+                    </h3>
+                    <p className="text-xs text-slate-400 font-medium tracking-wide flex items-center gap-1">
+                      <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
+                      Home: {survivorStories[activeStoryIdx].city}
+                    </p>
+                  </div>
+
+                  <p className="text-slate-300 text-sm md:text-base leading-relaxed italic">
+                    &ldquo;{survivorStories[activeStoryIdx].story}&rdquo;
+                  </p>
+
+                  <div className="p-4 rounded-xl bg-pink-500/10 border-l-4 border-pink-500">
+                    <p className="text-pink-300 font-serif italic text-sm md:text-base leading-relaxed">
+                      &ldquo;{survivorStories[activeStoryIdx].quote}&rdquo;
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 text-xs text-slate-400">
+                    <span className="font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
+                      {survivorStories[activeStoryIdx].impact}
+                    </span>
+                  </div>
+                </div>
+
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Navigation Dots and Arrows */}
+            <div className="absolute bottom-6 right-6 md:right-12 flex items-center gap-4 z-20">
+              <div className="flex gap-1.5">
+                {survivorStories.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveStoryIdx(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      activeStoryIdx === idx ? "w-6 bg-pink-500" : "w-2 bg-white/30 hover:bg-white/50"
+                    }`}
+                  />
+                ))}
               </div>
-              <div className="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
-                <div 
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500" 
-                  style={{ width: `${(collected / goal) * 100}%` }}
-                />
-              </div>
-              <div className="flex justify-between text-[11px] text-slate-500 font-semibold italic">
-                <span>* Direct hospital payouts enabled.</span>
-                <span>{donorsCount} verified donors</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setActiveStoryIdx((prev) => (prev - 1 + survivorStories.length) % survivorStories.length)}
+                  className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 transition-colors"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setActiveStoryIdx((prev) => (prev + 1) % survivorStories.length)}
+                  className="p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 transition-colors"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
               </div>
             </div>
 
-            {/* Donation calculator input forms */}
-            {showDonateSuccess ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-bold text-center flex flex-col items-center justify-center gap-2"
+          </div>
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------
+          3. DONATION IMPACT SECTION
+          ---------------------------------------------------- */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center space-y-3 mb-16">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 text-pink-700 text-xs font-bold uppercase tracking-wider border border-pink-100">
+              <TrendingUp className="h-4 w-4 text-pink-600" />
+              Direct Impact Breakdown
+            </div>
+            <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              See the Power of Your Contribution
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto">
+              Every single rupee the Breast Cancer Mission Platform receives is optimized to support early screening, diagnostics, or active surgery. Select a tier below to see the impact.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+            {impactTiers.map((tier, idx) => (
+              <motion.div
+                key={idx}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="flex flex-col justify-between p-6 rounded-3xl bg-slate-50 border border-slate-200/60 shadow-xs hover:shadow-lg hover:border-pink-300 hover:bg-pink-50/50 transition-all duration-300 group"
               >
-                <div className="h-10 w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                  <CheckCircle className="h-6 w-6" />
+                <div className="space-y-4">
+                  <div className="h-12 w-12 rounded-2xl bg-white shadow-xs border border-slate-200/50 flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-transform">
+                    {tier.icon}
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-2xl font-black text-slate-800 font-heading font-black">₹{tier.amount.toLocaleString()}</p>
+                    <p className="text-sm font-bold text-pink-600 uppercase tracking-wider">{tier.description}</p>
+                  </div>
+                  <p className="text-slate-500 text-xs leading-relaxed">{tier.details}</p>
                 </div>
-                <div>
-                  <p className="text-base text-emerald-900 font-bold">Donation Processed Successfully!</p>
-                  <p className="text-xs text-emerald-700 font-normal mt-1 leading-relaxed">
-                    Thank you for your life-saving contribution. A tax-exempt 80G receipt and certificate copy has been emailed to your registration address.
-                  </p>
+
+                <div className="pt-6">
+                  <Button
+                    onClick={() => handleImpactSelect(tier.amount)}
+                    className="w-full bg-white hover:bg-pink-600 hover:text-white border border-slate-200 text-slate-800 text-xs font-bold py-2 rounded-xl transition-all shadow-xs group-hover:border-pink-500/20 cursor-pointer"
+                  >
+                    Select &amp; Help
+                  </Button>
                 </div>
               </motion.div>
-            ) : (
-              <form onSubmit={handleDonateSubmit} className="space-y-5">
-                <div className="space-y-2.5">
-                  <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                    Select Donation Amount (₹)
-                  </Label>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[1000, 2500, 5000, 10000].map((amt) => (
-                      <Button
-                        key={amt}
-                        type="button"
-                        variant={selectedDonation === amt ? "default" : "outline"}
-                        onClick={() => {
-                          setSelectedDonation(amt);
-                          setCustomDonation("");
-                        }}
-                        className={`text-xs sm:text-sm font-bold rounded-xl py-5 h-auto transition-all cursor-pointer ${
-                          selectedDonation === amt 
-                            ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/10 border-emerald-600" 
-                            : "hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 border-slate-200"
-                        }`}
-                      >
-                        ₹{amt.toLocaleString()}
-                      </Button>
-                    ))}
-                  </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------
+          4. WHY DONATE TO BREAST CANCER MISSION
+          ---------------------------------------------------- */}
+      <section className="py-20 bg-gradient-to-b from-pink-50/30 via-purple-50/20 to-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center space-y-3 mb-16">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold uppercase tracking-wider border border-purple-100">
+              <Shield className="h-4 w-4 text-purple-600" />
+              Trust &amp; Credibility
+            </div>
+            <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Why Donate to Breast Cancer Mission?
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto">
+              We stand as a trusted, verified partner, ensuring that your generosity is treated with the utmost respect and transparency.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {trustCards.map((card, idx) => (
+              <div 
+                key={idx}
+                className="p-6 rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4"
+              >
+                <div className="p-3 rounded-2xl bg-pink-50 border border-pink-100/50 shrink-0">
+                  {card.icon}
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-bold text-slate-800 text-base font-heading leading-tight">{card.title}</h3>
+                  <p className="text-slate-500 text-xs leading-relaxed">{card.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------
+          5. TESTIMONIALS SLIDER
+          ---------------------------------------------------- */}
+      <section className="py-20 bg-slate-900 text-white relative">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center space-y-3 mb-12">
+            <p className="text-xs font-bold text-pink-400 uppercase tracking-widest">Heartfelt Reviews</p>
+            <h2 className="font-heading text-3xl font-extrabold text-white">Words of Hope &amp; Care</h2>
+          </div>
+
+          {/* Testimonial card */}
+          <div className="relative bg-white/5 border border-white/10 p-8 sm:p-10 rounded-3xl backdrop-blur-md shadow-xl text-center">
+            
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTestimonialIdx}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-6"
+              >
+                {/* 5 stars */}
+                <div className="flex justify-center gap-1">
+                  {[...Array(testimonials[activeTestimonialIdx].rating)].map((_, i) => (
+                    <Heart key={i} className="h-4 w-4 text-pink-500 fill-pink-500" />
+                  ))}
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="customDonation" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                    Or Enter Custom Amount (₹)
-                  </Label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">₹</span>
-                    <Input
-                      id="customDonation"
-                      placeholder="Enter other amount"
-                      type="number"
-                      value={customDonation}
-                      onChange={(e) => {
-                        setCustomDonation(e.target.value);
-                        setSelectedDonation(null);
-                      }}
-                      className="bg-slate-50 pl-8 p-3 h-12 rounded-xl border border-slate-200 outline-hidden focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 font-semibold"
+                <p className="text-slate-200 text-base sm:text-lg italic leading-relaxed">
+                  &ldquo;{testimonials[activeTestimonialIdx].message}&rdquo;
+                </p>
+
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-pink-500/50 shadow-md">
+                    <img 
+                      src={testimonials[activeTestimonialIdx].image} 
+                      alt={testimonials[activeTestimonialIdx].name}
+                      className="w-full h-full object-cover"
                     />
                   </div>
+                  <div>
+                    <h4 className="font-bold text-white text-sm">{testimonials[activeTestimonialIdx].name}</h4>
+                    <p className="text-xs text-pink-300 font-medium">{testimonials[activeTestimonialIdx].role}</p>
+                  </div>
                 </div>
 
-                <Button 
-                  type="submit" 
-                  disabled={donating} 
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-6 text-base border-0 rounded-2xl flex items-center justify-center gap-2 relative overflow-hidden transition-all duration-300 shadow-md shadow-emerald-600/10 hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
-                >
-                  {donating ? (
-                    <span className="flex items-center gap-2">
-                      <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
-                      Connecting to Secure Gateway...
-                    </span>
-                  ) : (
-                    <>
-                      <IndianRupee className="h-5 w-5" />
-                      Proceed to Donation Gateway
-                    </>
-                  )}
-                </Button>
-              </form>
-            )}
+              </motion.div>
+            </AnimatePresence>
 
-            {/* Security trust badges */}
-            <div className="pt-4 border-t border-slate-100 flex flex-wrap justify-around items-center gap-4 text-[10px] text-slate-500 uppercase font-bold tracking-wider">
-              <span className="flex items-center gap-1.5"><ShieldCheck className="h-4.5 w-4.5 text-emerald-600" /> Direct Hospital Bank Payout</span>
-              <span className="flex items-center gap-1.5"><CheckCircle className="h-4.5 w-4.5 text-emerald-600" /> Tax Exempt 80G Compliant</span>
+            {/* Testimonials controls */}
+            <div className="flex justify-center gap-1.5 mt-8">
+              {testimonials.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveTestimonialIdx(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    activeTestimonialIdx === idx ? "w-6 bg-pink-500" : "w-2 bg-white/20 hover:bg-white/40"
+                  }`}
+                />
+              ))}
             </div>
 
-          </Card>
+          </div>
+        </div>
+      </section>
 
-          {/* RIGHT: QR Code SCAN & PAY card */}
-          <div className="lg:col-span-5 flex flex-col items-center">
-            <Card className="border border-rose-100/50 shadow-lg rounded-3xl overflow-hidden w-full max-w-xs mx-auto bg-white">
-              {/* SBI Header */}
-              <div className="bg-white px-6 pt-6 pb-3 flex flex-col items-center gap-2 border-b border-slate-100">
+      {/* ----------------------------------------------------
+          6. MODERN DONATION CARD
+          ---------------------------------------------------- */}
+      <section ref={formRef} className="py-20 bg-gradient-to-b from-white to-pink-50/20 relative">
+        <div className="container mx-auto px-4 max-w-6xl">
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Column: Image with emotional quote */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="relative rounded-3xl overflow-hidden border-4 border-white shadow-2xl aspect-4/5">
+                <img 
+                  src="/images/support_group.png" 
+                  alt="Breast cancer support group holding hands"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-pink-950/80 via-pink-900/10 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6 text-white space-y-2">
+                  <div className="flex gap-1.5">
+                    <Heart className="h-5 w-5 text-pink-400 fill-pink-400" />
+                    <span className="text-xs uppercase font-bold tracking-wider">A Circle of Hope</span>
+                  </div>
+                  <p className="font-serif italic text-sm md:text-base leading-relaxed">
+                    &ldquo;When a woman battles cancer, the entire family suffers. Saving a mother is saving the home. Your action directly impacts lives.&rdquo;
+                  </p>
+                </div>
+              </div>
+
+              {/* Verified campaign stats */}
+              <div className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Total Funds Raised</p>
+                  <p className="text-2xl font-black text-slate-800 tracking-tight mt-0.5">
+                    ₹{animatedTotalRaised.toLocaleString()}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Verified Donors</p>
+                  <p className="text-2xl font-black text-pink-600 tracking-tight mt-0.5">
+                    {donorCount.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Premium Glassmorphism Donation Form */}
+            <div className="lg:col-span-7">
+              <div className="bg-white/80 backdrop-blur-xl border border-pink-100/50 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6">
+                
+                {/* Header info */}
+                <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-extrabold text-slate-800 font-heading">Empower A Patient Today</h3>
+                    <p className="text-xs text-slate-500">100% secure, transparent hospital payout.</p>
+                  </div>
+                  <span className="flex items-center gap-1 text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-md border border-emerald-100">
+                    <ShieldCheck className="h-4 w-4" /> SECURE DONATION
+                  </span>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  
+                  {/* Frequency Toggle */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">Donation Type</Label>
+                    <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl">
+                      <button
+                        type="button"
+                        onClick={() => setGiveOnce(true)}
+                        className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                          giveOnce 
+                            ? "bg-white text-pink-600 shadow-sm" 
+                            : "text-slate-500 hover:text-slate-800"
+                        }`}
+                      >
+                        Give Once
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setGiveOnce(false)}
+                        className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                          !giveOnce 
+                            ? "bg-white text-pink-600 shadow-sm" 
+                            : "text-slate-500 hover:text-slate-800"
+                        }`}
+                      >
+                        <Heart className="h-3 w-3 fill-pink-600 text-pink-600" />
+                        Monthly Support
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Amount Selection Buttons */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                      Select Amount (₹)
+                    </Label>
+                    <div className="grid grid-cols-5 gap-2">
+                      {[500, 1000, 2500, 5000, 10000].map((amt) => (
+                        <button
+                          key={amt}
+                          type="button"
+                          onClick={() => {
+                            setSelectedAmount(amt);
+                            setCustomAmount("");
+                          }}
+                          className={`py-3 text-xs sm:text-sm font-bold rounded-xl border transition-all cursor-pointer ${
+                            selectedAmount === amt 
+                              ? "bg-pink-600 text-white border-pink-600 shadow-md shadow-pink-600/10" 
+                              : "bg-white text-slate-800 border-slate-200 hover:border-pink-300 hover:bg-pink-50/20"
+                          }`}
+                        >
+                          ₹{amt.toLocaleString()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Custom Amount Input */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="custom-amt" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                      Or Enter Custom Amount (₹)
+                    </Label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
+                      <Input
+                        id="custom-amt"
+                        type="number"
+                        placeholder="Enter other amount"
+                        value={customAmount}
+                        onChange={(e) => {
+                          setCustomAmount(e.target.value);
+                          setSelectedAmount(null);
+                        }}
+                        className="pl-8 py-6 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-semibold"
+                      />
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400">INR</span>
+                    </div>
+                  </div>
+
+                  {/* Personal Fields */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="donor-name" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                        Full Name
+                      </Label>
+                      <Input
+                        id="donor-name"
+                        placeholder="e.g. Shalini Roy"
+                        value={donorName}
+                        onChange={(e) => setDonorName(e.target.value)}
+                        className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="donor-email" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                        Email Address
+                      </Label>
+                      <Input
+                        id="donor-email"
+                        type="email"
+                        placeholder="e.g. shalini@example.com"
+                        value={donorEmail}
+                        onChange={(e) => setDonorEmail(e.target.value)}
+                        className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="donor-phone" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                        Phone Number
+                      </Label>
+                      <Input
+                        id="donor-phone"
+                        type="tel"
+                        placeholder="e.g. 9876543210"
+                        value={donorPhone}
+                        onChange={(e) => setDonorPhone(e.target.value)}
+                        className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="organization" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                        Organization (Optional)
+                      </Label>
+                      <Input
+                        id="organization"
+                        placeholder="e.g. Private Ltd"
+                        value={organization}
+                        onChange={(e) => setOrganization(e.target.value)}
+                        className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Anonymous Donation Toggle */}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="anonymous-chk"
+                      checked={isAnonymous}
+                      onChange={(e) => setIsAnonymous(e.target.checked)}
+                      className="rounded border-slate-300 text-pink-600 focus:ring-pink-500 h-4 w-4"
+                    />
+                    <Label htmlFor="anonymous-chk" className="text-xs font-bold text-slate-600 uppercase tracking-wider cursor-pointer">
+                      Make this donation anonymously
+                    </Label>
+                  </div>
+
+                  {/* Message */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="donor-msg" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                      Message / Prayer for the Patient (Optional)
+                    </Label>
+                    <Textarea
+                      id="donor-msg"
+                      placeholder="Send details of support, positive affirmations, or prayers..."
+                      rows={2}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      className="rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                    />
+                  </div>
+
+                  {/* Payment Gateway Grid */}
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                      Choose Payment Method
+                    </Label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {[
+                        { id: "upi", label: "UPI (Scan QR)", desc: "GPay, PhonePe, Paytm" },
+                        { id: "card", label: "Credit/Debit Card", desc: "Visa, Master, RuPay" },
+                        { id: "netbanking", label: "Net Banking", desc: "SBI, HDFC, ICICI" },
+                        { id: "wallet", label: "Wallets", desc: "Paytm, Mobikwik" }
+                      ].map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setPaymentMethod(item.id)}
+                          className={`p-3 rounded-xl border flex flex-col justify-center items-center text-center cursor-pointer transition-all ${
+                            paymentMethod === item.id 
+                              ? "border-pink-500 bg-pink-50/30 text-pink-600 ring-2 ring-pink-500/20" 
+                              : "border-slate-200 hover:border-pink-200 bg-white"
+                          }`}
+                        >
+                          <span className="text-xs font-bold font-heading">{item.label}</span>
+                          <span className="text-[9px] text-slate-400 font-medium mt-0.5 leading-tight">{item.desc}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Large Pink Action Button */}
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold py-6 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-pink-600/20 hover:scale-[1.01] active:scale-[0.99] transition-all text-base font-bold"
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center gap-2">
+                        <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+                        Connecting to Secure Gateway...
+                      </span>
+                    ) : (
+                      <>
+                        <Heart className="h-5 w-5 fill-white text-white" />
+                        Donate Now (₹{(selectedAmount || parseFloat(customAmount) || 0).toLocaleString()})
+                      </>
+                    )}
+                  </Button>
+
+                </form>
+
+                {/* 80G Tax Exemption Note */}
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/50 flex gap-2 text-xs text-slate-500">
+                  <Info className="h-4.5 w-4.5 text-pink-600 shrink-0 mt-0.5" />
+                  <p>
+                    <strong>80G Tax Benefits:</strong> Indian residents receive 50% tax deduction under Section 80G. An automated certificate is emailed with your receipt.
+                  </p>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------
+          7. GALLERY OF HOPE
+          ---------------------------------------------------- */}
+      <section className="py-20 bg-slate-900 text-white">
+        <div className="container mx-auto px-4 max-w-6xl">
+          
+          <div className="text-center space-y-3 mb-16">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-pink-400 text-xs font-bold uppercase tracking-wider border border-white/10">
+              <Sparkles className="h-4 w-4 text-pink-500" />
+              Gallery of Hope
+            </div>
+            <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-white">
+              Camps, Counseling &amp; Compassion
+            </h2>
+            <p className="text-slate-400 text-sm max-w-xl mx-auto">
+              A visual glimpse of our awareness campaigns, free mammography checks, community care volunteers, and patient support circles.
+            </p>
+          </div>
+
+          {/* Gallery grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {galleryItems.map((item, idx) => (
+              <motion.div
+                key={idx}
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.3 }}
+                className="relative h-64 rounded-3xl overflow-hidden border border-white/10 shadow-lg group"
+              >
+                <img 
+                  src={item.image} 
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                {/* Overlay hover effect */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6" />
+                
+                {/* Details shown always on mobile, or on hover on desktop */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-slate-950/90 to-transparent md:bg-none md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-300">
+                  <h4 className="font-bold text-white text-base leading-tight font-heading">{item.title}</h4>
+                  <p className="text-xs text-pink-300 mt-1 font-medium">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------
+          8. FAQ SECTION
+          ---------------------------------------------------- */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 max-w-4xl">
+          
+          <div className="text-center space-y-3 mb-16">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 text-pink-700 text-xs font-bold uppercase tracking-wider border border-pink-100">
+              <HelpCircle className="h-4 w-4 text-pink-600" />
+              Frequently Asked Questions
+            </div>
+            <h2 className="font-heading text-3xl font-extrabold text-slate-900 tracking-tight">
+              Have Questions? We Have Answers.
+            </h2>
+            <p className="text-slate-600 text-sm max-w-xl mx-auto">
+              Everything you need to know about transactional compliance, safety certifications, tax deductions, and anonymous giving.
+            </p>
+          </div>
+
+          {/* Accordion Layout */}
+          <div className="space-y-4">
+            {faqs.map((faq, idx) => {
+              const isOpen = activeFaqIdx === idx;
+              return (
+                <div 
+                  key={idx}
+                  className="rounded-2xl border border-slate-200 overflow-hidden transition-all duration-300 bg-white"
+                >
+                  <button
+                    onClick={() => setActiveFaqIdx(isOpen ? null : idx)}
+                    className="w-full py-5 px-6 flex justify-between items-center text-left font-bold text-slate-800 hover:text-pink-600 hover:bg-slate-50/50 transition-colors cursor-pointer select-none outline-hidden"
+                  >
+                    <span className="font-heading text-sm sm:text-base leading-tight">{faq.question}</span>
+                    <span className="shrink-0 p-1 bg-slate-100 rounded-lg ml-4">
+                      {isOpen ? <Minus className="h-4 w-4 text-pink-600" /> : <Plus className="h-4 w-4 text-slate-500" />}
+                    </span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: "auto" }}
+                        exit={{ height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 pb-6 pt-1 text-slate-500 text-xs sm:text-sm leading-relaxed border-t border-slate-100">
+                          {faq.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------
+          9. FINAL CALL-TO-ACTION & FOOTER ACCENT
+          ---------------------------------------------------- */}
+      <section className="relative py-24 bg-gradient-to-r from-pink-950 via-slate-900 to-purple-950 text-white overflow-hidden text-center">
+        {/* BG Survivor Image Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/images/community_walk.png" 
+            alt="Smiling Breast Cancer Survivors and Donors" 
+            className="w-full h-full object-cover opacity-15 pointer-events-none mix-blend-overlay"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90" />
+        </div>
+
+        <div className="container mx-auto px-4 max-w-4xl relative z-10 space-y-6">
+          <motion.div
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ repeat: Infinity, duration: 3 }}
+            className="inline-block p-4 rounded-full bg-pink-600/10 border border-pink-500/20"
+          >
+            <Heart className="h-10 w-10 text-pink-500 fill-pink-500 animate-pulse" />
+          </motion.div>
+
+          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight max-w-2xl mx-auto">
+            Someone is Waiting for a Second Chance at Life.
+          </h2>
+          <p className="text-slate-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+            Your generosity today can become someone&apos;s tomorrow. Together, we can defeat breast cancer, one family at a time.
+          </p>
+
+          <div className="pt-4">
+            <Button
+              onClick={scrollToForm}
+              className="bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold px-10 py-7 rounded-2xl shadow-xl shadow-pink-600/20 transition-all hover:scale-105 active:scale-95 text-base cursor-pointer"
+            >
+              Donate Now
+            </Button>
+          </div>
+
+          <p className="text-xs text-pink-400 font-bold tracking-widest uppercase pt-6">
+            &ldquo;Every Donation Creates Hope. Every Hope Saves a Life.&rdquo;
+          </p>
+        </div>
+      </section>
+
+      {/* ----------------------------------------------------
+          MODAL: SECURE UPI QR SCANNER
+          ---------------------------------------------------- */}
+      <AnimatePresence>
+        {showQRModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-sm border border-pink-100 flex flex-col"
+            >
+              {/* SBI & Khushi Heading */}
+              <div className="bg-slate-50 px-6 pt-6 pb-3 flex flex-col items-center gap-2 border-b border-slate-100 text-center">
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/SBI-logo.svg/1200px-SBI-logo.svg.png"
                   alt="State Bank of India"
-                  className="h-10 w-auto object-contain"
+                  className="h-8 w-auto object-contain"
                 />
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest text-center leading-relaxed">
-                  Khushi Centre for Rehabilitation
+                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-widest leading-relaxed">
+                  Breast Cancer Mission Platform Campaign
+                </h4>
+                <p className="text-[10px] text-slate-400 font-medium font-mono">Hospital Bank Payout System</p>
+              </div>
+
+              {/* Amount Display */}
+              <div className="py-4 text-center">
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Amount to Transfer</p>
+                <p className="text-3xl font-black text-slate-800 tracking-tight mt-0.5 font-heading font-black">
+                  ₹{(selectedAmount || parseFloat(customAmount) || 2500).toLocaleString()}
                 </p>
               </div>
 
-              {/* SCAN & PAY label */}
-              <div className="bg-white px-6 py-2.5 text-center">
-                <p className="text-lg font-extrabold text-slate-800 tracking-widest uppercase">
-                  SCAN &amp; PAY
-                </p>
-              </div>
-
-              {/* QR Code */}
-              <div className="bg-white px-8 pb-4 flex justify-center">
-                <div className="border-2 border-slate-100 rounded-2xl p-2 bg-white shadow-inner">
+              {/* QR Image */}
+              <div className="px-8 pb-4 flex flex-col items-center justify-center">
+                <div className="border border-slate-200/60 rounded-2xl p-2 bg-white shadow-md">
                   <img
                     src="/khushi-upi-qr.png"
                     alt="Khushi Centre UPI QR Code - Scan to Pay"
                     className="w-48 h-48 object-contain"
                   />
                 </div>
+                <p className="text-[10px] text-slate-400 text-center mt-3 max-w-xs font-medium">
+                  Scan with any UPI app (GPay, PhonePe, Paytm, BHIM) to make your direct transfer.
+                </p>
               </div>
 
-              {/* UPI ID */}
-              <div className="bg-slate-50 px-6 py-4 text-center border-t border-slate-100">
-                <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">UPI ID</p>
-                <p className="text-sm font-bold text-slate-700 mt-0.5 font-mono select-all">49122452@sbi</p>
+              {/* UPI Address */}
+              <div className="bg-slate-50 px-6 py-3 text-center border-y border-slate-100">
+                <p className="text-[9px] text-slate-400 uppercase tracking-wider font-bold">UPI ID</p>
+                <p className="text-xs font-mono font-bold text-slate-700 select-all">49122452@sbi</p>
               </div>
-            </Card>
 
-            {/* Helper text below QR */}
-            <p className="text-xs text-slate-500 text-center mt-5 max-w-xs leading-relaxed">
-              Scan with any UPI application (PhonePe, GPay, Paytm, BHIM) to make a direct transfer to Khushi Centre&apos;s SBI account.
-            </p>
-          </div>
-
-        </div>
-
-        {/* SECTION: Active Patient Case Files */}
-        <div className="space-y-6 pt-4">
-          <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 text-pink-700 text-[10px] font-bold uppercase tracking-wider">
-              <Users className="h-3 w-3" />
-              Verified Patient Case Files
-            </div>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-slate-800">
-              Active Treatment Fund Requests
-            </h2>
-            <p className="text-slate-600 text-sm max-w-2xl mx-auto">
-              These are registered and verified patients currently undergoing treatment at our associate facility who require direct financial clearance for upcoming therapy cycles.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {activePatients.map((patient, idx) => (
-              <Card key={idx} className="border border-slate-100 hover:border-pink-200 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md flex flex-col rounded-2xl bg-white group">
-                <div className="h-44 w-full relative overflow-hidden bg-slate-100">
-                  <img
-                    src={patient.image}
-                    alt={patient.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-800 shadow-xs">
-                    {patient.location}
-                  </div>
-                </div>
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-1">
-                    <h3 className="font-bold text-base text-slate-800 flex justify-between items-center">
-                      <span>{patient.name}</span>
-                      <span className="text-xs text-slate-500 font-normal">{patient.age} yrs</span>
-                    </h3>
-                    <p className="text-[11px] font-semibold text-pink-600 uppercase tracking-wider">{patient.diagnosis}</p>
-                    <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">{patient.hospital}</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-pink-500 to-rose-500 rounded-full" 
-                        style={{ width: `${(patient.raised / patient.required) * 100}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-xs font-bold text-slate-700">
-                      <span>₹{patient.raised.toLocaleString()} raised</span>
-                      <span className="text-slate-400">Target ₹{patient.required.toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* SECTION: Donation Impact & Transparency */}
-        <div id="donation-impact" className="space-y-8 pt-4 border-t border-slate-100">
-          <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">
-              <TrendingUp className="h-3 w-3" />
-              How Your Funds Are Spent
-            </div>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-slate-800">
-              Complete Financial Transparency
-            </h2>
-            <p className="text-slate-600 text-sm max-w-2xl mx-auto">
-              Every rupee donated is directly logged and distributed to lower hospital costs and support patient outcomes.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {utilization.map((item, idx) => (
-              <div key={idx} className="p-6 rounded-2xl bg-slate-50/50 border border-slate-100 space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-3xl font-black text-emerald-600 tracking-tight">{item.percentage}</span>
-                  <HeartHandshake className="h-6 w-6 text-emerald-500" />
-                </div>
-                <h3 className="font-bold text-slate-800 text-sm tracking-tight">{item.category}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">{item.details}</p>
+              {/* Confirm Buttons */}
+              <div className="p-4 bg-white flex flex-col gap-2">
+                <Button
+                  onClick={handleConfirmUPIPayment}
+                  className="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-xl text-sm cursor-pointer"
+                >
+                  I Have Completed the Transfer
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => setShowQRModal(false)}
+                  className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors py-1.5 cursor-pointer"
+                >
+                  Cancel &amp; Change Method
+                </button>
               </div>
-            ))}
+            </motion.div>
           </div>
-        </div>
+        )}
+      </AnimatePresence>
 
-        {/* SECTION: Success Stories */}
-        <div id="success-stories" className="space-y-8 pt-4 border-t border-slate-100">
-          <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-pink-700 text-[10px] font-bold uppercase tracking-wider">
-              <CheckCircle className="h-3 w-3" />
-              Testimonials of Treatment
-            </div>
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-slate-800">
-              Stories of Hope & Healing
-            </h2>
-            <p className="text-slate-600 text-sm max-w-2xl mx-auto">
-              Meet some of the mothers whose treatment costs were covered directly through generous contributions.
-            </p>
+      {/* ----------------------------------------------------
+          MODAL: DONATION SUCCESS CONGRATULATIONS
+          ---------------------------------------------------- */}
+      <AnimatePresence>
+        {showSuccessModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-3xl p-8 shadow-2xl w-full max-w-md text-center border border-pink-100 space-y-6"
+            >
+              <div className="h-16 w-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
+                <CheckCircle className="h-10 w-10 animate-bounce" />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-2xl font-black text-slate-800 font-heading">Thank You, {donorName || "Kind Soul"}!</h3>
+                <p className="text-pink-600 font-bold text-xs uppercase tracking-widest">Donation Received Successfully</p>
+              </div>
+
+              <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-2 text-left">
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Your donation of <strong>₹{(selectedAmount || parseFloat(customAmount) || 2500).toLocaleString()}</strong> has been directly cleared to the hospital payout vault.
+                </p>
+                <div className="h-px bg-slate-200/60 my-1" />
+                <p className="text-[11px] text-slate-400 leading-relaxed flex items-center gap-1.5">
+                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" /> An automated tax-exempt 80G certificate has been dispatched to <strong>{donorEmail}</strong>.
+                </p>
+                <p className="text-[11px] text-slate-400 leading-relaxed flex items-center gap-1.5">
+                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0" /> Receipt Copy reference: <span className="font-mono text-[10px]">#BCMP-TXN-{Math.floor(100000 + Math.random() * 900000)}</span>
+                </p>
+              </div>
+
+              <Button
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  // Reset form fields
+                  setDonorName("");
+                  setDonorEmail("");
+                  setDonorPhone("");
+                  setOrganization("");
+                  setMessage("");
+                  setIsAnonymous(false);
+                  setCustomAmount("");
+                  setSelectedAmount(2500);
+                }}
+                className="w-full bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold py-4 rounded-xl cursor-pointer"
+              >
+                Close &amp; Return
+              </Button>
+            </motion.div>
           </div>
+        )}
+      </AnimatePresence>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {successStories.map((story, idx) => (
-              <Card key={idx} className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-100 shadow-sm flex flex-col justify-between space-y-6 hover:shadow-md transition-shadow">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="inline-flex px-3 py-1 rounded-full bg-pink-100/50 text-pink-700 text-[10px] font-bold uppercase tracking-wider">
-                      {story.badge}
-                    </span>
-                    <span className="text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg font-semibold flex items-center gap-1">
-                      <ShieldCheck className="h-3 w-3" /> {story.impact}
-                    </span>
-                  </div>
-                  <p className="text-slate-600 italic text-sm sm:text-base leading-relaxed">
-                    &ldquo;{story.story}&rdquo;
-                  </p>
-                </div>
-                <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                  <div>
-                    <h4 className="font-bold text-slate-800 text-sm">{story.name}</h4>
-                    <p className="text-xs text-slate-400">{story.role}</p>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-slate-300" />
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Medical disclaimer note & transparency audit info */}
-        <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/50 flex gap-3 text-xs text-slate-500 max-w-3xl mx-auto leading-relaxed">
-          <Info className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <p className="font-bold text-slate-700">Financial Transparency & Security Audit Note:</p>
-            <p>
-              All contributions raised on this campaign are audited directly by compliance teams. Disbursements are released directly to the registered medical facility bank accounts to ensure complete fraud protection. 80G tax certificate copies are issued within 24 hours of successful bank confirmation.
-            </p>
-          </div>
-        </div>
-
-      </div>
     </div>
   );
 }

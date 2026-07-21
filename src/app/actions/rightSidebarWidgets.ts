@@ -55,6 +55,26 @@ const SEED_TESTIMONIALS = [
     quote: "Strength is born in moments you think you can't go on. Early checkups saved my family.",
     orderIndex: 1,
     isActive: true
+  },
+  {
+    name: "Kareena Kapoor Khan",
+    profession: "Actress & Campaign Ambassador",
+    videoUrl: "/fCJDcVOcf4mwHu6auQwh+9LaEZi9UTik.mp4",
+    thumbnailUrl: "/images/awareness_ribbon.png",
+    duration: "0:47",
+    quote: "Your health is in your hands. A simple screening can detect breast cancer early and save your life.",
+    orderIndex: 2,
+    isActive: true
+  },
+  {
+    name: "Manushi Chhillar",
+    profession: "Miss World 2017 & Actor",
+    videoUrl: "/l3KWdaaykG6eQV5w8YSw+LYIJd_VnYho.mp4",
+    thumbnailUrl: "/images/survivor_strength.png",
+    duration: "0:58",
+    quote: "Raising awareness about breast cancer is a collective responsibility. Early detection saves lives.",
+    orderIndex: 3,
+    isActive: true
   }
 ];
 
