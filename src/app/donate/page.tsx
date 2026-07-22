@@ -30,7 +30,10 @@ import {
   QrCode,
   Check,
   CheckCircle,
-  FileText
+  FileText,
+  Medal,
+  Crown,
+  Gem
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -95,6 +98,134 @@ export default function DonatePage() {
 
   // Form reference for scrolling
   const formRef = useRef<HTMLDivElement>(null);
+
+  const donationTiers = [
+    {
+      amount: 500,
+      name: "Silver Supporter",
+      impact: "Awareness Kit for 1 Family",
+      icon: Medal,
+      bgClass: "from-slate-100/50 via-slate-50/30 to-slate-200/40 backdrop-blur-md",
+      borderClass: "border-slate-200 hover:border-slate-400 hover:shadow-slate-200/50",
+      iconColor: "text-slate-400 group-hover:text-slate-500",
+    },
+    {
+      amount: 1000,
+      name: "Gold Supporter",
+      impact: "Breast Screening Support",
+      icon: Award,
+      bgClass: "from-amber-50/50 via-yellow-50/20 to-amber-100/30 backdrop-blur-md",
+      borderClass: "border-amber-100 hover:border-amber-400/60 hover:shadow-amber-100/80",
+      iconColor: "text-amber-500 group-hover:text-amber-600",
+    },
+    {
+      amount: 2500,
+      name: "Premium Supporter",
+      impact: "Early Diagnosis Assistance",
+      icon: Sparkles,
+      bgClass: "from-rose-50/50 via-pink-50/20 to-rose-100/30 backdrop-blur-md",
+      borderClass: "border-rose-200 hover:border-rose-400/60 hover:shadow-rose-100/80",
+      iconColor: "text-pink-500 group-hover:text-pink-600",
+    },
+    {
+      amount: 5000,
+      name: "Platinum Supporter",
+      impact: "Diagnostic Test Sponsorship",
+      icon: Crown,
+      bgClass: "from-zinc-100/50 via-slate-50/30 to-zinc-200/30 backdrop-blur-md",
+      borderClass: "border-zinc-200 hover:border-zinc-400 hover:shadow-zinc-150/80",
+      iconColor: "text-zinc-500 group-hover:text-zinc-600",
+    },
+    {
+      amount: 10000,
+      name: "Diamond Supporter",
+      impact: "Treatment Support for One Patient",
+      icon: Gem,
+      bgClass: "from-cyan-50/50 via-blue-50/20 to-cyan-100/30 backdrop-blur-md",
+      borderClass: "border-cyan-100 hover:border-cyan-400/60 hover:shadow-cyan-100/80",
+      iconColor: "text-cyan-500 group-hover:text-cyan-600",
+    }
+  ];
+
+  const getActiveImpact = () => {
+    const amt = selectedAmount || parseFloat(customAmount) || 0;
+    if (amt === 500) {
+      return {
+        title: "Awareness Kit for 1 Family",
+        desc: "Provides comprehensive breast cancer awareness materials and early-detection guidance booklets for one underprivileged rural family.",
+        icon: Medal,
+        color: "text-slate-700 bg-slate-100/50 border border-slate-200/60",
+      };
+    } else if (amt === 1000) {
+      return {
+        title: "Breast Screening Support",
+        desc: "Funds a clinical breast examination and primary screening referral for a woman at a community outreach camp.",
+        icon: Award,
+        color: "text-amber-700 bg-amber-50 border border-amber-100",
+      };
+    } else if (amt === 2500) {
+      return {
+        title: "Early Diagnosis Assistance",
+        desc: "Covers crucial diagnostics, pathology labs, and initial oncologist consulting fees for symptomatic patients.",
+        icon: Sparkles,
+        color: "text-pink-600 bg-pink-50 border border-pink-100",
+      };
+    } else if (amt === 5000) {
+      return {
+        title: "Diagnostic Test Sponsorship",
+        desc: "Sponsors advanced diagnostic tests, 3D mammograms, and specialist reviews for early confirmation.",
+        icon: Crown,
+        color: "text-zinc-700 bg-zinc-100/70 border border-zinc-200/60",
+      };
+    } else if (amt === 10000) {
+      return {
+        title: "Treatment Support for One Patient",
+        desc: "Directly funds chemotherapy sessions, surgical oncology support, and medicine packages to prevent treatment dropout.",
+        icon: Gem,
+        color: "text-cyan-700 bg-cyan-50 border border-cyan-100",
+      };
+    } else if (amt > 0) {
+      if (amt >= 10000) {
+        return {
+          title: "Treatment Support for Patients",
+          desc: `Your custom donation of ₹${amt.toLocaleString()} provides critical chemotherapy, surgery support, and treatment packages.`,
+          icon: Gem,
+          color: "text-cyan-700 bg-cyan-50 border border-cyan-100",
+        };
+      } else if (amt >= 5000) {
+        return {
+          title: "Diagnostic Test Sponsorship",
+          desc: `Your custom donation of ₹${amt.toLocaleString()} funds diagnostic screening panels and primary oncologist consulting.`,
+          icon: Crown,
+          color: "text-zinc-700 bg-zinc-100/70 border border-zinc-200/60",
+        };
+      } else if (amt >= 2500) {
+        return {
+          title: "Early Diagnosis Assistance",
+          desc: `Your custom donation of ₹${amt.toLocaleString()} will fund critical oncologist consults and preliminary cancer screenings.`,
+          icon: Sparkles,
+          color: "text-pink-600 bg-pink-50 border border-pink-100",
+        };
+      } else if (amt >= 1000) {
+        return {
+          title: "Breast Screening Support",
+          desc: `Your custom donation of ₹${amt.toLocaleString()} sponsors mammograms and clinical exams for rural community camps.`,
+          icon: Award,
+          color: "text-amber-700 bg-amber-50 border border-amber-100",
+        };
+      } else {
+        return {
+          title: "Awareness & Education Outreach",
+          desc: `Your custom donation of ₹${amt.toLocaleString()} helps distribute early-detection booklets to rural and remote areas.`,
+          icon: Medal,
+          color: "text-slate-700 bg-slate-100/50 border border-slate-200/60",
+        };
+      }
+    }
+    return null;
+  };
+
+  const activeImpact = getActiveImpact();
 
   // ----------------------------------------------------
   // Mock Data
@@ -804,30 +935,103 @@ export default function DonatePage() {
                     </div>
                   </div>
 
-                  {/* Amount Selection Buttons */}
-                  <div className="space-y-2">
+                  {/* Amount Selection Cards */}
+                  <div className="space-y-3">
                     <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                      Select Amount (₹)
+                      Select Donation Tier
                     </Label>
-                    <div className="grid grid-cols-5 gap-2">
-                      {[500, 1000, 2500, 5000, 10000].map((amt) => (
-                        <button
-                          key={amt}
-                          type="button"
-                          onClick={() => {
-                            setSelectedAmount(amt);
-                            setCustomAmount("");
-                          }}
-                          className={`py-3 text-xs sm:text-sm font-bold rounded-xl border transition-all cursor-pointer ${
-                            selectedAmount === amt 
-                              ? "bg-pink-600 text-white border-pink-600 shadow-md shadow-pink-600/10" 
-                              : "bg-white text-slate-800 border-slate-200 hover:border-pink-300 hover:bg-pink-50/20"
-                          }`}
-                        >
-                          ₹{amt.toLocaleString()}
-                        </button>
-                      ))}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                      {donationTiers.map((tier) => {
+                        const isSelected = selectedAmount === tier.amount;
+                        const IconComponent = tier.icon;
+                        return (
+                          <motion.button
+                            key={tier.amount}
+                            type="button"
+                            onClick={() => {
+                              setSelectedAmount(tier.amount);
+                              setCustomAmount("");
+                            }}
+                            whileHover={{ y: -4, scale: isSelected ? 1.03 : 1.01 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`relative p-5 rounded-2xl border text-left flex flex-col justify-between h-full min-h-[170px] cursor-pointer group transition-all duration-300 ${
+                              isSelected
+                                ? "bg-gradient-to-br from-pink-500 via-pink-600 to-rose-600 text-white border-pink-400 shadow-xl shadow-pink-500/25 ring-2 ring-pink-500/40 ring-offset-2"
+                                : `bg-gradient-to-br ${tier.bgClass} text-slate-800 ${tier.borderClass}`
+                            }`}
+                          >
+                            {/* Check indicator */}
+                            {isSelected && (
+                              <motion.div
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                className="absolute top-3 right-3 bg-white text-pink-600 rounded-full p-1 shadow-md border border-pink-100 flex items-center justify-center"
+                              >
+                                <Check className="h-3 w-3 stroke-[3]" />
+                              </motion.div>
+                            )}
+
+                            <div className="space-y-3 w-full">
+                              <div className={`p-2.5 rounded-xl w-fit ${
+                                isSelected ? "bg-white/20 text-white" : `bg-white shadow-sm border border-slate-100 ${tier.iconColor}`
+                              }`}>
+                                <IconComponent className="h-5.5 w-5.5 transition-transform duration-300 group-hover:scale-110" />
+                              </div>
+                              <div className="space-y-0.5">
+                                <p className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+                                  isSelected ? "text-pink-100" : "text-slate-400 group-hover:text-slate-500"
+                                }`}>
+                                  {tier.name}
+                                </p>
+                                <p className={`text-xl sm:text-2xl font-black font-heading tracking-tight ${
+                                  isSelected ? "text-white" : "text-slate-800"
+                                }`}>
+                                  ₹{tier.amount.toLocaleString()}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            <p className={`text-[11px] leading-snug font-medium mt-3 ${
+                              isSelected ? "text-pink-50" : "text-slate-500 group-hover:text-slate-600"
+                            }`}>
+                              {tier.impact}
+                            </p>
+                          </motion.button>
+                        );
+                      })}
                     </div>
+                  </div>
+
+                  {/* Dynamic Impact Statement Section */}
+                  <div className="overflow-hidden">
+                    <AnimatePresence mode="wait">
+                      {activeImpact && (
+                        <motion.div
+                          key={selectedAmount || customAmount || "empty"}
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -15 }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                          className="bg-gradient-to-r from-pink-50/30 via-rose-50/10 to-purple-50/30 backdrop-blur-sm border border-pink-100/40 rounded-2xl p-4 sm:p-5 flex items-start gap-4 shadow-sm"
+                        >
+                          <div className={`p-3 rounded-xl shrink-0 ${activeImpact.color}`}>
+                            <activeImpact.icon className="h-6 w-6" />
+                          </div>
+                          <div className="space-y-1">
+                            <h4 className="text-[10px] font-black text-pink-600 uppercase tracking-widest">
+                              Your Contribution Makes a Difference
+                            </h4>
+                            <p className="text-slate-800 text-sm font-extrabold">
+                              {activeImpact.title}
+                            </p>
+                            <p className="text-slate-500 text-xs leading-relaxed font-medium">
+                              {activeImpact.desc}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   {/* Custom Amount Input */}
