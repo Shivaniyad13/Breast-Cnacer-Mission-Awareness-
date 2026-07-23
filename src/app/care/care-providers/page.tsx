@@ -613,7 +613,7 @@ export default function CareProvidersPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedCity, setSelectedCity] = useState("all");
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  
+
   // Selected team specialist for info card
   const [selectedSpecialist, setSelectedSpecialist] = useState<string>("breast-surgeon");
 
@@ -746,7 +746,7 @@ export default function CareProvidersPage() {
 
   return (
     <div className="flex-1 w-full bg-slate-50 text-slate-800 selection:bg-pink-100 selection:text-pink-700 overflow-x-hidden">
-      
+
       {/* ----------------------------------------------------------------------
           1. HERO SECTION
           ---------------------------------------------------------------------- */}
@@ -812,7 +812,7 @@ export default function CareProvidersPage() {
               <Button
                 variant="outline"
                 onClick={() => scrollToId("support-services-section")}
-                className="border-slate-400 text-white hover:bg-white/10 hover:text-white font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
+                className="border-slate-400 text-pink hover:bg-white/10 hover:text-white font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
               >
                 Get Support
               </Button>
@@ -919,7 +919,7 @@ export default function CareProvidersPage() {
               <p className="text-slate-600 leading-relaxed text-sm sm:text-base font-sans">
                 Fighting cancer requires more than just a single physician. It calls for an integrated alliance of medical, surgical, and supportive care providers. In modern breast oncology, the key to successful treatment lies in the custom synergy of these specialists.
               </p>
-              
+
               <div className="space-y-4 pt-2">
                 {[
                   {
@@ -979,11 +979,10 @@ export default function CareProvidersPage() {
                   <button
                     key={spec.id}
                     onClick={() => setSelectedSpecialist(spec.id)}
-                    className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl border text-left cursor-pointer transition-all shrink-0 select-none ${
-                      isSelected
-                        ? "bg-white border-pink-500 text-pink-600 shadow-md scale-[1.02]"
-                        : "bg-white border-slate-100 hover:border-slate-350 text-slate-650 shadow-xs"
-                    }`}
+                    className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl border text-left cursor-pointer transition-all shrink-0 select-none ${isSelected
+                      ? "bg-white border-pink-500 text-pink-600 shadow-md scale-[1.02]"
+                      : "bg-white border-slate-100 hover:border-slate-350 text-slate-650 shadow-xs"
+                      }`}
                   >
                     <div className={`p-2 rounded-xl shrink-0 ${isSelected ? "bg-pink-100 text-pink-600" : "bg-slate-50 text-slate-400"}`}>
                       <SpecIcon className="h-5 w-5" />
@@ -1100,11 +1099,10 @@ export default function CareProvidersPage() {
                   <button
                     key={cat.value}
                     onClick={() => setSelectedCategory(cat.value)}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer select-none ${
-                      selectedCategory === cat.value
-                        ? "bg-pink-600 border-pink-600 text-white shadow-sm"
-                        : "bg-white border-slate-200 hover:border-slate-350 text-slate-650"
-                    }`}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer select-none ${selectedCategory === cat.value
+                      ? "bg-pink-600 border-pink-600 text-white shadow-sm"
+                      : "bg-white border-slate-200 hover:border-slate-350 text-slate-650"
+                      }`}
                   >
                     {cat.label}
                   </button>
@@ -1231,7 +1229,7 @@ export default function CareProvidersPage() {
           <div className="relative mb-10 pb-4 overflow-x-auto scrollbar-none">
             {/* Connecting Line (Only visible on md/desktop) */}
             <div className="hidden md:block absolute top-7 left-8 right-8 h-1 bg-white/10 z-0" />
-            
+
             <div className="flex md:justify-between items-center min-w-[1000px] md:min-w-0 relative z-10 px-4">
               {journeyStepsData.map((stepItem, idx) => {
                 const StepIcon = stepItem.icon;
@@ -1243,11 +1241,10 @@ export default function CareProvidersPage() {
                     className="flex flex-col items-center gap-2 focus:outline-none cursor-pointer shrink-0"
                   >
                     <div
-                      className={`h-14 w-14 rounded-full border-3 flex items-center justify-center transition-all duration-300 ${
-                        isSelected
-                          ? "bg-pink-600 border-pink-400 scale-110 shadow-lg shadow-pink-600/30 text-white"
-                          : "bg-slate-800 border-slate-700 hover:border-slate-500 text-slate-400"
-                      }`}
+                      className={`h-14 w-14 rounded-full border-3 flex items-center justify-center transition-all duration-300 ${isSelected
+                        ? "bg-pink-600 border-pink-400 scale-110 shadow-lg shadow-pink-600/30 text-white"
+                        : "bg-slate-800 border-slate-700 hover:border-slate-500 text-slate-400"
+                        }`}
                     >
                       <StepIcon className="h-5 w-5" />
                     </div>
@@ -1516,7 +1513,7 @@ export default function CareProvidersPage() {
 
         <div className="container mx-auto px-4 max-w-6xl relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
+
             {/* Left Texts */}
             <div className="lg:col-span-7 space-y-6">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-wider">
@@ -1569,8 +1566,7 @@ export default function CareProvidersPage() {
                   setSelectedCategory("hospitals");
                   scrollToId("care-services-directory");
                 }}
-                className="w-full border-white/30 text-white hover:bg-white/10 font-bold py-6 px-6 rounded-2xl transition-all cursor-pointer text-base"
-              >
+                className="w-full bg-white hover:bg-slate-100 text-red-600 font-bold py-6 px-6 rounded-2xl shadow-xl transition-all cursor-pointer text-base">
                 Find Nearest Hospital
               </Button>
 
@@ -1630,7 +1626,7 @@ export default function CareProvidersPage() {
             <Button
               variant="outline"
               onClick={() => scrollToId("emergency-helpline-section")}
-              className="w-full sm:w-auto border-slate-500 text-white hover:bg-white/10 font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
+              className="w-full sm:w-auto border-slate-500 text-pink-600 to-rose-500 hover:bg-white/10 font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
             >
               Contact Support
             </Button>

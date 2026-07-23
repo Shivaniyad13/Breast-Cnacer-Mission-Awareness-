@@ -55,7 +55,7 @@ export default function WebinarRegisterButton({
 
   const handleClick = async () => {
     if (!currentUser) {
-      router.push("/login");
+      router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
 

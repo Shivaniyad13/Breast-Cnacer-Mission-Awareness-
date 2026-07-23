@@ -34,6 +34,7 @@ export default async function JoinWebinarPage({ params }: JoinWebinarPageProps) 
       webinarId={webinar.id}
       webinarTitle={webinar.title}
       speakerName={webinar.speakerName}
+      meetingLink={webinar.meetingLink}
     />
   );
 }

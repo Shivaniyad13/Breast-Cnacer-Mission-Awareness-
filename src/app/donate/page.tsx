@@ -6,11 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  Ribbon, 
-  IndianRupee, 
-  ShieldCheck, 
-  CheckCircle2, 
+import {
+  Ribbon,
+  IndianRupee,
+  ShieldCheck,
+  CheckCircle2,
   Heart,
   Info,
   Users,
@@ -83,7 +83,7 @@ export default function DonatePage() {
   const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("upi");
-  
+
   // App states
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
@@ -459,17 +459,17 @@ export default function DonatePage() {
 
   return (
     <div className="flex-1 w-full bg-slate-50 selection:bg-pink-100 selection:text-pink-700 overflow-x-hidden">
-      
+
       {/* ----------------------------------------------------
           1. HERO SECTION
           ---------------------------------------------------- */}
       <section className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Background Video/Image Overlay */}
         <div className="absolute inset-0 z-0">
-          <video 
-            autoPlay 
-            muted 
-            loop 
+          <video
+            autoPlay
+            muted
+            loop
             playsInline
             className="w-full h-full object-cover pointer-events-none"
             poster="/images/community_walk.png"
@@ -484,10 +484,10 @@ export default function DonatePage() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl relative z-10 py-20 text-center sm:text-left">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
+
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -497,7 +497,7 @@ export default function DonatePage() {
                 Breast Cancer Mission Platform
               </motion.div>
 
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
@@ -509,7 +509,7 @@ export default function DonatePage() {
                 </span>
               </motion.h1>
 
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -518,13 +518,13 @@ export default function DonatePage() {
                 Every single donation supports mobile screening camps, free mammograms, medical expert support, patient surgery assistance, and hope for underprivileged families.
               </motion.p>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="flex flex-col sm:flex-row gap-4 justify-center sm:justify-start"
               >
-                <Button 
+                <Button
                   onClick={scrollToForm}
                   className="bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold px-8 py-6 rounded-2xl shadow-lg shadow-pink-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
                 >
@@ -532,9 +532,9 @@ export default function DonatePage() {
                   <ArrowRight className="h-5 w-5 ml-1" />
                 </Button>
                 <a href="#survivor-stories" className="w-full sm:w-auto">
-                  <Button 
-                    variant="outline" 
-                    className="border-slate-400 text-white hover:bg-white/10 font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base w-full"
+                  <Button
+                    variant="outline"
+                    className="border-slate-400 text-pinkl hover:bg-white/10 font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base w-full"
                   >
                     Read Survivor Stories
                   </Button>
@@ -596,10 +596,10 @@ export default function DonatePage() {
 
           {/* Carousel Body */}
           <div className="relative bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 md:p-12 backdrop-blur-lg shadow-2xl overflow-hidden min-h-[480px] flex items-center">
-            
+
             {/* Story Elements */}
             <AnimatePresence mode="wait">
-              <motion.div 
+              <motion.div
                 key={activeStoryIdx}
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -607,12 +607,12 @@ export default function DonatePage() {
                 transition={{ duration: 0.5 }}
                 className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center w-full"
               >
-                
+
                 {/* Photo */}
                 <div className="md:col-span-5 flex justify-center">
                   <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden border-3 border-pink-500/30 shadow-2xl group">
-                    <img 
-                      src={survivorStories[activeStoryIdx].image} 
+                    <img
+                      src={survivorStories[activeStoryIdx].image}
                       alt={survivorStories[activeStoryIdx].name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -663,9 +663,8 @@ export default function DonatePage() {
                   <button
                     key={idx}
                     onClick={() => setActiveStoryIdx(idx)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      activeStoryIdx === idx ? "w-6 bg-pink-500" : "w-2 bg-white/30 hover:bg-white/50"
-                    }`}
+                    className={`h-2 rounded-full transition-all duration-300 ${activeStoryIdx === idx ? "w-6 bg-pink-500" : "w-2 bg-white/30 hover:bg-white/50"
+                      }`}
                   />
                 ))}
               </div>
@@ -759,7 +758,7 @@ export default function DonatePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {trustCards.map((card, idx) => (
-              <div 
+              <div
                 key={idx}
                 className="p-6 rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4"
               >
@@ -788,7 +787,7 @@ export default function DonatePage() {
 
           {/* Testimonial card */}
           <div className="relative bg-white/5 border border-white/10 p-8 sm:p-10 rounded-3xl backdrop-blur-md shadow-xl text-center">
-            
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTestimonialIdx}
@@ -811,8 +810,8 @@ export default function DonatePage() {
 
                 <div className="flex flex-col items-center gap-2">
                   <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-pink-500/50 shadow-md">
-                    <img 
-                      src={testimonials[activeTestimonialIdx].image} 
+                    <img
+                      src={testimonials[activeTestimonialIdx].image}
                       alt={testimonials[activeTestimonialIdx].name}
                       className="w-full h-full object-cover"
                     />
@@ -832,9 +831,8 @@ export default function DonatePage() {
                 <button
                   key={idx}
                   onClick={() => setActiveTestimonialIdx(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    activeTestimonialIdx === idx ? "w-6 bg-pink-500" : "w-2 bg-white/20 hover:bg-white/40"
-                  }`}
+                  className={`h-2 rounded-full transition-all duration-300 ${activeTestimonialIdx === idx ? "w-6 bg-pink-500" : "w-2 bg-white/20 hover:bg-white/40"
+                    }`}
                 />
               ))}
             </div>
@@ -848,14 +846,14 @@ export default function DonatePage() {
           ---------------------------------------------------- */}
       <section ref={formRef} className="py-20 bg-gradient-to-b from-white to-pink-50/20 relative">
         <div className="container mx-auto px-4 max-w-6xl">
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
+
             {/* Left Column: Image with emotional quote */}
             <div className="lg:col-span-5 space-y-6">
               <div className="relative rounded-3xl overflow-hidden border-4 border-white shadow-2xl aspect-4/5">
-                <img 
-                  src="/images/support_group.png" 
+                <img
+                  src="/images/support_group.png"
                   alt="Breast cancer support group holding hands"
                   className="w-full h-full object-cover"
                 />
@@ -871,7 +869,7 @@ export default function DonatePage() {
                 </div>
               </div>
 
-              {/* Verified campaign stats */}
+              {/* Verified campaign stats
               <div className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm flex items-center justify-between">
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Total Funds Raised</p>
@@ -885,327 +883,319 @@ export default function DonatePage() {
                     {donorCount.toLocaleString()}
                   </p>
                 </div>
-              </div>
+            </div> */}
             </div>
 
-            {/* Right Column: Premium Glassmorphism Donation Form */}
-            <div className="lg:col-span-7">
-              <div className="bg-white/80 backdrop-blur-xl border border-pink-100/50 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6">
-                
-                {/* Header info */}
-                <div className="flex justify-between items-center pb-4 border-b border-slate-100">
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-extrabold text-slate-800 font-heading">Empower A Patient Today</h3>
-                    <p className="text-xs text-slate-500">100% secure, transparent hospital payout.</p>
-                  </div>
-                  <span className="flex items-center gap-1 text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-md border border-emerald-100">
-                    <ShieldCheck className="h-4 w-4" /> SECURE DONATION
-                  </span>
-                </div>
+              {/* Right Column: Premium Glassmorphism Donation Form */}
+              <div className="lg:col-span-7">
+                <div className="bg-white/80 backdrop-blur-xl border border-pink-100/50 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6">
 
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  
-                  {/* Frequency Toggle */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">Donation Type</Label>
-                    <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl">
-                      <button
-                        type="button"
-                        onClick={() => setGiveOnce(true)}
-                        className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                          giveOnce 
-                            ? "bg-white text-pink-600 shadow-sm" 
-                            : "text-slate-500 hover:text-slate-800"
-                        }`}
-                      >
-                        Give Once
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setGiveOnce(false)}
-                        className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
-                          !giveOnce 
-                            ? "bg-white text-pink-600 shadow-sm" 
-                            : "text-slate-500 hover:text-slate-800"
-                        }`}
-                      >
-                        <Heart className="h-3 w-3 fill-pink-600 text-pink-600" />
-                        Monthly Support
-                      </button>
+                  {/* Header info */}
+                  <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+                    <div className="space-y-1">
+                      <h3 className="text-xl font-extrabold text-slate-800 font-heading">Empower A Patient Today</h3>
+                      <p className="text-xs text-slate-500">100% secure, transparent hospital payout.</p>
                     </div>
+                    <span className="flex items-center gap-1 text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-md border border-emerald-100">
+                      <ShieldCheck className="h-4 w-4" /> SECURE DONATION
+                    </span>
                   </div>
 
-                  {/* Amount Selection Cards */}
-                  <div className="space-y-3">
-                    <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                      Select Donation Tier
-                    </Label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                      {donationTiers.map((tier) => {
-                        const isSelected = selectedAmount === tier.amount;
-                        const IconComponent = tier.icon;
-                        return (
-                          <motion.button
-                            key={tier.amount}
-                            type="button"
-                            onClick={() => {
-                              setSelectedAmount(tier.amount);
-                              setCustomAmount("");
-                            }}
-                            whileHover={{ y: -4, scale: isSelected ? 1.03 : 1.01 }}
-                            whileTap={{ scale: 0.98 }}
-                            className={`relative p-5 rounded-2xl border text-left flex flex-col justify-between h-full min-h-[170px] cursor-pointer group transition-all duration-300 ${
-                              isSelected
+                  <form onSubmit={handleSubmit} className="space-y-5">
+
+                    {/* Frequency Toggle */}
+                    <div className="space-y-2">
+                      <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">Donation Type</Label>
+                      <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl">
+                        <button
+                          type="button"
+                          onClick={() => setGiveOnce(true)}
+                          className={`py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${giveOnce
+                            ? "bg-white text-pink-600 shadow-sm"
+                            : "text-slate-500 hover:text-slate-800"
+                            }`}
+                        >
+                          Give Once
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setGiveOnce(false)}
+                          className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${!giveOnce
+                            ? "bg-white text-pink-600 shadow-sm"
+                            : "text-slate-500 hover:text-slate-800"
+                            }`}
+                        >
+                          <Heart className="h-3 w-3 fill-pink-600 text-pink-600" />
+                          Monthly Support
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Amount Selection Cards */}
+                    <div className="space-y-3">
+                      <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                        Select Donation Tier
+                      </Label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        {donationTiers.map((tier) => {
+                          const isSelected = selectedAmount === tier.amount;
+                          const IconComponent = tier.icon;
+                          return (
+                            <motion.button
+                              key={tier.amount}
+                              type="button"
+                              onClick={() => {
+                                setSelectedAmount(tier.amount);
+                                setCustomAmount("");
+                              }}
+                              whileHover={{ y: -4, scale: isSelected ? 1.03 : 1.01 }}
+                              whileTap={{ scale: 0.98 }}
+                              className={`relative p-5 rounded-2xl border text-left flex flex-col justify-between h-full min-h-[170px] cursor-pointer group transition-all duration-300 ${isSelected
                                 ? "bg-gradient-to-br from-pink-500 via-pink-600 to-rose-600 text-white border-pink-400 shadow-xl shadow-pink-500/25 ring-2 ring-pink-500/40 ring-offset-2"
                                 : `bg-gradient-to-br ${tier.bgClass} text-slate-800 ${tier.borderClass}`
-                            }`}
+                                }`}
+                            >
+                              {/* Check indicator */}
+                              {isSelected && (
+                                <motion.div
+                                  initial={{ scale: 0, opacity: 0 }}
+                                  animate={{ scale: 1, opacity: 1 }}
+                                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                  className="absolute top-3 right-3 bg-white text-pink-600 rounded-full p-1 shadow-md border border-pink-100 flex items-center justify-center"
+                                >
+                                  <Check className="h-3 w-3 stroke-[3]" />
+                                </motion.div>
+                              )}
+
+                              <div className="space-y-3 w-full">
+                                <div className={`p-2.5 rounded-xl w-fit ${isSelected ? "bg-white/20 text-white" : `bg-white shadow-sm border border-slate-100 ${tier.iconColor}`
+                                  }`}>
+                                  <IconComponent className="h-5.5 w-5.5 transition-transform duration-300 group-hover:scale-110" />
+                                </div>
+                                <div className="space-y-0.5">
+                                  <p className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isSelected ? "text-pink-100" : "text-slate-400 group-hover:text-slate-500"
+                                    }`}>
+                                    {tier.name}
+                                  </p>
+                                  <p className={`text-xl sm:text-2xl font-black font-heading tracking-tight ${isSelected ? "text-white" : "text-slate-800"
+                                    }`}>
+                                    ₹{tier.amount.toLocaleString()}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <p className={`text-[11px] leading-snug font-medium mt-3 ${isSelected ? "text-pink-50" : "text-slate-500 group-hover:text-slate-600"
+                                }`}>
+                                {tier.impact}
+                              </p>
+                            </motion.button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Dynamic Impact Statement Section */}
+                    <div className="overflow-hidden">
+                      <AnimatePresence mode="wait">
+                        {activeImpact && (
+                          <motion.div
+                            key={selectedAmount || customAmount || "empty"}
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -15 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="bg-gradient-to-r from-pink-50/30 via-rose-50/10 to-purple-50/30 backdrop-blur-sm border border-pink-100/40 rounded-2xl p-4 sm:p-5 flex items-start gap-4 shadow-sm"
                           >
-                            {/* Check indicator */}
-                            {isSelected && (
-                              <motion.div
-                                initial={{ scale: 0, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                className="absolute top-3 right-3 bg-white text-pink-600 rounded-full p-1 shadow-md border border-pink-100 flex items-center justify-center"
-                              >
-                                <Check className="h-3 w-3 stroke-[3]" />
-                              </motion.div>
-                            )}
-
-                            <div className="space-y-3 w-full">
-                              <div className={`p-2.5 rounded-xl w-fit ${
-                                isSelected ? "bg-white/20 text-white" : `bg-white shadow-sm border border-slate-100 ${tier.iconColor}`
-                              }`}>
-                                <IconComponent className="h-5.5 w-5.5 transition-transform duration-300 group-hover:scale-110" />
-                              </div>
-                              <div className="space-y-0.5">
-                                <p className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-                                  isSelected ? "text-pink-100" : "text-slate-400 group-hover:text-slate-500"
-                                }`}>
-                                  {tier.name}
-                                </p>
-                                <p className={`text-xl sm:text-2xl font-black font-heading tracking-tight ${
-                                  isSelected ? "text-white" : "text-slate-800"
-                                }`}>
-                                  ₹{tier.amount.toLocaleString()}
-                                </p>
-                              </div>
+                            <div className={`p-3 rounded-xl shrink-0 ${activeImpact.color}`}>
+                              <activeImpact.icon className="h-6 w-6" />
                             </div>
-                            
-                            <p className={`text-[11px] leading-snug font-medium mt-3 ${
-                              isSelected ? "text-pink-50" : "text-slate-500 group-hover:text-slate-600"
-                            }`}>
-                              {tier.impact}
-                            </p>
-                          </motion.button>
-                        );
-                      })}
+                            <div className="space-y-1">
+                              <h4 className="text-[10px] font-black text-pink-600 uppercase tracking-widest">
+                                Your Contribution Makes a Difference
+                              </h4>
+                              <p className="text-slate-800 text-sm font-extrabold">
+                                {activeImpact.title}
+                              </p>
+                              <p className="text-slate-500 text-xs leading-relaxed font-medium">
+                                {activeImpact.desc}
+                              </p>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  </div>
 
-                  {/* Dynamic Impact Statement Section */}
-                  <div className="overflow-hidden">
-                    <AnimatePresence mode="wait">
-                      {activeImpact && (
-                        <motion.div
-                          key={selectedAmount || customAmount || "empty"}
-                          initial={{ opacity: 0, y: 15 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -15 }}
-                          transition={{ duration: 0.3, ease: "easeInOut" }}
-                          className="bg-gradient-to-r from-pink-50/30 via-rose-50/10 to-purple-50/30 backdrop-blur-sm border border-pink-100/40 rounded-2xl p-4 sm:p-5 flex items-start gap-4 shadow-sm"
-                        >
-                          <div className={`p-3 rounded-xl shrink-0 ${activeImpact.color}`}>
-                            <activeImpact.icon className="h-6 w-6" />
-                          </div>
-                          <div className="space-y-1">
-                            <h4 className="text-[10px] font-black text-pink-600 uppercase tracking-widest">
-                              Your Contribution Makes a Difference
-                            </h4>
-                            <p className="text-slate-800 text-sm font-extrabold">
-                              {activeImpact.title}
-                            </p>
-                            <p className="text-slate-500 text-xs leading-relaxed font-medium">
-                              {activeImpact.desc}
-                            </p>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Custom Amount Input */}
-                  <div className="space-y-1.5">
-                    <Label htmlFor="custom-amt" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                      Or Enter Custom Amount (₹)
-                    </Label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
-                      <Input
-                        id="custom-amt"
-                        type="number"
-                        placeholder="Enter other amount"
-                        value={customAmount}
-                        onChange={(e) => {
-                          setCustomAmount(e.target.value);
-                          setSelectedAmount(null);
-                        }}
-                        className="pl-8 py-6 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-semibold"
-                      />
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400">INR</span>
-                    </div>
-                  </div>
-
-                  {/* Personal Fields */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Custom Amount Input */}
                     <div className="space-y-1.5">
-                      <Label htmlFor="donor-name" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                        Full Name
+                      <Label htmlFor="custom-amt" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                        Or Enter Custom Amount (₹)
                       </Label>
-                      <Input
-                        id="donor-name"
-                        placeholder="e.g. Shalini Roy"
-                        value={donorName}
-                        onChange={(e) => setDonorName(e.target.value)}
-                        className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
-                      />
+                      <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
+                        <Input
+                          id="custom-amt"
+                          type="number"
+                          placeholder="Enter other amount"
+                          value={customAmount}
+                          onChange={(e) => {
+                            setCustomAmount(e.target.value);
+                            setSelectedAmount(null);
+                          }}
+                          className="pl-8 py-6 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-semibold"
+                        />
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400">INR</span>
+                      </div>
                     </div>
+
+                    {/* Personal Fields */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="donor-name" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                          Full Name
+                        </Label>
+                        <Input
+                          id="donor-name"
+                          placeholder="e.g. Shalini Roy"
+                          value={donorName}
+                          onChange={(e) => setDonorName(e.target.value)}
+                          className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="donor-email" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                          Email Address
+                        </Label>
+                        <Input
+                          id="donor-email"
+                          type="email"
+                          placeholder="e.g. shalini@example.com"
+                          value={donorEmail}
+                          onChange={(e) => setDonorEmail(e.target.value)}
+                          className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="donor-phone" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                          Phone Number
+                        </Label>
+                        <Input
+                          id="donor-phone"
+                          type="tel"
+                          placeholder="e.g. 9876543210"
+                          value={donorPhone}
+                          onChange={(e) => setDonorPhone(e.target.value)}
+                          className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label htmlFor="organization" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                          Organization (Optional)
+                        </Label>
+                        <Input
+                          id="organization"
+                          placeholder="e.g. Private Ltd"
+                          value={organization}
+                          onChange={(e) => setOrganization(e.target.value)}
+                          className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Anonymous Donation Toggle */}
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="anonymous-chk"
+                        checked={isAnonymous}
+                        onChange={(e) => setIsAnonymous(e.target.checked)}
+                        className="rounded border-slate-300 text-pink-600 focus:ring-pink-500 h-4 w-4"
+                      />
+                      <Label htmlFor="anonymous-chk" className="text-xs font-bold text-slate-600 uppercase tracking-wider cursor-pointer">
+                        Make this donation anonymously
+                      </Label>
+                    </div>
+
+                    {/* Message */}
                     <div className="space-y-1.5">
-                      <Label htmlFor="donor-email" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                        Email Address
+                      <Label htmlFor="donor-msg" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                        Message / Prayer for the Patient (Optional)
                       </Label>
-                      <Input
-                        id="donor-email"
-                        type="email"
-                        placeholder="e.g. shalini@example.com"
-                        value={donorEmail}
-                        onChange={(e) => setDonorEmail(e.target.value)}
-                        className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
+                      <Textarea
+                        id="donor-msg"
+                        placeholder="Send details of support, positive affirmations, or prayers..."
+                        rows={2}
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
                       />
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="donor-phone" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                        Phone Number
+                    {/* Payment Gateway Grid */}
+                    <div className="space-y-2">
+                      <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
+                        Choose Payment Method
                       </Label>
-                      <Input
-                        id="donor-phone"
-                        type="tel"
-                        placeholder="e.g. 9876543210"
-                        value={donorPhone}
-                        onChange={(e) => setDonorPhone(e.target.value)}
-                        className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="organization" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                        Organization (Optional)
-                      </Label>
-                      <Input
-                        id="organization"
-                        placeholder="e.g. Private Ltd"
-                        value={organization}
-                        onChange={(e) => setOrganization(e.target.value)}
-                        className="py-5 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Anonymous Donation Toggle */}
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="anonymous-chk"
-                      checked={isAnonymous}
-                      onChange={(e) => setIsAnonymous(e.target.checked)}
-                      className="rounded border-slate-300 text-pink-600 focus:ring-pink-500 h-4 w-4"
-                    />
-                    <Label htmlFor="anonymous-chk" className="text-xs font-bold text-slate-600 uppercase tracking-wider cursor-pointer">
-                      Make this donation anonymously
-                    </Label>
-                  </div>
-
-                  {/* Message */}
-                  <div className="space-y-1.5">
-                    <Label htmlFor="donor-msg" className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                      Message / Prayer for the Patient (Optional)
-                    </Label>
-                    <Textarea
-                      id="donor-msg"
-                      placeholder="Send details of support, positive affirmations, or prayers..."
-                      rows={2}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      className="rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 font-medium"
-                    />
-                  </div>
-
-                  {/* Payment Gateway Grid */}
-                  <div className="space-y-2">
-                    <Label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
-                      Choose Payment Method
-                    </Label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      {[
-                        { id: "upi", label: "UPI (Scan QR)", desc: "GPay, PhonePe, Paytm" },
-                        { id: "card", label: "Credit/Debit Card", desc: "Visa, Master, RuPay" },
-                        { id: "netbanking", label: "Net Banking", desc: "SBI, HDFC, ICICI" },
-                        { id: "wallet", label: "Wallets", desc: "Paytm, Mobikwik" }
-                      ].map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => setPaymentMethod(item.id)}
-                          className={`p-3 rounded-xl border flex flex-col justify-center items-center text-center cursor-pointer transition-all ${
-                            paymentMethod === item.id 
-                              ? "border-pink-500 bg-pink-50/30 text-pink-600 ring-2 ring-pink-500/20" 
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {[
+                          { id: "upi", label: "UPI (Scan QR)", desc: "GPay, PhonePe, Paytm" },
+                          { id: "card", label: "Credit/Debit Card", desc: "Visa, Master, RuPay" },
+                          { id: "netbanking", label: "Net Banking", desc: "SBI, HDFC, ICICI" },
+                          { id: "wallet", label: "Wallets", desc: "Paytm, Mobikwik" }
+                        ].map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => setPaymentMethod(item.id)}
+                            className={`p-3 rounded-xl border flex flex-col justify-center items-center text-center cursor-pointer transition-all ${paymentMethod === item.id
+                              ? "border-pink-500 bg-pink-50/30 text-pink-600 ring-2 ring-pink-500/20"
                               : "border-slate-200 hover:border-pink-200 bg-white"
-                          }`}
-                        >
-                          <span className="text-xs font-bold font-heading">{item.label}</span>
-                          <span className="text-[9px] text-slate-400 font-medium mt-0.5 leading-tight">{item.desc}</span>
-                        </button>
-                      ))}
+                              }`}
+                          >
+                            <span className="text-xs font-bold font-heading">{item.label}</span>
+                            <span className="text-[9px] text-slate-400 font-medium mt-0.5 leading-tight">{item.desc}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
+
+                    {/* Large Pink Action Button */}
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold py-6 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-pink-600/20 hover:scale-[1.01] active:scale-[0.99] transition-all text-base font-bold"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+                          Connecting to Secure Gateway...
+                        </span>
+                      ) : (
+                        <>
+                          <Heart className="h-5 w-5 fill-white text-white" />
+                          Donate Now (₹{(selectedAmount || parseFloat(customAmount) || 0).toLocaleString()})
+                        </>
+                      )}
+                    </Button>
+
+                  </form>
+
+                  {/* 80G Tax Exemption Note */}
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/50 flex gap-2 text-xs text-slate-500">
+                    <Info className="h-4.5 w-4.5 text-pink-600 shrink-0 mt-0.5" />
+                    <p>
+                      <strong>80G Tax Benefits:</strong> Indian residents receive 50% tax deduction under Section 80G. An automated certificate is emailed with your receipt.
+                    </p>
                   </div>
 
-                  {/* Large Pink Action Button */}
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold py-6 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-pink-600/20 hover:scale-[1.01] active:scale-[0.99] transition-all text-base font-bold"
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center gap-2">
-                        <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
-                        Connecting to Secure Gateway...
-                      </span>
-                    ) : (
-                      <>
-                        <Heart className="h-5 w-5 fill-white text-white" />
-                        Donate Now (₹{(selectedAmount || parseFloat(customAmount) || 0).toLocaleString()})
-                      </>
-                    )}
-                  </Button>
-
-                </form>
-
-                {/* 80G Tax Exemption Note */}
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/50 flex gap-2 text-xs text-slate-500">
-                  <Info className="h-4.5 w-4.5 text-pink-600 shrink-0 mt-0.5" />
-                  <p>
-                    <strong>80G Tax Benefits:</strong> Indian residents receive 50% tax deduction under Section 80G. An automated certificate is emailed with your receipt.
-                  </p>
                 </div>
-
               </div>
+
             </div>
 
           </div>
-
-        </div>
       </section>
 
       {/* ----------------------------------------------------
@@ -1213,7 +1203,7 @@ export default function DonatePage() {
           ---------------------------------------------------- */}
       <section className="py-20 bg-slate-900 text-white">
         <div className="container mx-auto px-4 max-w-6xl">
-          
+
           <div className="text-center space-y-3 mb-16">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-pink-400 text-xs font-bold uppercase tracking-wider border border-white/10">
               <Sparkles className="h-4 w-4 text-pink-500" />
@@ -1236,14 +1226,14 @@ export default function DonatePage() {
                 transition={{ duration: 0.3 }}
                 className="relative h-64 rounded-3xl overflow-hidden border border-white/10 shadow-lg group"
               >
-                <img 
-                  src={item.image} 
+                <img
+                  src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 {/* Overlay hover effect */}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6" />
-                
+
                 {/* Details shown always on mobile, or on hover on desktop */}
                 <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-slate-950/90 to-transparent md:bg-none md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-300">
                   <h4 className="font-bold text-white text-base leading-tight font-heading">{item.title}</h4>
@@ -1261,7 +1251,7 @@ export default function DonatePage() {
           ---------------------------------------------------- */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 max-w-4xl">
-          
+
           <div className="text-center space-y-3 mb-16">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-50 text-pink-700 text-xs font-bold uppercase tracking-wider border border-pink-100">
               <HelpCircle className="h-4 w-4 text-pink-600" />
@@ -1280,7 +1270,7 @@ export default function DonatePage() {
             {faqs.map((faq, idx) => {
               const isOpen = activeFaqIdx === idx;
               return (
-                <div 
+                <div
                   key={idx}
                   className="rounded-2xl border border-slate-200 overflow-hidden transition-all duration-300 bg-white"
                 >
@@ -1323,9 +1313,9 @@ export default function DonatePage() {
       <section className="relative py-24 bg-gradient-to-r from-pink-950 via-slate-900 to-purple-950 text-white overflow-hidden text-center">
         {/* BG Survivor Image Overlay */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/community_walk.png" 
-            alt="Smiling Breast Cancer Survivors and Donors" 
+          <img
+            src="/images/community_walk.png"
+            alt="Smiling Breast Cancer Survivors and Donors"
             className="w-full h-full object-cover opacity-15 pointer-events-none mix-blend-overlay"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90" />

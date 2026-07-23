@@ -454,7 +454,7 @@ export default function PartnerOrganizationsPage() {
 
   return (
     <div className="flex-1 w-full bg-slate-50 text-slate-805 selection:bg-pink-105 selection:text-pink-700 overflow-x-hidden">
-      
+
       {/* ----------------------------------------------------------------------
           1. HERO SECTION (Looping Background Video)
           ---------------------------------------------------------------------- */}
@@ -478,7 +478,7 @@ export default function PartnerOrganizationsPage() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl relative z-10 py-24 text-center sm:text-left">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
+
             {/* Left Content */}
             <div className="lg:col-span-8 space-y-6">
               <motion.div
@@ -528,7 +528,7 @@ export default function PartnerOrganizationsPage() {
                 <Button
                   variant="outline"
                   onClick={() => scrollToId("partner-network-directory")}
-                  className="border-slate-400 text-white hover:bg-white/10 hover:text-white font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
+                  className="border-slate-400 text-pink-600 to rose-500 hover:bg-pink/10 hover:text-pink font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
                 >
                   Explore Our Network
                 </Button>
@@ -687,11 +687,10 @@ export default function PartnerOrganizationsPage() {
                 <button
                   key={cat.value}
                   onClick={() => setSelectedCategory(cat.value)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer select-none ${
-                    selectedCategory === cat.value
-                      ? "bg-pink-600 border-pink-600 text-white shadow-sm"
-                      : "bg-slate-50 border-slate-200 hover:border-slate-350 text-slate-650"
-                  }`}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer select-none ${selectedCategory === cat.value
+                    ? "bg-pink-600 border-pink-600 text-white shadow-sm"
+                    : "bg-slate-50 border-slate-200 hover:border-slate-350 text-slate-650"
+                    }`}
                 >
                   {cat.label}
                 </button>
@@ -876,9 +875,8 @@ export default function PartnerOrganizationsPage() {
                 <button
                   key={idx}
                   onClick={() => setActiveStoryIdx(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    activeStoryIdx === idx ? "w-6 bg-pink-500" : "w-2 bg-white/30 hover:bg-white/50"
-                  }`}
+                  className={`h-2 rounded-full transition-all duration-300 ${activeStoryIdx === idx ? "w-6 bg-pink-500" : "w-2 bg-white/30 hover:bg-white/50"
+                    }`}
                 />
               ))}
             </div>
@@ -1382,11 +1380,10 @@ export default function PartnerOrganizationsPage() {
                           type="button"
                           key={area}
                           onClick={() => handleCollabToggle(area)}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-left cursor-pointer transition-all ${
-                            checked
-                              ? "bg-pink-100/50 border-pink-500 text-pink-700 shadow-2xs font-semibold"
-                              : "bg-white border-slate-200 text-slate-500 text-xs"
-                          }`}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-left cursor-pointer transition-all ${checked
+                            ? "bg-pink-100/50 border-pink-500 text-pink-700 shadow-2xs font-semibold"
+                            : "bg-white border-slate-200 text-slate-500 text-xs"
+                            }`}
                         >
                           <div className={`h-4 w-4 rounded flex items-center justify-center border shrink-0 ${checked ? "bg-pink-600 border-pink-600 text-white" : "border-slate-300"}`}>
                             {checked && <Check className="h-3 w-3" />}
@@ -1576,7 +1573,7 @@ export default function PartnerOrganizationsPage() {
                 setPartnerFormOpen(true);
                 scrollToId("partnership-application-section");
               }}
-              className="w-full sm:w-auto border-slate-500 text-white hover:bg-white/10 font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
+              className="w-full sm:w-auto border-slate-500 text-pink-600 to-rose-500 hover:bg-pink/10 font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
             >
               Contact Partnership Team
             </Button>
@@ -1629,7 +1626,7 @@ export default function PartnerOrganizationsPage() {
 
               <div className="mt-4 space-y-4 font-sans text-slate-650">
                 <p className="text-xs sm:text-sm leading-relaxed">{detailsModal.desc}</p>
-                
+
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-heading">Onboarding Target Areas</p>
                   <p className="text-xs leading-relaxed text-slate-600">
@@ -1720,7 +1717,7 @@ export default function PartnerOrganizationsPage() {
               >
                 <X className="h-4.5 w-4.5" />
               </button>
-              
+
               <div className="aspect-video bg-slate-950 w-full relative">
                 <video
                   controls

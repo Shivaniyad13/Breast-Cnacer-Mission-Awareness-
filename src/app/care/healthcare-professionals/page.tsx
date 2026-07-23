@@ -649,7 +649,7 @@ export default function HealthcareProfessionalsPage() {
   const [researchSearch, setResearchSearch] = useState("");
   const [researchCategory, setResearchCategory] = useState("All");
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  
+
   // Selection logic for decision workflow timeline
   const [activeWorkflowStep, setActiveWorkflowStep] = useState<number>(0);
 
@@ -850,7 +850,7 @@ export default function HealthcareProfessionalsPage() {
 
   return (
     <div className="flex-1 w-full bg-slate-50 text-slate-800 selection:bg-pink-100 selection:text-pink-700 overflow-x-hidden">
-      
+
       {/* ----------------------------------------------------------------------
           1. HERO SECTION
           ---------------------------------------------------------------------- */}
@@ -916,7 +916,7 @@ export default function HealthcareProfessionalsPage() {
               <Button
                 variant="outline"
                 onClick={() => setJoinNetworkOpen(true)}
-                className="border-slate-400 text-white hover:bg-white/10 hover:text-white font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
+                className="border-slate-400 text-blue hover:bg-blue/10 hover:text-blue font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
               >
                 Join Professional Network
               </Button>
@@ -1011,7 +1011,7 @@ export default function HealthcareProfessionalsPage() {
               <p className="text-slate-650 leading-relaxed text-sm sm:text-base font-sans">
                 Precision medicine is not built in isolation. Designing effective algorithms for triple-negative breast cancer (TNBC) or hormone-receptor-positive (HR+) disease relies on path diagnostics, biomarker analytics, and radiation dosing synchronization. Our portal coordinates these workflows in one central exchange.
               </p>
-              
+
               <div className="space-y-4 pt-2">
                 {[
                   {
@@ -1193,11 +1193,10 @@ export default function HealthcareProfessionalsPage() {
                 <button
                   key={cat}
                   onClick={() => setResearchCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
-                    researchCategory === cat
-                      ? "bg-blue-600 border-blue-600 text-white shadow-sm"
-                      : "bg-white border-slate-200 hover:border-slate-350 text-slate-650"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${researchCategory === cat
+                    ? "bg-blue-600 border-blue-600 text-white shadow-sm"
+                    : "bg-white border-slate-200 hover:border-slate-350 text-slate-650"
+                    }`}
                 >
                   {cat}
                 </button>
@@ -1313,7 +1312,7 @@ export default function HealthcareProfessionalsPage() {
                     <User className="h-3.5 w-3.5 text-slate-400" />
                     {course.instructor}
                   </p>
-                  
+
                   <div className="pt-3 border-t border-slate-100 space-y-2">
                     <h5 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-heading">Syllabus Overview</h5>
                     <ul className="space-y-1.5 text-xs text-slate-500">
@@ -1373,11 +1372,10 @@ export default function HealthcareProfessionalsPage() {
                   <button
                     key={spec.id}
                     onClick={() => setSelectedSpecialist(spec.id)}
-                    className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border text-left cursor-pointer transition-all shrink-0 select-none ${
-                      isSelected
-                        ? "bg-white border-blue-500 text-blue-600 shadow-md scale-[1.02]"
-                        : "bg-white border-slate-100 hover:border-slate-350 text-slate-650 shadow-xs"
-                    }`}
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border text-left cursor-pointer transition-all shrink-0 select-none ${isSelected
+                      ? "bg-white border-blue-500 text-blue-600 shadow-md scale-[1.02]"
+                      : "bg-white border-slate-100 hover:border-slate-350 text-slate-650 shadow-xs"
+                      }`}
                   >
                     <div className={`p-2 rounded-xl shrink-0 ${isSelected ? "bg-blue-100 text-blue-600" : "bg-slate-50 text-slate-400"}`}>
                       <SpecIcon className="h-5 w-5" />
@@ -1417,7 +1415,7 @@ export default function HealthcareProfessionalsPage() {
                       <ul className="space-y-2 text-xs sm:text-sm text-slate-600">
                         {currentSpecialist.responsibilities.map((resp, i) => (
                           <li key={i} className="flex items-start gap-2">
-                            <span className="h-4 w-4 rounded-full bg-blue-100 text-[10px] font-bold flex items-center justify-center shrink-0 text-blue-600 mt-0.5">{i+1}</span>
+                            <span className="h-4 w-4 rounded-full bg-blue-100 text-[10px] font-bold flex items-center justify-center shrink-0 text-blue-600 mt-0.5">{i + 1}</span>
                             <span>{resp}</span>
                           </li>
                         ))}
@@ -1464,7 +1462,7 @@ export default function HealthcareProfessionalsPage() {
           <div className="relative mb-10 pb-4 overflow-x-auto scrollbar-none">
             {/* Connector */}
             <div className="hidden md:block absolute top-7 left-8 right-8 h-1 bg-white/10 z-0" />
-            
+
             <div className="flex md:justify-between items-center min-w-[900px] md:min-w-0 relative z-10 px-4">
               {decisionWorkflowStepsData.map((stepItem, idx) => {
                 const isSelected = activeWorkflowStep === idx;
@@ -1475,11 +1473,10 @@ export default function HealthcareProfessionalsPage() {
                     className="flex flex-col items-center gap-2 focus:outline-none cursor-pointer shrink-0"
                   >
                     <div
-                      className={`h-14 w-14 rounded-full border-3 flex items-center justify-center transition-all duration-300 font-heading text-base font-black ${
-                        isSelected
-                          ? "bg-blue-600 border-blue-400 scale-110 shadow-lg shadow-blue-600/30 text-white"
-                          : "bg-slate-800 border-slate-700 hover:border-slate-500 text-slate-400"
-                      }`}
+                      className={`h-14 w-14 rounded-full border-3 flex items-center justify-center transition-all duration-300 font-heading text-base font-black ${isSelected
+                        ? "bg-blue-600 border-blue-400 scale-110 shadow-lg shadow-blue-600/30 text-white"
+                        : "bg-slate-800 border-slate-700 hover:border-slate-500 text-slate-400"
+                        }`}
                     >
                       {stepItem.step}
                     </div>
@@ -1657,7 +1654,7 @@ export default function HealthcareProfessionalsPage() {
                       {ev.credits}
                     </span>
                   </div>
-                  
+
                   <div className="space-y-1">
                     <h4 className="font-heading text-base font-extrabold text-slate-800 group-hover:text-blue-650 transition-colors">
                       {ev.title}
@@ -1698,7 +1695,7 @@ export default function HealthcareProfessionalsPage() {
       <section className="py-24 bg-white relative">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
+
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-wider border border-blue-100">
@@ -1938,10 +1935,11 @@ export default function HealthcareProfessionalsPage() {
             <Button
               variant="outline"
               onClick={() => scrollToId("clinical-guidelines-section")}
-              className="w-full sm:w-auto border-slate-500 text-white hover:bg-white/10 font-bold px-8 py-6 rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-500 hover:from-blue-500 hover:to-indigo-400 text-white font-bold px-8 py-6 rounded-2xl shadow-lg shadow-blue-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer text-base"
             >
               Contact Medical Team
             </Button>
+
           </div>
         </div>
       </section>

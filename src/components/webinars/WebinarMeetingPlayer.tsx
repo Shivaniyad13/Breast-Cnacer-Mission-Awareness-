@@ -6,19 +6,21 @@ import { joinWebinarAction, leaveWebinarAction } from "@/app/actions/webinars";
 import { Button } from "@/components/ui/button";
 import { 
   Video, VideoOff, Mic, MicOff, PhoneOff, MessageSquare, Users, 
-  Settings, Award, Loader2, Sparkles, Send, ShieldCheck
+  Settings, Award, Loader2, Sparkles, Send, ShieldCheck, ExternalLink, AlertTriangle 
 } from "lucide-react";
 
 interface WebinarMeetingPlayerProps {
   webinarId: string;
   webinarTitle: string;
   speakerName: string;
+  meetingLink: string;
 }
 
 export default function WebinarMeetingPlayer({
   webinarId,
   webinarTitle,
   speakerName,
+  meetingLink,
 }: WebinarMeetingPlayerProps) {
   const router = useRouter();
   
@@ -106,7 +108,7 @@ export default function WebinarMeetingPlayer({
       if (res.success) {
         setAttendanceSaved(true);
         if (res.certificateGenerated && res.certificateId) {
-          setCertReadyModal({ number: "GRS-2026-CONFIRMED", id: res.certificateId });
+          setCertReadyModal({ number: res.certificateId, id: res.certificateId });
         } else {
           router.push("/dashboard");
         }
@@ -119,21 +121,21 @@ export default function WebinarMeetingPlayer({
     }
   };
 
-  // Developer/Reviewer Bypass: Simulate stay long enough (e.g. 1 hour/80%) to generate certificate instantly
+  // Developer Bypass: Simulate stay long enough (e.g. 1 hour/80%) to generate certificate instantly
   const handleSimulate80Stay = async () => {
     if (trackerInterval.current) {
       clearInterval(trackerInterval.current);
     }
     setLoading(true);
     try {
-      // Simulate staying for 3600 seconds (60 mins) to easily satisfy 80% requirement of a 45/60 min webinar
+      // Simulate staying for 3600 seconds (60 mins) to satisfy 80% requirement
       const res = await leaveWebinarAction(webinarId, 3600);
       if (res.success) {
         setAttendanceSaved(true);
         if (res.certificateGenerated && res.certificateId) {
-          setCertReadyModal({ number: "GRS-2026-SIMULATED", id: res.certificateId });
+          setCertReadyModal({ number: res.certificateId, id: res.certificateId });
         } else {
-          alert("Simulation completed. Attendance recorded, but certificate criteria not triggered (e.g. already generated or webinar limits).");
+          alert("Simulation completed. Attendance recorded, but certificate criteria not met (need >= 80% or status Completed). Check dashboard logs!");
           router.push("/dashboard");
         }
       }
@@ -149,6 +151,19 @@ export default function WebinarMeetingPlayer({
     const mins = Math.floor(sec / 60);
     const secs = sec % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  // Helper to extract YouTube video ID
+  const getYouTubeId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const youtubeId = getYouTubeId(meetingLink);
+
+  const handleLaunchExternal = () => {
+    window.open(meetingLink, "_blank");
   };
 
   if (loading) {
@@ -182,7 +197,7 @@ export default function WebinarMeetingPlayer({
           {/* Dev Simulate 80% Button */}
           <Button
             onClick={handleSimulate80Stay}
-            className="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold text-xs rounded-xl shadow-md px-4 py-1.5 h-auto transition-transform active:scale-95"
+            className="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white font-bold text-xs rounded-xl shadow-md px-4 py-1.5 h-auto transition-transform active:scale-95 cursor-pointer"
           >
             Dev Bypass: Simulate 80% Stay
           </Button>
@@ -195,35 +210,47 @@ export default function WebinarMeetingPlayer({
         {/* Left Side: Video Stream Screen */}
         <div className="flex-1 bg-slate-950 p-6 flex flex-col justify-center items-center relative group">
           
-          {/* Video presentation graphic wrapper */}
-          <div className="w-full max-w-4xl aspect-video bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden relative shadow-2xl flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900">
+          <div className="w-full max-w-4xl aspect-video bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden relative shadow-2xl flex items-center justify-center">
             {videoActive ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-8 space-y-6">
-                
-                {/* Looping awareness graphics */}
-                <div className="relative h-32 w-32 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-pink-500/10 border-4 border-dashed border-pink-500/20 rounded-full animate-spin duration-10000" />
-                  <Award className="h-20 w-20 text-pink-500 animate-pulse stroke-[1.2]" />
-                </div>
+              youtubeId ? (
+                // YouTube embed
+                <iframe
+                  className="w-full h-full border-0"
+                  src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=0`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                // Zoom or Google Meet landing launcher
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-8 space-y-6 text-center bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900">
+                  <div className="relative h-20 w-20 flex items-center justify-center bg-pink-500/10 border border-pink-500/30 rounded-2xl animate-pulse">
+                    <Video className="h-10 w-10 text-primary" />
+                  </div>
 
-                <div className="text-center space-y-2 max-w-md">
-                  <p className="font-heading text-lg font-black text-white tracking-wide uppercase">
-                    {speakerName} Screen Share
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    Demonstration: Medical Self-Screening, Stage Classifications, and Volunteer Engagement Walkthrough.
-                  </p>
-                </div>
+                  <div className="space-y-2.5 max-w-md">
+                    <h3 className="text-xl font-bold text-white uppercase tracking-wider">Launch External Stream</h3>
+                    <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                      This webinar meeting is conducted via <strong className="text-pink-300 uppercase">{meetingLink.includes("zoom") ? "Zoom" : meetingLink.includes("meet.google") ? "Google Meet" : "External Platform"}</strong>. Click below to launch the video room.
+                    </p>
+                  </div>
 
-                {/* Simulated Presentation Slide Content */}
-                <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-[10px] space-y-1.5 max-w-sm text-slate-300 font-mono">
-                  <p className="text-primary font-bold">&gt; AWARENESS PROTOCOL v2.0</p>
-                  <p>&gt; Step 1: Visual Inspection (Stigma check)</p>
-                  <p>&gt; Step 2: Physical Palpation (Lymph node check)</p>
-                  <p>&gt; Status: 80% Stay triggers automatic QR Certificate</p>
-                </div>
+                  {/* Warning banner */}
+                  <div className="flex items-start gap-2 text-left bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 max-w-md text-[11px] text-amber-400">
+                    <AlertTriangle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
+                    <p className="leading-tight font-medium">
+                      <strong>Important:</strong> Keep this browser tab open in the background! Closing this page will pause your stay duration tracking, affecting your certificate eligibility.
+                    </p>
+                  </div>
 
-              </div>
+                  <Button
+                    onClick={handleLaunchExternal}
+                    className="bg-primary hover:bg-primary/95 text-white font-bold rounded-2xl shadow-lg px-8 py-3.5 h-auto text-sm transition-transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    Launch Meeting Room
+                    <ExternalLink className="h-4.5 w-4.5" />
+                  </Button>
+                </div>
+              )
             ) : (
               <div className="text-center space-y-2">
                 <VideoOff className="h-16 w-16 text-slate-600 mx-auto" />
@@ -232,7 +259,7 @@ export default function WebinarMeetingPlayer({
             )}
 
             {/* Float speaker metadata label */}
-            <div className="absolute bottom-4 left-4 bg-slate-950/80 backdrop-blur-sm border border-slate-800 rounded-xl px-3 py-1.5 text-[10px] font-bold text-slate-300 flex items-center gap-1.5">
+            <div className="absolute bottom-4 left-4 bg-slate-950/80 backdrop-blur-sm border border-slate-800 rounded-xl px-3 py-1.5 text-[10px] font-bold text-slate-300 flex items-center gap-1.5 z-10">
               <span className="h-2 w-2 rounded-full bg-emerald-500" /> Presenter: {speakerName} (Oncologist)
             </div>
           </div>
@@ -268,7 +295,7 @@ export default function WebinarMeetingPlayer({
                             {msg.sender}
                           </span>
                           {isSpeaker && (
-                            <span className="bg-primary/20 text-primary text-[8px] font-black uppercase px-1 rounded tracking-wider">
+                            <span className="bg-primary/25 text-primary text-[8px] font-black uppercase px-1 rounded tracking-wider">
                               Speaker
                             </span>
                           )}
@@ -297,7 +324,7 @@ export default function WebinarMeetingPlayer({
                 onChange={(e) => setChatInput(e.target.value)}
                 className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-primary/50"
               />
-              <button type="submit" className="bg-primary hover:bg-primary/95 text-white p-2 rounded-xl shrink-0 transition-all">
+              <button type="submit" className="bg-primary hover:bg-primary/95 text-white p-2 rounded-xl shrink-0 transition-all cursor-pointer">
                 <Send className="h-3.5 w-3.5" />
               </button>
             </form>
@@ -313,7 +340,7 @@ export default function WebinarMeetingPlayer({
             variant="outline"
             size="sm"
             onClick={() => setMicActive(!micActive)}
-            className={`rounded-xl px-3.5 ${micActive ? "bg-slate-800 text-white border-slate-700" : "bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"}`}
+            className={`rounded-xl px-3.5 cursor-pointer ${micActive ? "bg-slate-800 text-white border-slate-700" : "bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"}`}
           >
             {micActive ? <Mic className="h-4.5 w-4.5" /> : <MicOff className="h-4.5 w-4.5" />}
           </Button>
@@ -323,7 +350,7 @@ export default function WebinarMeetingPlayer({
             variant="outline"
             size="sm"
             onClick={() => setVideoActive(!videoActive)}
-            className={`rounded-xl px-3.5 ${videoActive ? "bg-slate-800 text-white border-slate-700" : "bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"}`}
+            className={`rounded-xl px-3.5 cursor-pointer ${videoActive ? "bg-slate-800 text-white border-slate-700" : "bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"}`}
           >
             {videoActive ? <Video className="h-4.5 w-4.5" /> : <VideoOff className="h-4.5 w-4.5" />}
           </Button>
@@ -332,7 +359,7 @@ export default function WebinarMeetingPlayer({
         {/* Center: Leave button */}
         <Button
           onClick={handleLeave}
-          className="bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold flex items-center gap-1.5 px-6"
+          className="bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold flex items-center gap-1.5 px-6 cursor-pointer"
         >
           <PhoneOff className="h-4 w-4" /> Leave Webinar
         </Button>
@@ -342,14 +369,14 @@ export default function WebinarMeetingPlayer({
           <Button
             variant="ghost"
             onClick={() => setShowChat(!showChat)}
-            className={`rounded-xl px-3 hover:text-white ${showChat ? "text-primary bg-slate-800/40" : ""}`}
+            className={`rounded-xl px-3 hover:text-white cursor-pointer ${showChat ? "text-primary bg-slate-800/40" : ""}`}
           >
             <MessageSquare className="h-4.5 w-4.5" />
           </Button>
-          <Button variant="ghost" className="rounded-xl px-3 hover:text-white">
+          <Button variant="ghost" className="rounded-xl px-3 hover:text-white cursor-pointer">
             <Users className="h-4.5 w-4.5" />
           </Button>
-          <Button variant="ghost" className="rounded-xl px-3 hover:text-white">
+          <Button variant="ghost" className="rounded-xl px-3 hover:text-white cursor-pointer">
             <Settings className="h-4.5 w-4.5" />
           </Button>
         </div>
@@ -357,7 +384,7 @@ export default function WebinarMeetingPlayer({
 
       {/* Certificate Ready Modal Alert */}
       {certReadyModal && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 animate-fade-in">
+        <div className="fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white text-slate-800 rounded-3xl border border-pink-100 p-8 max-w-md w-full text-center space-y-6 shadow-2xl relative">
             <div className="absolute top-4 right-4 flex items-center gap-1 opacity-5">
               <Award className="h-24 w-24 text-rose-600" />
@@ -375,21 +402,21 @@ export default function WebinarMeetingPlayer({
             </div>
 
             <div className="bg-pink-50/50 border border-pink-100 rounded-2xl p-4 text-xs space-y-1.5 text-left text-slate-700">
-              <p><span className="font-bold text-slate-600">Webinar:</span> {webinarTitle}</p>
-              <p><span className="font-bold text-slate-600">Instructor:</span> {speakerName}</p>
-              <p><span className="font-bold text-slate-600">System Log:</span> PRESENT (100% attendance credits)</p>
+              <p><span className="font-bold text-slate-655">Webinar:</span> {webinarTitle}</p>
+              <p><span className="font-bold text-slate-655">Instructor:</span> {speakerName}</p>
+              <p><span className="font-bold text-slate-655">System Log:</span> PRESENT (100% attendance credits)</p>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2.5">
               <button
                 onClick={() => router.push(`/api/certificates/${certReadyModal.id}/download`)}
-                className="flex-1 bg-primary hover:bg-primary/95 text-white font-bold text-sm py-3 rounded-2xl shadow-md transition-all active:scale-95"
+                className="flex-1 bg-primary hover:bg-primary/95 text-white font-bold text-sm py-3 rounded-2xl shadow-md transition-all active:scale-95 cursor-pointer"
               >
                 Download PDF
               </button>
               <button
                 onClick={() => router.push("/dashboard")}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-semibold text-sm py-3 rounded-2xl"
+                className="flex-1 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-semibold text-sm py-3 rounded-2xl cursor-pointer"
               >
                 Go to Dashboard
               </button>

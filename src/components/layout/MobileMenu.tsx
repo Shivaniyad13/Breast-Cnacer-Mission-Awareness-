@@ -160,6 +160,15 @@ export default function MobileMenu({ user, handleSignOut }: MobileMenuProps) {
                 Donate Now
               </Button>
             </Link>
+
+            {/* About Us */}
+            <Link
+              href="/about"
+              onClick={closeMenu}
+              className="block text-sm font-semibold text-foreground/90 hover:text-primary py-1.5 transition-colors border-b border-border/40"
+            >
+              About Us
+            </Link>
           </nav>
         </div>
 

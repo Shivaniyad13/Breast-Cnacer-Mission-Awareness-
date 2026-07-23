@@ -14,7 +14,12 @@ import {
 import MobileMenu from "./MobileMenu";
 
 export default async function Navbar() {
-  const session = await auth();
+  let session = null;
+  try {
+    session = await auth();
+  } catch (error) {
+    // Suppress dynamic page pre-rendering errors during next build phase
+  }
   const user = session?.user;
 
   // Sign out server action
@@ -37,7 +42,7 @@ export default async function Navbar() {
         </div>
 
         {/* Desktop Nav Links - Centered */}
-        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2 z-0">
+        <nav className="hidden md:flex items-center gap-3 lg:gap-6 xl:gap-8 absolute left-1/2 -translate-x-1/2 z-0">
           {/* Home - direct link */}
           <Link
             href="/"
@@ -109,6 +114,14 @@ export default async function Navbar() {
             >
               Donate Now
             </Button>
+          </Link>
+
+          {/* About Us Link */}
+          <Link
+            href="/about"
+            className="text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
+          >
+            About Us
           </Link>
 
           {/* Contact Us Link */}

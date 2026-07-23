@@ -1,18 +1,19 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   createWebinarAction, editWebinarAction, deleteWebinarAction,
   updateWebinarStatusAction, uploadRecordingAction, uploadMaterialsAction,
-  sendReminderAction
+  sendReminderAction, adjustAttendanceAction, generateCertificateForUser
 } from "@/app/actions/webinars";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Calendar, Clock, MapPin, Users, Award, ShieldCheck, Video,
-  Trash2, Edit, Plus, FileText, CheckCircle, HelpCircle, Download, ExternalLink, Loader2
+  Trash2, Edit, Plus, FileText, CheckCircle, HelpCircle, Download, 
+  ExternalLink, Loader2, Upload, BookOpen, Languages, ShieldAlert
 } from "lucide-react";
 
 interface AdminWebinarDashboardProps {
@@ -25,7 +26,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
   const [activeTab, setActiveTab] = useState("list");
   const [showAttendeesId, setShowAttendeesId] = useState<string | null>(null);
 
-  // Create Form State
+  // Form State
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [fullContent, setFullContent] = useState("");
@@ -33,6 +34,9 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
   const [speakerName, setSpeakerName] = useState("");
   const [speakerImage, setSpeakerImage] = useState("");
   const [speakerBio, setSpeakerBio] = useState("");
+  const [speakerQualification, setSpeakerQualification] = useState("");
+  const [speakerSpecialization, setSpeakerSpecialization] = useState("");
+  const [speakerHospital, setSpeakerHospital] = useState("");
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -45,6 +49,10 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
   const [maxSeats, setMaxSeats] = useState("100");
   const [category, setCategory] = useState("General");
   const [status, setStatus] = useState("DRAFT");
+  const [language, setLanguage] = useState("English");
+  const [meetingPlatform, setMeetingPlatform] = useState("Zoom");
+  const [learningOutcomes, setLearningOutcomes] = useState("");
+  const [eligibility, setEligibility] = useState("");
 
   // Modals / Selected Items State
   const [selectedWebinar, setSelectedWebinar] = useState<any | null>(null);
@@ -52,6 +60,19 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
   const [showRecordingModal, setShowRecordingModal] = useState(false);
   const [showMaterialsModal, setShowMaterialsModal] = useState(false);
   const [inputUrl, setInputUrl] = useState("");
+
+  // Manual Attendance State per attendee
+  const [manualMinutes, setManualMinutes] = useState<{ [key: string]: string }>({});
+
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>, setter: (val: string) => void) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setter(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +85,9 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
       title, description, fullContent, bannerImage, speakerName,
       speakerImage, speakerBio, date, startTime: `${date}T${startTime}`,
       endTime: `${date}T${endTime}`, venue, city, state, country,
-      webinarMode, meetingLink, maxSeats, category, status
+      webinarMode, meetingLink, maxSeats, category, status,
+      speakerQualification, speakerSpecialization, speakerHospital,
+      language, meetingPlatform, learningOutcomes, eligibility
     };
 
     setIsPending(true);
@@ -87,11 +110,14 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
     setIsEditMode(true);
     setTitle(webinar.title);
     setDescription(webinar.description);
-    setFullContent(webinar.fullContent);
+    setFullContent(webinar.fullContent || "");
     setBannerImage(webinar.bannerImage || "");
     setSpeakerName(webinar.speakerName);
     setSpeakerImage(webinar.speakerImage || "");
     setSpeakerBio(webinar.speakerBio || "");
+    setSpeakerQualification(webinar.speakerQualification || "");
+    setSpeakerSpecialization(webinar.speakerSpecialization || "");
+    setSpeakerHospital(webinar.speakerHospital || "");
 
     // Format Date string: yyyy-MM-dd
     const dateObj = new Date(webinar.date);
@@ -117,8 +143,12 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
     setMaxSeats(webinar.maxSeats.toString());
     setCategory(webinar.category);
     setStatus(webinar.status);
+    setLanguage(webinar.language || "English");
+    setMeetingPlatform(webinar.meetingPlatform || "Zoom");
+    setLearningOutcomes(webinar.learningOutcomes || "");
+    setEligibility(webinar.eligibility || "");
 
-    setActiveTab("create"); // reuse the tab for edit form
+    setActiveTab("create");
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -129,7 +159,9 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
       title, description, fullContent, bannerImage, speakerName,
       speakerImage, speakerBio, date, startTime: `${date}T${startTime}`,
       endTime: `${date}T${endTime}`, venue, city, state, country,
-      webinarMode, meetingLink, maxSeats, category, status
+      webinarMode, meetingLink, maxSeats, category, status,
+      speakerQualification, speakerSpecialization, speakerHospital,
+      language, meetingPlatform, learningOutcomes, eligibility
     };
 
     setIsPending(true);
@@ -206,6 +238,46 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
     }
   };
 
+  const handleAdjustAttendance = async (userId: string, webinarId: string) => {
+    const minutes = manualMinutes[userId];
+    if (!minutes || isNaN(parseFloat(minutes))) {
+      alert("Please enter a valid number of stay minutes.");
+      return;
+    }
+
+    setIsPending(true);
+    try {
+      const res = await adjustAttendanceAction(userId, webinarId, parseFloat(minutes));
+      if (res.success) {
+        alert("Attendance stay updated successfully!");
+        router.refresh();
+      }
+    } catch (e: any) {
+      alert(e.message || "Could not adjust attendance.");
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  const handleTriggerCertificate = async (userId: string, webinarId: string) => {
+    if (!confirm("Are you sure you want to manually trigger certificate generation for this user? This overrides standard percentage validations!")) return;
+    
+    setIsPending(true);
+    try {
+      const res = await generateCertificateForUser(userId, webinarId);
+      if (res.success) {
+        alert(`Certificate successfully created! ID: ${res.certificateNumber}`);
+        router.refresh();
+      } else {
+        alert("Error: " + res.error);
+      }
+    } catch (e: any) {
+      alert(e.message || "Certificate trigger failed.");
+    } finally {
+      setIsPending(false);
+    }
+  };
+
   const resetForm = () => {
     setTitle("");
     setDescription("");
@@ -214,6 +286,9 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
     setSpeakerName("");
     setSpeakerImage("");
     setSpeakerBio("");
+    setSpeakerQualification("");
+    setSpeakerSpecialization("");
+    setSpeakerHospital("");
     setDate("");
     setStartTime("");
     setEndTime("");
@@ -226,23 +301,32 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
     setMaxSeats("100");
     setCategory("General");
     setStatus("DRAFT");
+    setLanguage("English");
+    setMeetingPlatform("Zoom");
+    setLearningOutcomes("");
+    setEligibility("");
     setIsEditMode(false);
     setSelectedWebinar(null);
   };
 
-  // CSV Export registrations for a specific webinar
+  // CSV Export registrations
   const handleExportCSV = (webinar: any) => {
     if (!webinar.registrations || webinar.registrations.length === 0) {
       alert("No registrations to export.");
       return;
     }
 
-    const headers = ["Attendee Name", "Attendee Email", "Registration Date", "Role"];
+    const headers = ["Attendee Name", "Attendee Email", "Phone", "Gender", "Age", "City", "State", "Occupation", "Registration Date"];
     const rows = webinar.registrations.map((r: any) => [
-      `"${r.user.name || 'Participant'}"`,
-      `"${r.user.email}"`,
-      `"${new Date(r.registeredAt).toLocaleString()}"`,
-      `"${r.user.role}"`
+      `"${r.name || r.user.name || 'Participant'}"`,
+      `"${r.email || r.user.email}"`,
+      `"${r.phone || 'N/A'}"`,
+      `"${r.gender || 'N/A'}"`,
+      `"${r.age || 'N/A'}"`,
+      `"${r.city || 'N/A'}"`,
+      `"${r.state || 'N/A'}"`,
+      `"${r.occupation || 'N/A'}"`,
+      `"${new Date(r.registeredAt).toLocaleString()}"`
     ]);
 
     const csvContent = "data:text/csv;charset=utf-8,"
@@ -250,7 +334,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${webinar.title.replace(/\s+/g, "_")}_Attendees.csv`);
+    link.setAttribute("download", `${webinar.title.replace(/\s+/g, "_")}_RSVP.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -259,13 +343,12 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
   return (
     <div className="space-y-6">
 
-      {/* Tab Navigation header */}
       <Tabs value={activeTab} onValueChange={(val) => { setActiveTab(val); if (val === "create" && !isEditMode) resetForm(); }} className="space-y-6">
         <TabsList className="bg-pink-50/50 border border-pink-100/50 p-1 rounded-xl">
-          <TabsTrigger value="list" className="font-bold text-xs uppercase py-2">
+          <TabsTrigger value="list" className="font-bold text-xs uppercase py-2 cursor-pointer">
             Webinars List
           </TabsTrigger>
-          <TabsTrigger value="create" className="font-bold text-xs uppercase py-2 flex items-center gap-1">
+          <TabsTrigger value="create" className="font-bold text-xs uppercase py-2 flex items-center gap-1 cursor-pointer">
             {isEditMode ? <Edit className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
             {isEditMode ? "Edit Webinar" : "Create Webinar"}
           </TabsTrigger>
@@ -280,33 +363,37 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
               </Card>
             ) : (
               webinars.map((webinar) => {
-                const isCompleted = webinar.status === "COMPLETED";
                 const totalRegistrations = webinar.registrations?.length || 0;
-                const totalAttendance = webinar.attendance?.filter((a: any) => a.status === "PRESENT").length || 0;
+                // Attendances present count
+                const totalAttendance = webinar.attendance?.length || 0;
 
                 return (
                   <Card key={webinar.id} className="rounded-3xl border border-pink-50 shadow-sm overflow-hidden bg-white hover:border-pink-200/50 transition-colors">
-                    <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-
+                    <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-6 items-start text-xs font-semibold text-slate-655">
+                      
                       {/* Left: Metadata */}
                       <div className="md:col-span-2 space-y-3">
                         <div className="flex gap-2 items-center">
-                          <span className={`text-[9px] font-black uppercase px-2.5 py-0.5 rounded tracking-wider border ${webinar.status === "PUBLISHED"
+                          <span className={`text-[9px] font-black uppercase px-2.5 py-0.5 rounded tracking-wider border ${
+                            webinar.status === "PUBLISHED"
                               ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                               : webinar.status === "COMPLETED"
                                 ? "bg-slate-100 text-slate-500 border-slate-200"
                                 : "bg-amber-50 text-amber-500 border-amber-100"
-                            }`}>
+                          }`}>
                             {webinar.status}
                           </span>
                           <span className="bg-pink-50 border border-pink-100 text-primary text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                             {webinar.webinarMode}
                           </span>
+                          <span className="bg-slate-900 text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                            {webinar.meetingPlatform || "Zoom"}
+                          </span>
                         </div>
                         <h3 className="font-heading text-lg font-black text-slate-800">{webinar.title}</h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2">{webinar.description}</p>
+                        <p className="text-[11px] text-muted-foreground line-clamp-2">{webinar.description}</p>
 
-                        <div className="grid grid-cols-2 gap-4 pt-2 text-[11px] text-slate-500 font-semibold">
+                        <div className="grid grid-cols-2 gap-4 pt-2 text-[11px] text-slate-550">
                           <div className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-primary shrink-0" /> {new Date(webinar.date).toLocaleDateString("en-US")}</div>
                           <div className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-primary shrink-0" /> {new Date(webinar.startTime).toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' })}</div>
                           <div className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary shrink-0" /> {webinar.city || "Online"}</div>
@@ -315,20 +402,20 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                       </div>
 
                       {/* Middle: Stats & Metrics */}
-                      <div className="bg-slate-50/50 border border-slate-100 rounded-2xl p-4 text-xs space-y-3">
-                        <h4 className="font-bold text-slate-700 uppercase tracking-wider text-[9px]">Analytics Summary</h4>
+                      <div className="bg-slate-50/50 border border-slate-100 rounded-2xl p-4 space-y-3">
+                        <h4 className="font-bold text-slate-700 uppercase tracking-wider text-[9px]">RSVPs & Analytics</h4>
                         <div className="space-y-1.5 font-medium text-slate-600">
                           <div className="flex justify-between">
                             <span>Max Seats:</span>
                             <span className="font-bold text-slate-800">{webinar.maxSeats}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>RSVPs:</span>
-                            <span className="font-bold text-slate-800">{totalRegistrations} ({((totalRegistrations / webinar.maxSeats) * 100).toFixed(0)}%)</span>
+                            <span>Registrations:</span>
+                            <span className="font-bold text-slate-800">{totalRegistrations}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Certified:</span>
-                            <span className="font-bold text-emerald-600">{totalAttendance} attendees</span>
+                            <span>Attendance Logs:</span>
+                            <span className="font-bold text-emerald-600">{totalAttendance} logs</span>
                           </div>
                         </div>
 
@@ -338,7 +425,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                           disabled={totalRegistrations === 0}
                           size="sm"
                           variant="outline"
-                          className="w-full border-pink-200 hover:bg-pink-50 rounded-xl text-[10px] uppercase font-bold flex items-center justify-center gap-1 h-8"
+                          className="w-full border-pink-200 hover:bg-pink-50 rounded-xl text-[10px] uppercase font-bold flex items-center justify-center gap-1 h-8 cursor-pointer"
                         >
                           <Download className="h-3 w-3" /> Export RSVPs CSV
                         </Button>
@@ -348,9 +435,9 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                           disabled={totalRegistrations === 0}
                           size="sm"
                           variant="outline"
-                          className="w-full border-pink-200 hover:bg-pink-50 rounded-xl text-[10px] uppercase font-bold flex items-center justify-center gap-1 h-8 mt-1"
+                          className="w-full border-pink-200 hover:bg-pink-50 rounded-xl text-[10px] uppercase font-bold flex items-center justify-center gap-1 h-8 mt-1 cursor-pointer"
                         >
-                          <Users className="h-3.5 w-3.5" /> {showAttendeesId === webinar.id ? "Hide Attendees" : "View Attendees"}
+                          <Users className="h-3.5 w-3.5" /> {showAttendeesId === webinar.id ? "Hide Attendees" : "Manage Attendance"}
                         </Button>
                       </div>
 
@@ -360,14 +447,14 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                           <Button
                             onClick={() => handleEditSetup(webinar)}
                             variant="outline"
-                            className="flex-1 border-pink-200 hover:bg-pink-50 rounded-xl text-[10px] uppercase font-bold py-2 h-auto"
+                            className="flex-1 border-pink-200 hover:bg-pink-50 rounded-xl text-[10px] uppercase font-bold py-2 h-auto cursor-pointer"
                           >
                             <Edit className="h-3.5 w-3.5 mr-1" /> Edit
                           </Button>
                           <Button
                             onClick={() => handleDelete(webinar.id)}
                             variant="outline"
-                            className="border-red-200 hover:bg-red-50 text-red-500 rounded-xl text-[10px] uppercase font-bold py-2 h-auto"
+                            className="border-red-200 hover:bg-red-50 text-red-500 rounded-xl text-[10px] uppercase font-bold py-2 h-auto cursor-pointer"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
@@ -377,7 +464,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                         {webinar.status === "DRAFT" && (
                           <Button
                             onClick={() => handleStatusChange(webinar.id, "PUBLISHED")}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] uppercase font-bold py-2 h-auto shadow-sm"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] uppercase font-bold py-2 h-auto shadow-sm cursor-pointer"
                           >
                             Publish Webinar
                           </Button>
@@ -388,14 +475,14 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                             <div className="flex gap-2">
                               <Button
                                 onClick={() => handleStatusChange(webinar.id, "COMPLETED")}
-                                className="flex-1 bg-slate-700 hover:bg-slate-800 text-white rounded-xl text-[10px] uppercase font-bold py-2 h-auto"
+                                className="flex-1 bg-slate-700 hover:bg-slate-800 text-white rounded-xl text-[10px] uppercase font-bold py-2 h-auto cursor-pointer"
                               >
                                 Complete
                               </Button>
                               <Button
                                 onClick={() => handleStatusChange(webinar.id, "CANCELLED")}
                                 variant="outline"
-                                className="border-slate-300 rounded-xl text-[10px] uppercase font-bold py-2 h-auto"
+                                className="border-slate-300 rounded-xl text-[10px] uppercase font-bold py-2 h-auto cursor-pointer"
                               >
                                 Cancel
                               </Button>
@@ -403,7 +490,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                             <Button
                               onClick={() => handleSendReminder(webinar.id)}
                               disabled={totalRegistrations === 0}
-                              className="w-full bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-[10px] uppercase font-bold py-2 h-auto"
+                              className="w-full bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-[10px] uppercase font-bold py-2 h-auto cursor-pointer"
                             >
                               Send Reminder
                             </Button>
@@ -415,14 +502,14 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                           <Button
                             onClick={() => { setSelectedWebinar(webinar); setInputUrl(webinar.recordingUrl || ""); setShowRecordingModal(true); }}
                             variant="outline"
-                            className="border-pink-200 rounded-xl text-[8px] uppercase font-extrabold p-1.5 h-auto text-slate-700 hover:bg-pink-50"
+                            className="border-pink-200 rounded-xl text-[8px] uppercase font-extrabold p-1.5 h-auto text-slate-750 hover:bg-pink-50 cursor-pointer"
                           >
                             Upload Video
                           </Button>
                           <Button
                             onClick={() => { setSelectedWebinar(webinar); setInputUrl(webinar.materialsUrl || ""); setShowMaterialsModal(true); }}
                             variant="outline"
-                            className="border-pink-200 rounded-xl text-[8px] uppercase font-extrabold p-1.5 h-auto text-slate-700 hover:bg-pink-50"
+                            className="border-pink-200 rounded-xl text-[8px] uppercase font-extrabold p-1.5 h-auto text-slate-750 hover:bg-pink-50 cursor-pointer"
                           >
                             Upload Resource
                           </Button>
@@ -432,35 +519,77 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
 
                     </div>
 
-                    {/* Collapsible Attendees List */}
+                    {/* Attendees & Attendance Management Panel */}
                     {showAttendeesId === webinar.id && webinar.registrations && (
                       <div className="px-6 pb-6 border-t border-slate-100 pt-5 animate-in slide-in-from-top-4 duration-200 text-slate-700 bg-slate-50/20">
-                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Registered Attendees ({totalRegistrations})</h4>
-                        <div className="overflow-x-auto rounded-xl border border-slate-100 max-h-60 overflow-y-auto">
+                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Manage Attendance & Certificate Generation</h4>
+                        <div className="overflow-x-auto rounded-xl border border-slate-100 max-h-[30rem] overflow-y-auto">
                           <table className="w-full text-left border-collapse text-[11px] text-slate-600 font-medium">
                             <thead>
                               <tr className="bg-slate-50 text-[10px] text-slate-400 uppercase font-black border-b border-slate-100">
-                                <th className="p-3">Name</th>
-                                <th className="p-3">Email</th>
-                                <th className="p-3">Phone</th>
-                                <th className="p-3">Gender</th>
-                                <th className="p-3">Age</th>
-                                <th className="p-3">Location</th>
-                                <th className="p-3">Occupation</th>
+                                <th className="p-3">Attendee Name</th>
+                                <th className="p-3">Email Address</th>
+                                <th className="p-3">Logged Stay</th>
+                                <th className="p-3">Credits %</th>
+                                <th className="p-3 text-center">Status</th>
+                                <th className="p-3">Manual Override (Mins)</th>
+                                <th className="p-3 text-right">Actions</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50 bg-white">
-                              {webinar.registrations.map((reg: any) => (
-                                <tr key={reg.id} className="hover:bg-slate-50/50">
-                                  <td className="p-3 font-bold text-slate-800">{reg.name || reg.user.name || "Participant"}</td>
-                                  <td className="p-3 font-mono">{reg.email || reg.user.email}</td>
-                                  <td className="p-3 font-mono">{reg.phone || "N/A"}</td>
-                                  <td className="p-3">{reg.gender || "N/A"}</td>
-                                  <td className="p-3 font-mono">{reg.age > 0 ? reg.age : "N/A"}</td>
-                                  <td className="p-3">{reg.city ? `${reg.city}, ${reg.state}` : "N/A"}</td>
-                                  <td className="p-3">{reg.occupation || "N/A"}</td>
-                                </tr>
-                              ))}
+                              {webinar.registrations.map((reg: any) => {
+                                // Locate existing attendance log
+                                const att = webinar.attendance?.find((a: any) => a.userId === reg.userId);
+                                const stayedMins = att ? att.durationMinutes.toFixed(1) : "0.0";
+                                const percent = att ? att.attendancePercentage.toFixed(0) : "0";
+                                const isEligible = att ? att.certificateEligible : false;
+
+                                return (
+                                  <tr key={reg.id} className="hover:bg-slate-50/50">
+                                    <td className="p-3 font-bold text-slate-800">{reg.name || reg.user.name || "Participant"}</td>
+                                    <td className="p-3 font-mono text-slate-500">{reg.email || reg.user.email}</td>
+                                    <td className="p-3 font-mono">{stayedMins} mins</td>
+                                    <td className="p-3 font-mono font-bold text-slate-700">{percent}%</td>
+                                    <td className="p-3 text-center">
+                                      {isEligible ? (
+                                        <span className="inline-flex items-center gap-0.5 bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-0.5 rounded-full text-[9px] font-black uppercase">
+                                          Eligible
+                                        </span>
+                                      ) : (
+                                        <span className="inline-flex items-center gap-0.5 bg-slate-50 text-slate-400 border border-slate-100 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase">
+                                          Ineligible
+                                        </span>
+                                      )}
+                                    </td>
+                                    <td className="p-2">
+                                      <div className="flex gap-1.5 max-w-[120px]">
+                                        <input
+                                          type="number"
+                                          placeholder="e.g. 45"
+                                          value={manualMinutes[reg.userId] || ""}
+                                          onChange={(e) => setManualMinutes(prev => ({ ...prev, [reg.userId]: e.target.value }))}
+                                          className="w-16 bg-slate-50 border border-border rounded-lg px-1.5 py-1 text-center font-mono text-slate-800"
+                                        />
+                                        <Button 
+                                          size="sm" 
+                                          onClick={() => handleAdjustAttendance(reg.userId, webinar.id)}
+                                          className="bg-primary text-white hover:bg-primary/95 text-[9px] h-7 rounded-lg"
+                                        >
+                                          Save
+                                        </Button>
+                                      </div>
+                                    </td>
+                                    <td className="p-2 text-right">
+                                      <Button
+                                        onClick={() => handleTriggerCertificate(reg.userId, webinar.id)}
+                                        className="bg-pink-600 hover:bg-pink-700 text-white rounded-lg text-[9px] font-bold h-7 px-3 py-1 cursor-pointer"
+                                      >
+                                        Issue Cert
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
                             </tbody>
                           </table>
                         </div>
@@ -478,7 +607,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
           <Card className="rounded-3xl border border-pink-50 shadow-sm max-w-4xl mx-auto">
             <CardHeader className="border-b border-pink-50 pb-5">
               <CardTitle>{isEditMode ? "Edit Webinar Details" : "Create New Webinar"}</CardTitle>
-              <CardDescription>Enter details, speaker parameters, dates, and locations.</CardDescription>
+              <CardDescription>Enter metadata details, speaker parameters, dates, and locations.</CardDescription>
             </CardHeader>
             <CardContent className="p-6 md:p-8">
               <form onSubmit={isEditMode ? handleUpdate : handleCreate} className="space-y-6 text-sm text-slate-700">
@@ -489,32 +618,32 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Webinar Title *</label>
+                      <label className="text-xs font-bold text-slate-655">Webinar Title *</label>
                       <input
                         type="text"
                         required
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        placeholder="e.g. Early Staging of Breast Cancer"
+                        placeholder="e.g. Breast Cancer Screening Guidelines"
                         className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Category *</label>
+                      <label className="text-xs font-bold text-slate-655">Category *</label>
                       <input
                         type="text"
                         required
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
-                        placeholder="e.g. Clinical, Prevention, Volunteerism"
+                        placeholder="e.g. Oncology, Volunteerism"
                         className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-600">Short Description *</label>
+                    <label className="text-xs font-bold text-slate-655">Short Description *</label>
                     <textarea
                       required
                       value={description}
@@ -526,7 +655,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-600">Full Content / Full Description</label>
+                    <label className="text-xs font-bold text-slate-655">Full Content / Full Description</label>
                     <textarea
                       value={fullContent}
                       onChange={(e) => setFullContent(e.target.value)}
@@ -538,23 +667,62 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Banner Image URL</label>
-                      <input
-                        type="text"
-                        value={bannerImage}
-                        onChange={(e) => setBannerImage(e.target.value)}
-                        placeholder="https://example.com/banner.jpg"
-                        className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
-                      />
+                      <label className="text-xs font-bold text-slate-655">Banner Image URL / File Upload</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={bannerImage.startsWith("data:") ? "Base64 Image Loaded" : bannerImage}
+                          onChange={(e) => setBannerImage(e.target.value)}
+                          placeholder="https://example.com/banner.jpg"
+                          className="flex-1 bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
+                        />
+                        <div className="relative">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id="banner-file"
+                            className="hidden"
+                            onChange={(e) => handleImageFileChange(e, setBannerImage)}
+                          />
+                          <label htmlFor="banner-file" className="cursor-pointer bg-slate-100 hover:bg-pink-50 text-slate-700 hover:text-primary px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold flex items-center gap-1">
+                            <Upload className="h-3.5 w-3.5" /> Upload
+                          </label>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Max Seats Available *</label>
+                      <label className="text-xs font-bold text-slate-655">Max Seats Available *</label>
                       <input
                         type="number"
                         required
                         value={maxSeats}
                         onChange={(e) => setMaxSeats(e.target.value)}
+                        className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Learning Outcomes and Eligibility textareas */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-655">Learning Outcomes (One outcome per line)</label>
+                      <textarea
+                        value={learningOutcomes}
+                        onChange={(e) => setLearningOutcomes(e.target.value)}
+                        placeholder="Understand early symptoms of cancer&#10;Perform breast checks correctly"
+                        rows={3}
+                        className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-655">Webinar Eligibility Rules</label>
+                      <textarea
+                        value={eligibility}
+                        onChange={(e) => setEligibility(e.target.value)}
+                        placeholder="Open to all medical professionals and student volunteers..."
+                        rows={3}
                         className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
                       />
                     </div>
@@ -567,30 +735,77 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Speaker Name *</label>
+                      <label className="text-xs font-bold text-slate-655">Speaker Name *</label>
                       <input
                         type="text"
                         required
                         value={speakerName}
                         onChange={(e) => setSpeakerName(e.target.value)}
-                        placeholder="Dr. Ananya Sen"
+                        placeholder="Dr. Shikha Yaduvanshi"
                         className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Speaker Photo URL</label>
+                      <label className="text-xs font-bold text-slate-655">Speaker Photo URL / File Upload</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={speakerImage.startsWith("data:") ? "Base64 Image Loaded" : speakerImage}
+                          onChange={(e) => setSpeakerImage(e.target.value)}
+                          placeholder="https://example.com/speaker.jpg"
+                          className="flex-1 bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
+                        />
+                        <div className="relative">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id="speaker-file"
+                            className="hidden"
+                            onChange={(e) => handleImageFileChange(e, setSpeakerImage)}
+                          />
+                          <label htmlFor="speaker-file" className="cursor-pointer bg-slate-100 hover:bg-pink-50 text-slate-700 hover:text-primary px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold flex items-center gap-1">
+                            <Upload className="h-3.5 w-3.5" /> Upload
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-655">Speaker Qualification</label>
                       <input
                         type="text"
-                        value={speakerImage}
-                        onChange={(e) => setSpeakerImage(e.target.value)}
-                        placeholder="https://example.com/speaker.jpg"
+                        value={speakerQualification}
+                        onChange={(e) => setSpeakerQualification(e.target.value)}
+                        placeholder="MD Oncology, MBBS"
+                        className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-655">Speaker Specialization</label>
+                      <input
+                        type="text"
+                        value={speakerSpecialization}
+                        onChange={(e) => setSpeakerSpecialization(e.target.value)}
+                        placeholder="Breast Cancer Specialist"
+                        className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-655">Speaker Hospital / Association</label>
+                      <input
+                        type="text"
+                        value={speakerHospital}
+                        onChange={(e) => setSpeakerHospital(e.target.value)}
+                        placeholder="All India Institute of Medical Sciences"
                         className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-600">Speaker Bio</label>
+                    <label className="text-xs font-bold text-slate-655">Speaker Bio</label>
                     <textarea
                       value={speakerBio}
                       onChange={(e) => setSpeakerBio(e.target.value)}
@@ -607,7 +822,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Webinar Date *</label>
+                      <label className="text-xs font-bold text-slate-655">Webinar Date *</label>
                       <input
                         type="date"
                         required
@@ -618,7 +833,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Start Time *</label>
+                      <label className="text-xs font-bold text-slate-655">Start Time *</label>
                       <input
                         type="time"
                         required
@@ -629,7 +844,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">End Time *</label>
+                      <label className="text-xs font-bold text-slate-655">End Time *</label>
                       <input
                         type="time"
                         required
@@ -645,9 +860,9 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                 <div className="space-y-4 pt-4 border-t border-slate-100">
                   <h4 className="font-bold text-primary uppercase text-xs tracking-wider border-b border-pink-50 pb-1.5">Venue & Mode Details</h4>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Webinar Mode *</label>
+                      <label className="text-xs font-bold text-slate-655">Webinar Mode *</label>
                       <select
                         value={webinarMode}
                         onChange={(e) => setWebinarMode(e.target.value)}
@@ -659,8 +874,33 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                       </select>
                     </div>
 
-                    <div className="space-y-1.5 md:col-span-2">
-                      <label className="text-xs font-bold text-slate-600">Meeting Room Link * (Zoom / Teams / Meet)</label>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-655">Language *</label>
+                      <input
+                        type="text"
+                        required
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value)}
+                        className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-655">Meeting Platform *</label>
+                      <select
+                        value={meetingPlatform}
+                        onChange={(e) => setMeetingPlatform(e.target.value)}
+                        className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800 text-sm"
+                      >
+                        <option value="Zoom">Zoom</option>
+                        <option value="Google Meet">Google Meet</option>
+                        <option value="YouTube Live">YouTube Live</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-655">Meeting Room Link *</label>
                       <input
                         type="text"
                         required
@@ -674,17 +914,17 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Venue (Address)</label>
+                      <label className="text-xs font-bold text-slate-655">Venue (Address)</label>
                       <input
                         type="text"
                         value={venue}
                         onChange={(e) => setVenue(e.target.value)}
-                        placeholder="e.g. Zoom Server / Khushi Hall"
+                        placeholder="e.g. Zoom Server / AIIMS Seminar Hall"
                         className="w-full bg-pink-50/10 border border-border/80 rounded-xl px-3.5 py-2 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 outline-none text-slate-800"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">City</label>
+                      <label className="text-xs font-bold text-slate-655">City</label>
                       <input
                         type="text"
                         value={city}
@@ -694,7 +934,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">State</label>
+                      <label className="text-xs font-bold text-slate-655">State</label>
                       <input
                         type="text"
                         value={state}
@@ -704,7 +944,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-600">Country</label>
+                      <label className="text-xs font-bold text-slate-655">Country</label>
                       <input
                         type="text"
                         value={country}
@@ -716,9 +956,9 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                   </div>
                 </div>
 
-                {/* Status selection (Draft/Published/Completed) */}
+                {/* Status selection */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600">Status *</label>
+                  <label className="text-xs font-bold text-slate-655">Status *</label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
@@ -742,7 +982,7 @@ export default function AdminWebinarDashboard({ webinars }: AdminWebinarDashboar
                   <Button
                     type="submit"
                     disabled={isPending}
-                    className="bg-primary hover:bg-primary/95 text-white font-bold rounded-xl px-8 shadow-md"
+                    className="bg-primary hover:bg-primary/95 text-white font-bold rounded-xl px-8 shadow-md cursor-pointer"
                   >
                     {isPending ? (
                       <span className="flex items-center gap-1.5">

@@ -178,7 +178,7 @@ export default function Footer() {
           {/* ── Col 4 · Collaboration ── */}
           <div className="space-y-5">
             <h3 className="text-[10px] font-bold tracking-[0.2em] uppercase text-pink-400">
-              In Collaboration With
+            An Initiative of Khushi Centre for Rehabilitation & Research and GRS India Group
             </h3>
 
             {/* Khushi Research */}

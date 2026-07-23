@@ -82,6 +82,8 @@ export async function getWebinars(filters: {
       { status: "COMPLETED" },
     ];
     where.status = { in: ["PUBLISHED", "COMPLETED"] };
+  } else {
+    where.status = { in: ["PUBLISHED", "COMPLETED"] };
   }
 
   return await db.webinar.findMany({
@@ -147,6 +149,9 @@ export async function createWebinarAction(data: any) {
       speakerName: data.speakerName,
       speakerImage: data.speakerImage || null,
       speakerBio: data.speakerBio || "",
+      speakerQualification: data.speakerQualification || null,
+      speakerSpecialization: data.speakerSpecialization || null,
+      speakerHospital: data.speakerHospital || null,
       date: new Date(data.date),
       startTime: new Date(data.startTime),
       endTime: new Date(data.endTime),
@@ -163,6 +168,10 @@ export async function createWebinarAction(data: any) {
       agenda: data.agenda || "",
       faqs: data.faqs || [],
       organizerDetails: data.organizerDetails || "Breast Cancer Mission Awareness Platform",
+      language: data.language || "English",
+      meetingPlatform: data.meetingPlatform || "Zoom",
+      learningOutcomes: data.learningOutcomes || "",
+      eligibility: data.eligibility || "",
     },
   });
 
@@ -185,6 +194,9 @@ export async function editWebinarAction(id: string, data: any) {
       speakerName: data.speakerName,
       speakerImage: data.speakerImage || null,
       speakerBio: data.speakerBio || "",
+      speakerQualification: data.speakerQualification || null,
+      speakerSpecialization: data.speakerSpecialization || null,
+      speakerHospital: data.speakerHospital || null,
       date: new Date(data.date),
       startTime: new Date(data.startTime),
       endTime: new Date(data.endTime),
@@ -203,6 +215,10 @@ export async function editWebinarAction(id: string, data: any) {
       organizerDetails: data.organizerDetails || "Breast Cancer Mission Awareness Platform",
       recordingUrl: data.recordingUrl || null,
       materialsUrl: data.materialsUrl || null,
+      language: data.language || "English",
+      meetingPlatform: data.meetingPlatform || "Zoom",
+      learningOutcomes: data.learningOutcomes || "",
+      eligibility: data.eligibility || "",
     },
   });
 
@@ -461,6 +477,7 @@ export async function leaveWebinarAction(webinarId: string, durationSeconds: num
 
   const percentage = Math.min((accumulatedMin / webinarDurationMin) * 100, 100);
   const status = percentage >= 80 ? "Completed" : "Incomplete";
+  const certificateEligible = status === "Completed";
 
   const updatedAtt = await db.attendance.update({
     where: {
@@ -474,6 +491,7 @@ export async function leaveWebinarAction(webinarId: string, durationSeconds: num
       durationMinutes: accumulatedMin,
       attendancePercentage: percentage,
       status,
+      certificateEligible,
     },
   });
 
@@ -594,121 +612,158 @@ export async function generateCertificateForUser(userId: string, webinarId: stri
     const stream = fs.createWriteStream(absolutePath);
     doc.pipe(stream);
 
-    // Design background - Double Frame (Soft Pink and Gold/Rose theme)
     const width = doc.page.width;
     const height = doc.page.height;
-
-    // Outer border
-    doc.lineWidth(15);
-    doc.strokeColor("#fda4af"); // Soft Pink Ribbon Rose Color
-    doc.rect(20, 20, width - 40, height - 40).stroke();
-
-    // Inner thin border
-    doc.lineWidth(2);
-    doc.strokeColor("#e11d48"); // Darker Rose
-    doc.rect(32, 32, width - 64, height - 64).stroke();
-
-    // Corner decorative circles
-    const drawCorners = (x: number, y: number) => {
-      doc.circle(x, y, 6).fill("#e11d48");
-    };
-    drawCorners(32, 32);
-    drawCorners(width - 32, 32);
-    drawCorners(32, height - 32);
-    drawCorners(width - 32, height - 32);
-
-    // Title / Header
-    doc.fillColor("#1e293b"); // Slate
-    doc.font("Roboto-Bold").fontSize(34).text("CERTIFICATE OF PARTICIPATION", {
-      align: "center",
-      underline: false,
-    });
-    doc.moveDown(0.2);
-
-    doc.fillColor("#e11d48"); // Primary pink accent
-    doc.font("Roboto-BoldItalic").fontSize(18).text("GRS Breast Cancer Awareness Mission", {
-      align: "center",
-    });
-    doc.moveDown(1.2);
-
-    doc.fillColor("#475569"); // Slate text
-    doc.font("Roboto").fontSize(14).text("This certificate is proudly awarded to", {
-      align: "center",
-    });
-    doc.moveDown(0.5);
-
-    // Participant Name (Big and Bold)
-    doc.fillColor("#0f172a"); // Charcoal
-    doc.font("Roboto-Bold").fontSize(28).text(userName, {
-      align: "center",
-    });
-    doc.moveDown(0.6);
-
-    // Webinar description
-    doc.fillColor("#475569");
-    doc.font("Roboto").fontSize(13).text("for successfully attending the live awareness webinar", {
-      align: "center",
-    });
-    doc.moveDown(0.4);
-
-    // Webinar Title (Bold)
-    doc.fillColor("#1e293b");
-    doc.font("Roboto-Bold").fontSize(18).text(`"${webinarName}"`, {
-      align: "center",
-    });
-    doc.moveDown(0.6);
-
-    // Date and Speaker info
-    doc.fillColor("#475569");
-    doc.font("Roboto").fontSize(12).text(
-      `Conducted on ${formattedDate} | Lead Speaker: ${speakerName}`,
-      { align: "center" }
-    );
-
-    // Logos & Signatures section (bottom layout)
     const bottomY = height - 160;
 
-    // QR Code generation
-    try {
-      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(verificationUrl)}`;
-      const response = await fetch(qrUrl);
-      if (response.ok) {
-        const qrBuffer = Buffer.from(await response.arrayBuffer());
-        doc.image(qrBuffer, 80, bottomY - 10, { width: 80, height: 80 });
-      } else {
-        throw new Error();
+    // Check if uploaded certificate template design image background exists
+    const bgImagePath = path.join(process.cwd(), "public", "images", "webinar-certificate.png");
+    const hasTemplate = fs.existsSync(bgImagePath);
+
+    if (hasTemplate) {
+      // Use uploaded design background directly
+      doc.image(bgImagePath, 0, 0, { width, height });
+
+      // Dynamic QR Code placement
+      try {
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(verificationUrl)}`;
+        const response = await fetch(qrUrl);
+        if (response.ok) {
+          const qrBuffer = Buffer.from(await response.arrayBuffer());
+          doc.image(qrBuffer, 80, bottomY - 10, { width: 80, height: 80 });
+        } else {
+          throw new Error();
+        }
+      } catch (e) {
+        doc.rect(80, bottomY - 10, 80, 80).stroke();
+        doc.fontSize(8).fillColor("#94a3b8").text("Scan to Verify", 85, bottomY + 25, { width: 70, align: 'center' });
       }
-    } catch (e) {
-      doc.rect(80, bottomY - 10, 80, 80).stroke();
-      doc.fontSize(8).fillColor("#94a3b8").text("Scan to Verify", 85, bottomY + 25, { width: 70, align: 'center' });
+
+      // Render Dynamic text over template fields
+      // Certificate ID (top right)
+      doc.fillColor("#64748b").fontSize(9).font("Roboto-Bold").text(`Certificate ID: ${certificateNumber}`, width - 260, 40, { width: 220, align: "right" });
+
+      // Recipient User Name (middle center)
+      doc.fillColor("#1e293b").font("Roboto-Bold").fontSize(30).text(userName, 0, 240, { align: "center", width });
+
+      // Webinar Title (centered below name)
+      doc.fillColor("#e11d48").font("Roboto-Bold").fontSize(18).text(`"${webinarName}"`, 0, 320, { align: "center", width });
+
+      // Doctor/Speaker Name (written above signature/right bottom slot)
+      doc.fillColor("#1e293b").font("Roboto-BoldItalic").fontSize(14).text(speakerName, width - 260, bottomY + 15, { width: 180, align: "center" });
+
+      // Conducted Date (centered bottom-ish)
+      doc.fillColor("#475569").font("Roboto").fontSize(12).text(`Conducted on ${formattedDate}`, 0, bottomY - 50, { align: "center", width });
+
+    } else {
+      // Fallback: Custom Double Frame (Soft Pink and Gold/Rose theme)
+      doc.lineWidth(15);
+      doc.strokeColor("#fda4af"); // Soft Pink Ribbon Rose Color
+      doc.rect(20, 20, width - 40, height - 40).stroke();
+
+      // Inner thin border
+      doc.lineWidth(2);
+      doc.strokeColor("#e11d48"); // Darker Rose
+      doc.rect(32, 32, width - 64, height - 64).stroke();
+
+      // Corner decorative circles
+      const drawCorners = (x: number, y: number) => {
+        doc.circle(x, y, 6).fill("#e11d48");
+      };
+      drawCorners(32, 32);
+      drawCorners(width - 32, 32);
+      drawCorners(32, height - 32);
+      drawCorners(width - 32, height - 32);
+
+      // Title / Header
+      doc.fillColor("#1e293b"); // Slate
+      doc.font("Roboto-Bold").fontSize(34).text("CERTIFICATE OF PARTICIPATION", {
+        align: "center",
+        underline: false,
+      });
+      doc.moveDown(0.2);
+
+      doc.fillColor("#e11d48"); // Primary pink accent
+      doc.font("Roboto-BoldItalic").fontSize(18).text("GRS Breast Cancer Awareness Mission", {
+        align: "center",
+      });
+      doc.moveDown(1.2);
+
+      doc.fillColor("#475569"); // Slate text
+      doc.font("Roboto").fontSize(14).text("This certificate is proudly awarded to", {
+        align: "center",
+      });
+      doc.moveDown(0.5);
+
+      // Participant Name (Big and Bold)
+      doc.fillColor("#0f172a"); // Charcoal
+      doc.font("Roboto-Bold").fontSize(28).text(userName, {
+        align: "center",
+      });
+      doc.moveDown(0.6);
+
+      // Webinar description
+      doc.fillColor("#475569");
+      doc.font("Roboto").fontSize(13).text("for successfully attending the live awareness webinar", {
+        align: "center",
+      });
+      doc.moveDown(0.4);
+
+      // Webinar Title (Bold)
+      doc.fillColor("#1e293b");
+      doc.font("Roboto-Bold").fontSize(18).text(`"${webinarName}"`, {
+        align: "center",
+      });
+      doc.moveDown(0.6);
+
+      // Date and Speaker info
+      doc.fillColor("#475569");
+      doc.font("Roboto").fontSize(12).text(
+        `Conducted on ${formattedDate} | Lead Speaker: ${speakerName}`,
+        { align: "center" }
+      );
+
+      // QR Code generation
+      try {
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(verificationUrl)}`;
+        const response = await fetch(qrUrl);
+        if (response.ok) {
+          const qrBuffer = Buffer.from(await response.arrayBuffer());
+          doc.image(qrBuffer, 80, bottomY - 10, { width: 80, height: 80 });
+        } else {
+          throw new Error();
+        }
+      } catch (e) {
+        doc.rect(80, bottomY - 10, 80, 80).stroke();
+        doc.fontSize(8).fillColor("#94a3b8").text("Scan to Verify", 85, bottomY + 25, { width: 70, align: 'center' });
+      }
+
+      doc.fillColor("#64748b").fontSize(8).text(`Verification ID: ${certificateNumber}`, 80, bottomY + 75, { width: 100 });
+
+      const sigX = width - 260;
+      doc.moveTo(sigX, bottomY + 45).lineTo(sigX + 180, bottomY + 45).strokeColor("#cbd5e1").lineWidth(1).stroke();
+      doc.fontSize(12).fillColor("#1e293b").font("Roboto-BoldItalic").text("Antigravity AI", sigX + 10, bottomY + 15, { width: 160, align: "center" });
+      doc.fontSize(9).fillColor("#64748b").font("Roboto").text("GRS Authorized Signature", sigX, bottomY + 50, { width: 180, align: "center" });
+
+      const logoX = width / 2 - 80;
+      try {
+        const grsLogoPath = path.join(process.cwd(), "public", "grs-group-logo.jpg");
+        doc.image(grsLogoPath, logoX, bottomY, { width: 50, height: 45 });
+      } catch (e) {
+        doc.rect(logoX, bottomY, 50, 45).fillColor("#fce7f3").fill();
+        doc.fillColor("#e11d48").fontSize(10).font("Roboto-Bold").text("GRS", logoX + 13, bottomY + 18);
+      }
+
+      try {
+        const khushiLogoPath = path.join(process.cwd(), "public", "khushi-logo.jpg");
+        doc.image(khushiLogoPath, logoX + 70, bottomY, { width: 50, height: 45 });
+      } catch (e) {
+        doc.rect(logoX + 70, bottomY, 50, 45).fillColor("#dbeafe").fill();
+        doc.fillColor("#1d4ed8").fontSize(9).font("Roboto-Bold").text("KHUSHI", logoX + 7, bottomY + 18);
+      }
+
+      doc.fontSize(7).fillColor("#64748b").font("Roboto").text("Audit Seal & Strategic Partners", logoX, bottomY + 50, { width: 130, align: "center" });
     }
-
-    doc.fillColor("#64748b").fontSize(8).text(`Verification ID: ${certificateNumber}`, 80, bottomY + 75, { width: 100 });
-
-    const sigX = width - 260;
-
-    doc.moveTo(sigX, bottomY + 45).lineTo(sigX + 180, bottomY + 45).strokeColor("#cbd5e1").lineWidth(1).stroke();
-    doc.fontSize(12).fillColor("#1e293b").font("Roboto-BoldItalic").text("Antigravity AI", sigX + 10, bottomY + 15, { width: 160, align: "center" });
-    doc.fontSize(9).fillColor("#64748b").font("Roboto").text("GRS Authorized Signature", sigX, bottomY + 50, { width: 180, align: "center" });
-
-    const logoX = width / 2 - 80;
-    try {
-      const grsLogoPath = path.join(process.cwd(), "public", "grs-group-logo.jpg");
-      doc.image(grsLogoPath, logoX, bottomY, { width: 50, height: 45 });
-    } catch (e) {
-      doc.rect(logoX, bottomY, 50, 45).fillColor("#fce7f3").fill();
-      doc.fillColor("#e11d48").fontSize(10).font("Roboto-Bold").text("GRS", logoX + 13, bottomY + 18);
-    }
-
-    try {
-      const khushiLogoPath = path.join(process.cwd(), "public", "khushi-logo.jpg");
-      doc.image(khushiLogoPath, logoX + 70, bottomY, { width: 50, height: 45 });
-    } catch (e) {
-      doc.rect(logoX + 70, bottomY, 50, 45).fillColor("#dbeafe").fill();
-      doc.fillColor("#1d4ed8").fontSize(9).font("Roboto-Bold").text("KHUSHI", logoX + 7, bottomY + 18);
-    }
-
-    doc.fontSize(7).fillColor("#64748b").font("Roboto").text("Audit Seal & Strategic Partners", logoX, bottomY + 50, { width: 130, align: "center" });
 
     doc.end();
 
@@ -735,4 +790,48 @@ export async function generateCertificateForUser(userId: string, webinarId: stri
     console.error("Certificate generation error:", error);
     return { success: false, error: error.message };
   }
+}
+
+// Manual Attendance Adjustments (Admin)
+export async function adjustAttendanceAction(userId: string, webinarId: string, durationMinutes: number) {
+  await requireAdmin();
+
+  // Find or create attendance
+  const webinar = await db.webinar.findUnique({ where: { id: webinarId } });
+  if (!webinar) throw new Error("Webinar not found.");
+
+  const webinarDurationMin = Math.max(
+    (webinar.endTime.getTime() - webinar.startTime.getTime()) / 60000,
+    30
+  );
+
+  const percentage = Math.min((durationMinutes / webinarDurationMin) * 100, 100);
+  const status = percentage >= 80 ? "Completed" : "Incomplete";
+  const certificateEligible = status === "Completed";
+
+  const attendance = await db.attendance.upsert({
+    where: {
+      userId_webinarId: {
+        userId,
+        webinarId,
+      },
+    },
+    update: {
+      durationMinutes,
+      attendancePercentage: percentage,
+      status,
+      certificateEligible,
+    },
+    create: {
+      userId,
+      webinarId,
+      durationMinutes,
+      attendancePercentage: percentage,
+      status,
+      certificateEligible,
+    },
+  });
+
+  revalidatePath("/admin/webinars");
+  return { success: true, attendance };
 }

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WebinarFeedbackForm from "@/components/webinars/WebinarFeedbackForm";
 import WebinarCountdown from "@/components/webinars/WebinarCountdown";
+import DashboardWebinars from "@/components/webinars/DashboardWebinars";
 import Link from "next/link";
 import { 
   Heart, BookOpen, Award, Users, Video, Calendar, Clock, 
@@ -506,136 +507,11 @@ export default async function DashboardPage() {
               <CardDescription>Track upcoming live timers, join meetings, and access completed records.</CardDescription>
             </CardHeader>
             <CardContent className="p-6">
-              {registrations.length === 0 ? (
-                <p className="text-xs text-slate-500 text-center py-6">You have no webinar registrations. Go to <Link href="/webinars" className="text-primary font-semibold hover:underline">Webinars</Link> to browse.</p>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {registrations.map(r => {
-                    const webinar = r.webinar;
-                    const start = new Date(webinar.startTime);
-                    const end = new Date(webinar.endTime);
-                    const isLive = now >= start && now <= end && webinar.status === "PUBLISHED";
-                    const isPast = now > end || webinar.status === "COMPLETED";
-                    const isUpcoming = now < start && webinar.status === "PUBLISHED";
-
-                    return (
-                      <Card key={r.id} className="group flex flex-col bg-white border border-pink-50 hover:shadow-lg transition-all duration-300 rounded-3xl overflow-hidden relative">
-                        {/* Banner Section */}
-                        <div className="relative h-32 w-full bg-gradient-to-br from-pink-100 via-pink-50 to-rose-100 flex items-center justify-center overflow-hidden">
-                          {webinar.bannerImage ? (
-                            <img src={webinar.bannerImage} alt={webinar.title} className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-500" />
-                          ) : (
-                            <div className="text-center text-primary/30 flex flex-col items-center">
-                              <Award className="h-10 w-10 stroke-[1.2] mb-1" />
-                              <span className="text-[8px] uppercase font-bold tracking-widest text-primary/50">Certified Webinar</span>
-                            </div>
-                          )}
-
-                          {/* Status Badge */}
-                          <div className="absolute top-3 left-3">
-                            <span className="bg-white/80 backdrop-blur-md border border-pink-100/50 text-[9px] font-black text-primary px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
-                              {webinar.webinarMode}
-                            </span>
-                          </div>
-
-                          {/* Countdown or Status Indicator */}
-                          <div className="absolute bottom-3 right-3">
-                            {isUpcoming && (
-                              <WebinarCountdown startTime={webinar.startTime} />
-                            )}
-                            {isLive && (
-                              <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider animate-pulse flex items-center gap-1">
-                                <span className="h-1.5 w-1.5 bg-emerald-500 rounded-full" /> Live Now
-                              </span>
-                            )}
-                            {isPast && (
-                              <span className="bg-slate-100 text-slate-500 border border-slate-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                                Completed
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Body */}
-                        <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                          <div className="space-y-2">
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{webinar.category}</span>
-                            <h4 className="font-heading font-black text-slate-800 text-base line-clamp-1 group-hover:text-primary transition-colors">{webinar.title}</h4>
-                            <p className="text-xs text-slate-500 font-semibold">Speaker: {webinar.speakerName}</p>
-
-                            <div className="text-[11px] text-slate-500 space-y-1.5 pt-2 border-t border-pink-50/50">
-                              <div className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-primary shrink-0" /> {start.toLocaleDateString("en-US")}</div>
-                              <div className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-primary shrink-0" /> {start.toLocaleTimeString("en-US", {hour: '2-digit', minute:'2-digit'})} - {end.toLocaleTimeString("en-US", {hour: '2-digit', minute:'2-digit'})}</div>
-                              <div className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary shrink-0" /> {webinar.venue || "Online"}</div>
-                            </div>
-                          </div>
-
-                          {/* Action Buttons */}
-                          <div className="space-y-3 pt-3 border-t border-slate-100">
-                            <div className="flex justify-between items-center text-[10px] font-bold">
-                              <span className="text-slate-400">Registration Status</span>
-                              <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">Registered</span>
-                            </div>
-
-                            {isUpcoming && (
-                              <Button disabled className="w-full bg-slate-100 border border-slate-200 text-slate-400 font-bold rounded-xl text-xs py-2 h-auto cursor-not-allowed">
-                                Registered
-                              </Button>
-                            )}
-
-                            {isLive && (
-                              <Link href={`/webinars/${webinar.id}/join`} className="block w-full">
-                                <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs py-2 h-auto shadow-md">
-                                  Join Live Webinar
-                                </Button>
-                              </Link>
-                            )}
-
-                            {isPast && (
-                              <div className="space-y-3">
-                                <Button disabled className="w-full bg-slate-100 border border-slate-200 text-slate-400 font-bold rounded-xl text-xs py-2 h-auto cursor-not-allowed">
-                                  Completed
-                                </Button>
-
-                                {/* Resources & Feedback inside past section */}
-                                <div className="space-y-2 pt-2 border-t border-dashed border-slate-100">
-                                  <div className="flex gap-2">
-                                    {webinar.recordingUrl ? (
-                                      <Link href={webinar.recordingUrl} target="_blank" className="flex-1">
-                                        <span className="inline-flex w-full items-center justify-center gap-1.5 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold transition-colors">
-                                          <Video className="h-3.5 w-3.5" /> Recording
-                                        </span>
-                                      </Link>
-                                    ) : (
-                                      <span className="flex-1 text-center text-[9px] text-slate-400 italic bg-slate-50 py-1.5 rounded border border-slate-100">No video</span>
-                                    )}
-
-                                    {webinar.materialsUrl ? (
-                                      <Link href={webinar.materialsUrl} target="_blank" className="flex-1">
-                                        <span className="inline-flex w-full items-center justify-center gap-1.5 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold transition-colors">
-                                          <Download className="h-3.5 w-3.5" /> Materials
-                                        </span>
-                                      </Link>
-                                    ) : (
-                                      <span className="flex-1 text-center text-[9px] text-slate-400 italic bg-slate-50 py-1.5 rounded border border-slate-100">No slides</span>
-                                    )}
-                                  </div>
-
-                                  <WebinarFeedbackForm
-                                    webinarId={r.webinarId}
-                                    existingFeedback={r.feedback}
-                                    existingRating={r.rating}
-                                  />
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </Card>
-                    );
-                  })}
-                </div>
-              )}
+              <DashboardWebinars
+                registrations={registrations}
+                certificates={certificates}
+                attendanceLogs={attendanceLogs}
+              />
             </CardContent>
           </Card>
         </TabsContent>
